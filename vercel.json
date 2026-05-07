@@ -1,6 +1,5 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
+  "framework": null,
   "functions": {
     "api/claude.js": {
       "maxDuration": 30
