@@ -1,0 +1,12 @@
+# Environment — never commit your API key
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# macOS
+.DS_Store
+
+# Vercel
+.vercel

@@ -1,0 +1,14 @@
+{
+  "name": "seo-agent",
+  "version": "1.0.0",
+  "description": "Growth Asset Strategist — AI marketing strategy engine",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "dotenv": "^17.4.2",
+    "vercel": "^44.2.0"
+  }
+}

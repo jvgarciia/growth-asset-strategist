@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check /tmp/seo_script_check.js)",
+      "Bash(node --check /tmp/seo_script_check2.js)",
+      "mcp__mcp-registry__search_mcp_registry"
+    ]
+  }
+}

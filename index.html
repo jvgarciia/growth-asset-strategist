@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Growth Asset Strategist</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #f5f2eb;
+  --surface: #faf8f3;
+  --surface2: #f0ede4;
+  --border: #ddd8cc;
+  --border-dark: #c8c3b5;
+  --ink: #1a1814;
+  --ink-mid: #5a5650;
+  --ink-muted: #9a9590;
+  --accent: #1a1814;
+  --accent-bg: #1a1814;
+  --green: #2d6a4f;
+  --green-bg: #e8f5ee;
+  --red: #c0392b;
+  --red-bg: #fdf0ee;
+  --gold: #b8860b;
+  --gold-bg: #fdf8e8;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo {
+  margin-bottom: 40px;
+}
+.logo-text {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1;
+}
+.logo-sub {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.field { margin-bottom: 20px; }
+label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 6px;
+}
+
+input, textarea, select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(26,24,20,0.06);
+}
+input::placeholder, textarea::placeholder { color: var(--ink-muted); }
+textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239a9590' d='M2 4l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+.run-btn {
+  width: 100%;
+  background: var(--accent-bg);
+  color: #faf8f3;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.run-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+.run-btn:active:not(:disabled) { transform: translateY(0); }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.spinner {
+  width: 13px; height: 13px;
+  border: 1.5px solid #faf8f3;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.sidebar-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+/* History */
+.history-list { flex: 1; overflow-y: auto; }
+.history-item {
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+.history-item:hover { background: var(--surface2); border-color: var(--border); }
+.history-item.active { background: var(--surface2); border-color: var(--border-dark); }
+.history-keyword {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-meta {
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+.history-empty {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  padding: 48px 52px;
+  max-width: 860px;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.3;
+}
+.empty-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.empty-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* Progress */
+.progress-section { display: none; }
+.progress-section.visible { display: block; }
+
+.progress-header {
+  margin-bottom: 32px;
+}
+.progress-keyword {
+  font-family: var(--serif);
+  font-size: 36px;
+  color: var(--ink);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.progress-status {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.steps-list { margin-bottom: 40px; }
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.step-item:last-child { border-bottom: none; }
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  border: 1px solid var(--border-dark);
+  color: var(--ink-muted);
+  background: var(--bg);
+}
+.step-item.active .step-number {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.step-item.done .step-number {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: var(--green);
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,24,20,0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(26,24,20,0); }
+}
+
+.step-info { flex: 1; padding-top: 4px; }
+.step-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.step-desc {
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+.step-item.pending .step-name { color: var(--ink-muted); }
+
+/* Result */
+.result-section { display: none; }
+.result-section.visible { display: block; }
+
+.result-header { margin-bottom: 32px; }
+.result-keyword {
+  font-family: var(--serif);
+  font-size: 40px;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.result-meta {
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.06em;
+}
+
+/* Score bar */
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.score-number {
+  font-family: var(--serif);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--ink);
+  min-width: 80px;
+}
+.score-number.high { color: var(--green); }
+.score-number.mid { color: var(--gold); }
+.score-number.low { color: var(--red); }
+.score-info { flex: 1; }
+.score-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+.score-bar-track { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+.score-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: var(--ink); }
+.score-bar-fill.high { background: var(--green); }
+.score-bar-fill.mid { background: var(--gold); }
+.score-bar-fill.low { background: var(--red); }
+.score-notes { font-size: 12px; color: var(--ink-mid); line-height: 1.5; }
+
+/* Research grid */
+.research-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.research-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.rc-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-muted); margin-bottom: 8px; }
+.rc-value { font-size: 13px; color: var(--ink-mid); line-height: 1.5; }
+
+/* Content sections */
+.brief-section { margin-bottom: 28px; }
+.bs-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.bs-title { font-family: var(--serif); font-size: 18px; color: var(--ink); font-style: italic; }
+.bs-tag {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.bs-body {
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+/* Keyword tags */
+.kw-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.kw-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-dark);
+  color: var(--ink-mid);
+  background: var(--surface);
+}
+.kw-tag.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.kw-tag.secondary { background: var(--surface2); }
+.kw-tag.lsi { background: var(--bg); color: var(--ink-muted); border-style: dashed; }
+
+/* Outline */
+.outline-item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.5;
+}
+.outline-item:last-child { border-bottom: none; }
+.outline-h2 { font-weight: 500; color: var(--ink); }
+.outline-h3 { padding-left: 20px; font-size: 12px; color: var(--ink-muted); }
+
+/* Export bar */
+.export-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 14px 0;
+  display: flex;
+  gap: 10px;
+  margin-top: 40px;
+}
+.export-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.export-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--bg); }
+.export-btn.primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.export-btn.primary:hover { opacity: 0.85; }
+
+.error-box {
+  background: var(--red-bg);
+  border: 1px solid rgba(192,57,43,0.2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--red);
+  margin-bottom: 20px;
+  display: none;
+}
+.error-box.visible { display: block; }
+
+/* Competitor rows */
+.competitor-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.competitor-row:last-child { border-bottom: none; }
+.comp-pos {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+.comp-info { flex: 1; min-width: 0; }
+.comp-title {
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comp-title:hover { text-decoration: underline; color: var(--ink-mid); }
+.comp-meta { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+.comp-type {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Result reveal */
+.result-section.visible { animation: fadeUp 0.3s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fast test mode toggle */
+.fast-test-toggle {
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin: 0;
+}
+.toggle-label input[type="checkbox"] {
+  width: 13px; height: 13px; min-width: 13px;
+  cursor: pointer; accent-color: var(--ink);
+  margin: 0; border: none; padding: 0; background: none;
+}
+.toggle-sub {
+  font-size: 10px; color: var(--ink-muted);
+  margin-top: 5px; padding-left: 21px;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; min-width: auto; height: auto; position: relative; }
+  .main { padding: 24px 20px; }
+  .research-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-text">Growth Asset Strategist</div>
+      <div class="logo-sub">AI marketing strategy engine</div>
+    </div>
+
+    <div class="section-label">New Analysis</div>
+
+    <div class="field">
+      <label>Target Keyword</label>
+      <input type="text" id="keyword" placeholder="e.g. best running shoes 2025"/>
+    </div>
+
+    <div class="field">
+      <label>Niche / Industry</label>
+      <input type="text" id="niche" placeholder="e.g. fitness, SaaS, fashion..."/>
+    </div>
+
+    <div class="field">
+      <label>Target Audience</label>
+      <input type="text" id="audience" placeholder="e.g. beginner runners aged 25-40"/>
+    </div>
+
+    <div class="field">
+      <label>Business Goal</label>
+      <select id="goal">
+        <option value="capture_demand">Capture existing search demand</option>
+        <option value="generate_leads">Generate qualified leads</option>
+        <option value="drive_conversions">Drive conversions</option>
+        <option value="build_authority">Build topical authority</option>
+        <option value="product_awareness">Drive product awareness</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Competitor Context (optional)</label>
+      <textarea id="context" placeholder="Any extra context about competitors, your brand, or what to avoid..."></textarea>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <button class="run-btn" id="runBtn" onclick="runAgent()">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">Analyse &amp; Plan</span>
+    </button>
+
+    <div class="fast-test-toggle">
+      <label class="toggle-label">
+        <input type="checkbox" id="fastTestMode"/>
+        <span>Fast test mode</span>
+      </label>
+      <div class="toggle-sub">Classification &amp; decision only · skips SERP, brief &amp; quality</div>
+    </div>
+
+    <hr class="sidebar-divider"/>
+
+    <div class="section-label">History</div>
+    <div class="history-list" id="historyList"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">◎</div>
+      <div class="empty-title">Ready to find the winning asset</div>
+      <div class="empty-sub">Enter a keyword and the agent will decide what marketing asset to build, why it can win, and how to execute it.</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-section" id="progressSection">
+      <div class="progress-header">
+        <div class="progress-keyword" id="progressKeyword"></div>
+        <div class="progress-status" id="progressStatus">Initializing agent...</div>
+      </div>
+      <div class="steps-list" id="stepsList"></div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-section" id="resultSection"></div>
+
+  </main>
+</div>
+
+<script>
+const STEPS = [
+  { name: 'Market Signal Analysis', desc: 'Reading what the SERP reveals about demand, intent, and competition' },
+  { name: 'Competitive Intelligence', desc: 'Identifying gaps, angles, and opportunities no competitor owns' },
+  { name: 'Keyword Opportunity Map', desc: 'Mapping search demand by intent across the full funnel' },
+  { name: 'Asset Type Decision', desc: 'Determining the highest-ROI marketing asset for this keyword' },
+  { name: 'Opportunity Analysis', desc: 'Scoring the strategic attractiveness and business value of this keyword opportunity' },
+  { name: 'Asset Brief', desc: 'Writing a format-specific brief tailored to the chosen asset type' },
+  { name: 'Strategy Quality Score', desc: 'Scoring the strategy and flagging what would weaken it' },
+];
+
+const MODEL = 'claude-sonnet-4-6';
+
+let history = JSON.parse(localStorage.getItem('seo_history') || '[]');
+let currentResult = null;
+
+// ─── API ───────────────────────────────────────────────────────────────────
+async function callClaude({ system, user, useWebSearch = false, maxTokens = 1500 }) {
+  const body = {
+    model: MODEL,
+    max_tokens: maxTokens,
+    system,
+    messages: [{ role: 'user', content: user }],
+  };
+  if (useWebSearch) {
+    body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 2 }];
+  }
+
+  const res = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+  // Extract text from all content blocks
+  return data.content
+    .filter(b => b.type === 'text')
+    .map(b => b.text)
+    .join('\n')
+    .trim();
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+// Handles plain JSON, ```json fences, and JSON embedded in prose
+function extractJSON(raw) {
+  try { return JSON.parse(raw); } catch {}
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (fenced) { try { return JSON.parse(fenced[1]); } catch {} }
+  const obj = raw.match(/\{[\s\S]*\}/);
+  if (obj) { try { return JSON.parse(obj[0]); } catch {} }
+  throw new SyntaxError('No valid JSON found in response');
+}
+
+function extractDomain(url) {
+  try { return new URL(url).hostname.replace('www.', ''); }
+  catch { return url; }
+}
+
+// Rate limit mitigation: pause between agent steps to stay within
+// the 30,000 input tokens/minute limit during local testing.
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Deterministic keyword pattern classifier — runs before Step 4 to bias problem_type.
+// Returns { forcedProblemType, heuristicReason, matchedKeywords, confidence } or null.
+function classifyKeywordHeuristic(keyword) {
+  const s = keyword.toLowerCase();
+  const rules = [
+    { test: /\b(formula|formulas|calculator|calculators|estimator|roi calculator|roi calc|compute|calculation)\b/,                  type: 'calculation',       trigger: 'formula / calculator / estimator',  confidence: 'high'   },
+    { test: /\b(checklist|checklists|template|templates|worksheet|worksheets|framework|frameworks|playbook|playbooks|swipe file|toolkit)\b/, type: 'implementation',   trigger: 'checklist / template / framework',  confidence: 'high'   },
+    { test: /( vs\.? | versus |\bcomparison\b|\bcompared\b|\bcompare\b|\balternatives?\b|\balternative to\b)/,                      type: 'comparison',        trigger: 'vs / comparison / alternatives',    confidence: 'high'   },
+    { test: /\b(pricing|price|prices|cost\b|rates|how much|budget)\b/,                                                              type: 'decision_support',  trigger: 'pricing / cost / budget',           confidence: 'medium' },
+    { test: /\b(benchmark|benchmarks|audit|audits|scorecard|assessment|grader|roi)\b/,                                              type: 'decision_support',  trigger: 'benchmark / audit / ROI',           confidence: 'medium' },
+    { test: /^(what is |what are |definition of |meaning of )|\b(definition|glossary|explained|overview)\b/,                        type: 'learning',          trigger: 'definition / what is',              confidence: 'medium' },
+    { test: /\b(best|top)\b.{0,20}\b(tools?|software|platforms?|apps?|solutions?|systems?)\b/,                                     type: 'product_discovery', trigger: 'best / top [tools/software]',       confidence: 'medium' },
+  ];
+  for (const rule of rules) {
+    const m = s.match(rule.test);
+    if (m) return { forcedProblemType: rule.type, heuristicReason: rule.trigger, matchedKeywords: [m[0].trim()], confidence: rule.confidence };
+  }
+  return null;
+}
+
+// Deterministic asset mapping for high-confidence heuristic types
+const HEURISTIC_ASSET_MAP = {
+  calculation:       'tool_or_calculator',
+  implementation:    'lead_magnet',
+  comparison:        'comparison_page',
+  product_discovery: 'comparison_page',
+};
+
+// Behavioral profile for each asset type.
+// Used to: (1) inject language guidance into Step 4 prompt, (2) validate Step 4 output,
+// (3) contextualise Step 5 brief generation, (4) render asset-aware UI labels.
+const ASSET_BEHAVIOR_MAP = {
+  tool_or_calculator: {
+    strategic_role:          'utility delivery — gives users the specific number or answer they need to act, in under 60 seconds',
+    user_value:              'instant calculation with no reading prerequisite — user enters inputs, gets a specific actionable figure',
+    interaction_model:       'input → instant output → decision — user enters parameters, tool returns the number that removes the stall',
+    conversion_mechanism:    'email gate on results, embedded CTA post-calculation, lead form for full report or playbook',
+    differentiation_strategy:'competitors describe how to calculate — this does the calculation for the user',
+    reasoning_vocabulary:    ['instant utility', 'input/output', 'calculation', 'decision enablement', 'conversion opportunity'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth', 'topical authority', 'practitioner guide', 'comprehensive guide'],
+  },
+  comparison_page: {
+    strategic_role:          'evaluation enablement — reduces buyer confusion by making the decision framework explicit and the recommendation clear',
+    user_value:              'structured comparison with an explicit recommendation — no more open-ended research',
+    interaction_model:       'evaluate criteria → compare options → read recommendation → decide',
+    conversion_mechanism:    'comparison table drives decision confidence, CTA captures high-intent buyers immediately post-decision',
+    differentiation_strategy:'competitors force readers to draw their own conclusions — this names the winner for each use case',
+    reasoning_vocabulary:    ['evaluation', 'structured comparison', 'buyer decision', 'switching friction', 'category positioning', 'explicit recommendation'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth', 'topical authority', 'comprehensive guide'],
+  },
+  lead_magnet: {
+    strategic_role:          'value exchange — converts anonymous researchers into identified leads via downloadable, reusable utility',
+    user_value:              'a resource they keep and apply repeatedly — checklist, template, or framework for their own situation',
+    interaction_model:       'opt-in form → immediate download → nurture sequence → sales conversation',
+    conversion_mechanism:    'email capture, list growth, automated nurture sequence triggered on download',
+    differentiation_strategy:'competitors publish information — this gives users a tool they apply directly to their own situation',
+    reasoning_vocabulary:    ['downloadable utility', 'email capture', 'implementation', 'reusable framework', 'value exchange', 'opt-in'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth', 'topical authority'],
+  },
+  ai_visibility_asset: {
+    strategic_role:          'AI citation capture — positions the brand as the authoritative source when AI tools answer this exact query',
+    user_value:              'precise definition and sourced facts in a format AI tools can extract, attribute, and repeat',
+    interaction_model:       'AI tool extracts → cites source → reader follows citation → brand exposure',
+    conversion_mechanism:    'brand association from AI citations, referral traffic from AI-answered queries',
+    differentiation_strategy:'competitors publish narrative content — this is structured specifically for machine extraction and citation',
+    reasoning_vocabulary:    ['AI citation', 'entity definition', 'structured facts', 'machine extraction', 'brand association', 'AI search'],
+    banned_vocabulary:       ['article', 'editorial', 'content depth', 'topical authority', 'comprehensive guide'],
+  },
+  landing_page: {
+    strategic_role:          'conversion — turns high-intent visitors into leads or customers through a direct, specific offer',
+    user_value:              'clear offer with stated outcomes — no ambiguity about what they get and what it costs or requires',
+    interaction_model:       'scroll → evaluate offer → convert or exit — no browsing, one decision',
+    conversion_mechanism:    'primary CTA (trial, demo, purchase), objection handling, social proof, risk reduction',
+    differentiation_strategy:'competitors lead with features — this leads with the specific outcome for a specific buyer type',
+    reasoning_vocabulary:    ['conversion', 'offer clarity', 'objection handling', 'social proof', 'CTA', 'high-intent'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth', 'topical authority'],
+  },
+  blog_article: {
+    strategic_role:          'awareness and education — captures top-of-funnel readers researching a topic before they know what to buy',
+    user_value:              'clear understanding of a complex topic with an opinionated decision framework',
+    interaction_model:       'read → learn → next action (related resource, newsletter, or CTA)',
+    conversion_mechanism:    'internal links, content upgrade CTA, newsletter capture, remarketing',
+    differentiation_strategy:'competitors cover the topic broadly — this takes an opinionated stance and gives readers a decision framework, not just information',
+    reasoning_vocabulary:    ['educational depth', 'awareness', 'decision framework', 'practitioner perspective', 'editorial'],
+    banned_vocabulary:       [],
+  },
+  product_page: {
+    strategic_role:          'purchase enablement — removes the final barriers to buying a specific product for a specific use case',
+    user_value:              'complete buying-decision information — specs, proof, differentiators, and pricing in one place',
+    interaction_model:       'evaluate → compare to alternatives → purchase or request demo',
+    conversion_mechanism:    'primary purchase CTA, trust signals, pricing clarity, customer proof',
+    differentiation_strategy:'competitors list features — this names the specific use cases and tradeoffs that matter for the buyer',
+    reasoning_vocabulary:    ['purchase enablement', 'buying decision', 'product differentiation', 'conversion', 'high-intent'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth'],
+  },
+  category_page: {
+    strategic_role:          'category navigation — helps discovery-stage buyers map the space and identify the right option without exhaustive research',
+    user_value:              'clear category structure with evaluative criteria and direct option recommendations',
+    interaction_model:       'browse category → apply criteria → select top option → navigate to product/comparison page',
+    conversion_mechanism:    'internal linking to product and comparison pages, category-level lead capture',
+    differentiation_strategy:'competitors list everything without guidance — this structures the category with explicit evaluative criteria',
+    reasoning_vocabulary:    ['category navigation', 'discovery', 'evaluative criteria', 'buyer guidance', 'browse intent'],
+    banned_vocabulary:       ['article', 'editorial', 'blog', 'content depth'],
+  },
+};
+
+// Step 4 system prompt — shared between full pipeline and fast test mode
+const STEP4_SYSTEM_BASE = `You are a senior marketing strategist. Your job is to recommend the highest-ROI asset format — not mirror the dominant SERP format.
+
+SIGNAL PRIORITY: Classify from the keyword itself first. SERP format is the weakest signal — do not let it override keyword intent.
+
+STEP 1 — Classify problem_type from the keyword:
+
+KEYWORD PATTERNS (override SERP signals when matched):
+- contains "formula", "calculator", "estimator", "ROI calculator", "compute", "calculate" → calculation
+- contains "checklist", "template", "worksheet", "framework", "playbook", "swipe file", "script" → implementation
+- contains " vs ", "versus", "comparison", "compare", "alternatives", "alternative to", "vs." → comparison
+- contains "pricing", "cost of", "price", "budget", "rates", "how much" → decision_support
+- contains "benchmark", "audit", "assessment", "scorecard", "grader" → decision_support
+- contains "what is ", "definition", "meaning", "explained", "glossary" → learning
+- contains "best ", "top ", " tools", " software", "options for", "platforms for" → product_discovery
+- contains "how to ", "steps to", "process for", "tutorial" → implementation or learning
+
+PROBLEM TYPES:
+- learning: user needs to understand a concept or situation
+- comparison: user needs to evaluate options and choose one
+- implementation: user needs to execute a process or workflow
+- calculation: user needs a specific number or estimate
+- decision_support: user needs criteria or data to make a confident choice
+- product_discovery: user is browsing to find the right solution category
+- commercial_purchase: user is ready to buy or convert
+
+STEP 2 — Match to the best delivery mechanism:
+
+UTILITY PRINCIPLE: When the keyword signals a functional outcome (calculate, compare, use a template), the user wants a mechanism — not an explanation. A calculator gives the answer in 60 seconds. A checklist enables execution. A comparison page enables a decision. An article describes. Mechanisms outperform articles for utility queries.
+
+- calculation → tool_or_calculator
+- implementation → lead_magnet (checklist, template, framework); blog_article only if no structured format fits
+- comparison → comparison_page
+- decision_support with pricing/cost signal → comparison_page or landing_page
+- learning + AI tools will likely answer directly → ai_visibility_asset
+- learning + users want a reusable resource → lead_magnet
+- product_discovery → category_page or landing_page
+- commercial_purchase → product_page or landing_page
+
+CONTRARIAN PRINCIPLE: If SERP competitors all publish blog articles on a utility keyword, the strongest move is the format that actually delivers the outcome — not a better article.
+
+blog_article is correct ONLY when: (a) the user needs to understand a complex topic, AND (b) no more actionable format serves the need, AND (c) the SERP is not already saturated with strong editorial content on this exact angle.
+
+EXAMPLES — these are correct decisions:
+"customer acquisition cost formula" → calculation → tool_or_calculator (keyword contains "formula"; users want to calculate, not read)
+"seo audit checklist" → implementation → lead_magnet (keyword contains "checklist"; users want a usable resource)
+"crm pricing comparison" → comparison → comparison_page (keyword contains "pricing" and "comparison")
+"email ROI calculator" → calculation → tool_or_calculator (keyword contains "ROI calculator")
+"b2b lead generation template" → implementation → lead_magnet (keyword contains "template")
+"what is cost per acquisition" → learning → ai_visibility_asset (definition query, AI will answer it)
+
+ASSET-TYPE LANGUAGE — once you choose content_type, write reasoning/what_to_build/why_it_fits/business_impact/execution_steps using ONLY the vocabulary for that type:
+tool_or_calculator → use: "instant utility", "input/output", "calculation", "decision enablement", "embedded conversion". NEVER say "article", "editorial", "guide", "content depth".
+comparison_page → use: "evaluation", "structured comparison", "buyer decision", "switching friction", "explicit recommendation". NEVER say "article", "editorial", "guide".
+lead_magnet → use: "downloadable utility", "email capture", "implementation", "reusable framework", "opt-in". NEVER say "article", "editorial".
+ai_visibility_asset → use: "AI citation", "entity definition", "structured facts", "machine extraction". NEVER say "article", "editorial", "content depth".
+landing_page → use: "conversion", "offer clarity", "objection handling", "social proof", "CTA". NEVER say "article", "editorial".
+blog_article → use: "educational depth", "awareness", "decision framework", "practitioner perspective".
+
+Return ONLY a JSON object (no markdown):
+{
+  "problem_type": "learning|comparison|implementation|calculation|decision_support|product_discovery|commercial_purchase",
+  "content_type": "blog_article|landing_page|product_page|category_page|comparison_page|tool_or_calculator|lead_magnet|ai_visibility_asset",
+  "reasoning": "one sentence arguing for this format by naming WHY it beats what competitors are using — not a SERP description. Name the competitor format weakness and the strategic advantage of the chosen format. Example: 'All SERP results are overview articles that explain what X is but help no one decide — a comparison page with an explicit recommendation captures higher-intent buyers at the moment they are evaluating.' Not: 'Informational intent dominates.'",
+  "user_intent": "informational|commercial|transactional",
+  "funnel_stage": "awareness|consideration|conversion",
+  "strategic_recommendation": {
+    "what_to_build": "the exact asset name with format, angle, and target segment — specific enough to brief a content team. E.g. 'Founder-focused comparison guide: email tools by startup growth stage and scaling cost', 'Free B2B SaaS CAC calculator with email gate and benchmark data', 'AI-optimised definition page: what is cost-per-acquisition, with 8 sourced facts'. Not: 'Blog article' or 'Landing page'.",
+    "why_it_fits": "one sentence naming the specific user intent AND the business goal this asset serves — connect both explicitly, do not say 'aligns with intent'",
+    "business_impact": "name the specific metric this asset moves — e.g. 'increases MQL volume by targeting decision-stage buyers before they evaluate competitors' or 'improves AI citation rate for branded queries on ChatGPT and Perplexity' — never say 'drives growth' or 'builds authority'",
+    "execution_steps": [
+      "Step 1: the specific first deliverable — a named audit output, data source, decision document, or framework that must exist before building starts. Not 'research the topic' or 'define the audience'.",
+      "Step 2: the specific asset component or validation step — a prototype, draft section, headline test, confirmed data source, or comparison framework. Name what gets built or confirmed. Not 'create the content'.",
+      "Step 3: the specific activation move after launch — a named distribution channel, conversion lever, internal link structure, email trigger, or partnership. Not 'promote it' or 'share on social'."
+    ]
+  }
+}
+Never use: 'create engaging content', 'build trust', 'optimize for SEO', 'provide value', 'start with a compelling hook', 'featured snippet', 'topical authority', 'drive traffic', 'increase visibility', 'builds authority', or 'aligns with intent'.`;
+
+// Validates that Step 4 strategic_recommendation language matches the chosen content_type.
+// If banned vocabulary is detected, logs a warning and patches the offending fields.
+function validateContentTypeAlignment(contentType) {
+  const ct = contentType.content_type;
+  const behavior = ASSET_BEHAVIOR_MAP[ct];
+  if (!behavior || !behavior.banned_vocabulary.length) return contentType;
+
+  const banned = behavior.banned_vocabulary;
+  const rec = contentType.strategic_recommendation || {};
+  const fieldsToCheck = ['reasoning', 'what_to_build', 'why_it_fits', 'business_impact'];
+  let drifted = false;
+
+  for (const field of fieldsToCheck) {
+    const text = (field === 'reasoning' ? contentType.reasoning : rec[field]) || '';
+    if (banned.some(term => text.toLowerCase().includes(term))) {
+      drifted = true;
+      console.warn(`[Growth Asset Strategist] Asset-type language drift in "${field}" for ${ct}: found banned term in "${text.slice(0, 80)}..."`);
+    }
+  }
+
+  // Auto-patch: if reasoning still describes an article for a utility type, prepend a corrective frame
+  if (drifted && ct !== 'blog_article') {
+    const vocabHint = (behavior.reasoning_vocabulary || []).slice(0, 3).join(', ');
+    if (!contentType.reasoning?.includes(vocabHint.split(',')[0])) {
+      contentType = {
+        ...contentType,
+        reasoning: `${contentType.reasoning} [Asset mode: ${behavior.strategic_role}]`,
+      };
+    }
+  }
+
+  return contentType;
+}
+
+// ─── OPPORTUNITY SCORING ──────────────────────────────────────────────────
+
+function computeFastOpportunityScore(keyword, heuristic, contentType) {
+  const ct = contentType.content_type || 'blog_article';
+  const confidence = heuristic?.confidence;
+  const words = keyword.trim().split(/\s+/).length;
+
+  // Base dimension profiles: [acq, com, sat, dif, conv, spd, roi]
+  // sat = opportunity in SERP (higher = less saturated = more room to win)
+  const profiles = {
+    tool_or_calculator:  [68, 82, 75, 85, 78, 48, 80],
+    comparison_page:     [72, 88, 62, 78, 85, 62, 78],
+    lead_magnet:         [60, 72, 68, 76, 86, 58, 72],
+    landing_page:        [70, 85, 52, 65, 88, 68, 72],
+    product_page:        [65, 90, 48, 62, 85, 72, 70],
+    ai_visibility_asset: [62, 58, 65, 82, 52, 55, 65],
+    category_page:       [68, 65, 42, 60, 65, 55, 60],
+    blog_article:        [72, 45, 35, 48, 40, 78, 44],
+  };
+
+  const [acq, com, sat, dif, conv, spd, roi] = profiles[ct] || profiles.blog_article;
+  const confMod = confidence === 'high' ? 6 : confidence === 'medium' ? 2 : 0;
+  const specMod = words >= 4 ? 5 : words === 3 ? 2 : 0;
+  const clamp = v => Math.min(100, Math.max(0, Math.round(v)));
+
+  const scores = {
+    acquisition_potential:     clamp(acq + specMod),
+    commercial_intent:         clamp(com + confMod),
+    competitive_saturation:    clamp(sat + (confidence === 'high' ? 8 : 0)),
+    differentiation_potential: clamp(dif + confMod),
+    conversion_leverage:       clamp(conv),
+    speed_to_value:            clamp(spd),
+    strategic_roi:             clamp(roi + confMod + Math.round(specMod / 2)),
+  };
+
+  const reasoningMap = {
+    tool_or_calculator: {
+      acquisition_potential:     `"${keyword}" attracts users with a specific calculation need — targeted volume with a strong self-qualification signal.`,
+      commercial_intent:         `Utility intent signals readiness to act: the user needs a specific answer to move forward on a decision, not general research.`,
+      competitive_saturation:    `Calculation keyword SERPs are typically article-dominated — no competitor has built the tool yet, which is the format gap.`,
+      differentiation_potential: `Competitors write about how to calculate. A tool that does the calculation is a categorically different offer — not a content upgrade.`,
+      conversion_leverage:       `Results gate (email for full report or export) and post-calculation CTA create a natural, high-intent conversion sequence.`,
+      speed_to_value:            `Tool requires input/output UX and calculation logic — higher build effort than an article, but faster time-to-revenue than a broad content play.`,
+      strategic_roi:             `High-intent utility assets generate qualified leads at the moment of decision — lower volume than broad articles, higher conversion rate per visitor.`,
+    },
+    comparison_page: {
+      acquisition_potential:     `"${keyword}" targets buyers actively evaluating options — lower volume than informational keywords but significantly higher buyer intent.`,
+      commercial_intent:         `Comparison intent is the clearest pre-purchase signal in search. Users on comparison pages have already decided to buy — they are deciding who from.`,
+      competitive_saturation:    `Comparison SERPs are often dominated by review aggregators. A vendor-owned page with an explicit recommendation is a structurally different format.`,
+      differentiation_potential: `Most competitors avoid direct comparison pages. An explicit, fair comparison with a concrete recommendation is a high-trust differentiator.`,
+      conversion_leverage:       `Comparison pages convert at higher rates than articles — the CTA can be a direct trial or demo offer because the user is already at the decision stage.`,
+      speed_to_value:            `A comparison page requires accurate, current competitor data to maintain credibility — ongoing maintenance is part of the asset cost.`,
+      strategic_roi:             `High-intent buyers on comparison pages are weeks away from a purchase. Capturing them here shortens the sales cycle and removes competitor intercept risk.`,
+    },
+    lead_magnet: {
+      acquisition_potential:     `"${keyword}" attracts practitioners seeking a reusable framework — a specific, implementation-ready audience that values expert output over general information.`,
+      commercial_intent:         `Implementation intent signals the user is ready to act — they want the tool to execute, not more reading about the topic.`,
+      competitive_saturation:    `Most lead magnets in B2B are generic PDFs of blog posts. A genuinely actionable working document is rare.`,
+      differentiation_potential: `A checklist with logic, scorecard with scoring, or template with fill-in fields is categorically more useful than a summary PDF.`,
+      conversion_leverage:       `Email capture at the moment of highest implementation intent — the follow-up sequence has a specific, relevant hook tied to the tool content.`,
+      speed_to_value:            `Lead magnets are faster to build than tools or landing pages but require a distribution mechanism to generate volume.`,
+      strategic_roi:             `High-quality lead magnets build the email list with self-qualified practitioners — unit economics improve as the list compounds.`,
+    },
+    landing_page: {
+      acquisition_potential:     `"${keyword}" targets buyers ready to evaluate a specific offer — conversion-stage traffic with high revenue potential per visitor.`,
+      commercial_intent:         `Transactional or high-consideration intent: the user is evaluating whether this specific offer solves their problem, not researching the category.`,
+      competitive_saturation:    `Keyword-matched landing pages are less common than generic homepages — most competitors send conversion-intent traffic to pages that do not match the search intent.`,
+      differentiation_potential: `A page built around the specific outcome the user searched for has a structural conversion advantage over generic product destinations.`,
+      conversion_leverage:       `Landing pages are the highest-leverage conversion asset — every 1% lift in conversion rate compounds across total traffic volume.`,
+      speed_to_value:            `Landing pages can be built and A/B tested quickly — faster feedback loops than content or tool assets.`,
+      strategic_roi:             `Conversion-intent landing pages deliver direct revenue attribution — the ROI is measurable from day one if traffic exists.`,
+    },
+    product_page: {
+      acquisition_potential:     `"${keyword}" signals a buyer researching a specific product — typically lower volume but the highest revenue-per-visitor of any organic keyword type.`,
+      commercial_intent:         `Product-level search intent is transactional: the user knows what category of solution they need and is evaluating specific options.`,
+      competitive_saturation:    `Product page SERPs are typically owned by the product vendors — competition is on quality and trust signals, not on content volume.`,
+      differentiation_potential: `A product page that answers buying-decision questions on a single page (differentiator, specs, proof, objections) outperforms pages requiring multiple clicks.`,
+      conversion_leverage:       `Product pages sit at the bottom of the funnel — optimising trust signals and CTA on this page has direct revenue impact.`,
+      speed_to_value:            `Product pages are straightforward to build but require real proof elements (case studies, specific metrics) to convert — proof sourcing is the bottleneck.`,
+      strategic_roi:             `Product pages have the highest direct revenue potential of any organic asset type — bottom-of-funnel traffic converting to buyers has the best unit economics.`,
+    },
+    ai_visibility_asset: {
+      acquisition_potential:     `"${keyword}" is a definition or concept query — lower traditional search volume but high AI citation potential as LLMs increasingly answer these queries at scale.`,
+      commercial_intent:         `Definition-level queries attract early-stage researchers — lower purchase intent now but high brand recall potential as these users move down the funnel.`,
+      competitive_saturation:    `AI citation opportunities are newer and less contested than traditional SERP positions — structured factual assets are rare compared to general articles.`,
+      differentiation_potential: `Competitors write articles about this concept. A purpose-built AI citation asset with structured data and Q&A blocks targets a different distribution channel.`,
+      conversion_leverage:       `AI citations drive branded awareness and authority — indirect conversion through brand recall rather than direct CTA conversion.`,
+      speed_to_value:            `AI citation assets are fast to build but take time to get indexed and cited — results are less predictable than traditional SERP assets.`,
+      strategic_roi:             `AI visibility is a long-term brand investment. ROI compounds as AI-generated answers increasingly substitute for direct search clicks.`,
+    },
+    category_page: {
+      acquisition_potential:     `"${keyword}" targets browse-intent traffic at the category level — higher volume than product pages, lower commercial intent than comparison keywords.`,
+      commercial_intent:         `Browse and navigational intent: the user is mapping the landscape, not ready to buy. Category pages capture awareness-stage demand.`,
+      competitive_saturation:    `Category SERPs are often dominated by large aggregators and established brands — new entrants face strong domain authority competition.`,
+      differentiation_potential: `A category page with opinionated subcategory recommendations and curated items is more useful than a generic directory — differentiation is in the editorial decisions.`,
+      conversion_leverage:       `Category pages drive internal link equity and funnel users toward product or comparison pages — conversion is indirect, via navigation.`,
+      speed_to_value:            `Category pages require content depth across multiple subcategories — higher production effort and slower organic maturity than single-topic assets.`,
+      strategic_roi:             `Category pages anchor a content cluster and drive organic equity across related keywords — strong long-term ROI but slow to compound.`,
+    },
+    blog_article: {
+      acquisition_potential:     `"${keyword}" has informational intent — awareness-stage traffic that may be high volume but requires nurturing before revenue conversion.`,
+      commercial_intent:         `Informational intent signals a user researching, not buying. Blog articles capture awareness demand but rarely convert directly.`,
+      competitive_saturation:    `Informational keywords are heavily contested with article content — outranking established results requires a genuinely differentiated angle, not incremental improvements.`,
+      differentiation_potential: `Opinionated articles with concrete frameworks and specific examples stand out in article-heavy SERPs — vague educational content does not.`,
+      conversion_leverage:       `Blog articles convert via email capture or internal linking to conversion pages — not a direct revenue driver but a top-of-funnel entry point.`,
+      speed_to_value:            `Blog articles are faster to produce than tools or landing pages but organic maturity takes 3–9 months for newer domains.`,
+      strategic_roi:             `High-volume informational keywords build organic equity over time but have lower direct revenue ROI than commercial or transactional asset types.`,
+    },
+  };
+
+  const verdictReasoningMap = {
+    tool_or_calculator:  `"${keyword}" signals calculation intent in a SERP dominated by articles — the format gap is the opportunity. A tool that delivers the answer directly creates a category advantage that editorial content cannot replicate, and the email gate on results converts high-intent users at the moment of maximum engagement.`,
+    comparison_page:     `"${keyword}" attracts buyers at the decision stage — the highest-value moment in the purchase journey. A comparison page with an explicit recommendation captures this intent before competitors intercept it, and the direct CTA to trial or demo maps to where the user already is in their evaluation.`,
+    lead_magnet:         `"${keyword}" targets practitioners with implementation intent — they want a tool, not more reading. A high-utility downloadable captures email at the moment of maximum intent and creates a follow-up sequence with a specific, relevant hook rather than a generic nurture chain.`,
+    landing_page:        `"${keyword}" signals conversion-ready intent — the user is evaluating a specific offer, not researching the category. A keyword-matched landing page that closes the message-match gap between search and landing converts at a structurally higher rate than sending this traffic to a homepage.`,
+    product_page:        `"${keyword}" is product-level search intent — the user knows what they want and is selecting a vendor. A product page that answers all buying-decision questions on a single page and leads with a specific, evidence-backed differentiator is the correct asset for this stage.`,
+    ai_visibility_asset: `"${keyword}" is increasingly answered by AI tools before users click search results. A purpose-built factual asset with structured data is a low-competition format that builds citation authority in AI responses — a channel most competitors are ignoring.`,
+    category_page:       `"${keyword}" anchors a content cluster and drives browse-intent traffic across multiple related keywords. The ROI is long-term equity rather than immediate conversion — the value compounds as internal linking matures.`,
+    blog_article:        `"${keyword}" is an awareness-stage keyword in an article-heavy SERP. The opportunity is real but requires a genuinely differentiated angle to stand out — incremental content improvements will not move rankings. The ROI timeline is 6–12 months.`,
+  };
+
+  const typeReasons = reasoningMap[ct] || reasoningMap.blog_article;
+  const dims = {};
+  for (const key of Object.keys(scores)) {
+    dims[key] = { score: scores[key], reasoning: typeReasons[key] || '' };
+  }
+
+  const overall = clamp(Object.values(dims).reduce((a, d) => a + d.score, 0) / 7);
+
+  let verdict;
+  if (confidence === 'high' && ct !== 'blog_article' && dims.differentiation_potential.score >= 82) {
+    verdict = 'asymmetric opportunity';
+  } else if (overall >= 72) {
+    verdict = 'strong opportunity';
+  } else if (overall >= 55) {
+    verdict = 'moderate opportunity';
+  } else {
+    verdict = 'low opportunity';
+  }
+
+  return {
+    dimensions: dims,
+    overall_score: overall,
+    verdict,
+    verdict_reasoning: verdictReasoningMap[ct] || verdictReasoningMap.blog_article,
+    is_fast_heuristic: true,
+  };
+}
+
+function renderOpportunityAnalysis(opp) {
+  if (!opp) return '';
+  const scoreColor = s => s >= 75 ? 'var(--green)' : s >= 55 ? 'var(--gold)' : 'var(--red)';
+  const scoreBg   = s => s >= 75 ? 'var(--green-bg)' : s >= 55 ? 'var(--gold-bg)' : 'var(--red-bg)';
+  const verdictStyles = {
+    'asymmetric opportunity': { color: '#1d4e89', bg: '#e8f0fb', border: '#1d4e8933' },
+    'strong opportunity':     { color: 'var(--green)', bg: 'var(--green-bg)', border: '#2d6a4f33' },
+    'moderate opportunity':   { color: 'var(--gold)', bg: 'var(--gold-bg)', border: '#b8860b33' },
+    'low opportunity':        { color: 'var(--red)', bg: 'var(--red-bg)', border: '#c0392b33' },
+  };
+  const vs = verdictStyles[opp.verdict] || verdictStyles['moderate opportunity'];
+  const dimLabels = {
+    acquisition_potential:     'Acquisition potential',
+    commercial_intent:         'Commercial intent',
+    competitive_saturation:    'Competitive saturation',
+    differentiation_potential: 'Differentiation potential',
+    conversion_leverage:       'Conversion leverage',
+    speed_to_value:            'Speed to value',
+    strategic_roi:             'Strategic ROI',
+  };
+  const dimCards = Object.entries(opp.dimensions || {}).map(([key, dim]) => `
+    <div class="research-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="rc-label">${dimLabels[key] || key}</div>
+        <span style="font-size:13px;font-weight:600;font-family:var(--mono);color:${scoreColor(dim.score)}">${dim.score}</span>
+      </div>
+      <div style="height:3px;background:#e8e4db;border-radius:2px;margin-bottom:8px">
+        <div style="height:3px;width:${dim.score}%;background:${scoreColor(dim.score)};border-radius:2px"></div>
+      </div>
+      <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
+    </div>`).join('');
+  return `<div class="brief-section">
+    <div class="bs-header">
+      <span class="bs-title">Opportunity analysis</span>
+      <span class="bs-tag">${opp.is_fast_heuristic ? 'heuristic scoring' : 'AI scored'}</span>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;padding:16px;background:${vs.bg};border-radius:6px;border:1px solid ${vs.border}">
+      <div style="text-align:center;min-width:64px;flex-shrink:0">
+        <div style="font-size:38px;font-weight:700;font-family:var(--mono);color:${scoreColor(opp.overall_score)};line-height:1">${opp.overall_score}</div>
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:4px">/ 100</div>
+      </div>
+      <div style="flex:1">
+        <span style="display:inline-block;background:${vs.bg};color:${vs.color};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-family:var(--mono);border:1px solid ${vs.border};margin-bottom:8px">${opp.verdict}</span>
+        <div style="font-size:13px;color:var(--ink);line-height:1.6">${opp.verdict_reasoning || ''}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      ${dimCards}
+    </div>
+  </div>`;
+}
+
+// ─── COMPETITIVE MOAT ─────────────────────────────────────────────────────
+
+function computeCompetitiveMoat(keyword, contentType, opportunity, serp, competitor) {
+  const ct = contentType.content_type || 'blog_article';
+
+  // ── Incumbent Strength ──────────────────────────────────────────────────
+  const diffSignal = (serp?.difficulty_signal || '').toLowerCase();
+  const incumbentBase = diffSignal === 'high' ? 78 : diffSignal === 'medium' ? 55 : 38;
+  const satScore = opportunity?.dimensions?.competitive_saturation?.score ?? 55;
+  const satMod   = Math.round((100 - satScore) * 0.15);
+  const incumbentStrength = Math.min(95, Math.max(15, incumbentBase + satMod));
+
+  // ── Format Defensibility (higher = better for attacker) ─────────────────
+  const formatDefBase = {
+    tool_or_calculator:  88, ai_visibility_asset: 80,
+    lead_magnet:         72, comparison_page:     72,
+    landing_page:        58, product_page:        52,
+    category_page:       48, blog_article:        25,
+  }[ct] || 55;
+  let formatMod = 0;
+  if (serp?.top_results) {
+    const sameCount = serp.top_results.slice(0, 3)
+      .filter(r => (r.content_type || '').toLowerCase().includes(ct.replace('_', ''))).length;
+    formatMod = sameCount >= 2 ? -20 : sameCount === 1 ? -8 : 0;
+  }
+  const formatDefensibility = Math.min(95, Math.max(15, formatDefBase + formatMod));
+
+  // ── Brand / Trust Barrier ───────────────────────────────────────────────
+  const trustBase = {
+    product_page:        78, comparison_page:     68,
+    landing_page:        65, category_page:       60,
+    lead_magnet:         55, blog_article:        50,
+    tool_or_calculator:  45, ai_visibility_asset: 38,
+  }[ct] || 55;
+  const trustMod = diffSignal === 'high' ? 8 : diffSignal === 'medium' ? 2 : -5;
+  const brandTrustBarrier = Math.min(95, Math.max(15, trustBase + trustMod));
+
+  // ── Execution Difficulty ────────────────────────────────────────────────
+  const executionDifficulty = {
+    tool_or_calculator:  65, comparison_page:     55,
+    product_page:        55, category_page:       55,
+    landing_page:        45, lead_magnet:         40,
+    blog_article:        40, ai_visibility_asset: 38,
+  }[ct] || 50;
+
+  // ── Moat Level (from attacker's perspective) ────────────────────────────
+  const moatScore = Math.round(incumbentStrength * 0.45 + brandTrustBarrier * 0.30 + executionDifficulty * 0.25);
+  const formatBonus = formatDefensibility >= 80 ? 12 : formatDefensibility >= 65 ? 6 : 0;
+  const effectiveMoat = Math.max(0, moatScore - formatBonus);
+  const moat_level =
+    effectiveMoat >= 72 ? 'very hard to beat' :
+    effectiveMoat >= 55 ? 'strong moat' :
+    effectiveMoat >= 38 ? 'moderate moat' : 'weak moat';
+
+  const reasoningMap = {
+    tool_or_calculator: {
+      incumbent_strength:          `Current results are almost entirely articles — they explain the topic rather than doing the work for the user. This is structurally weak competition for a utility asset.`,
+      format_defensibility:        `No competitor has built a calculator for this keyword. A utility asset is a categorically different product — incumbents cannot replicate it by writing longer articles.`,
+      brand_trust_barrier:         `Users trust utility assets on accuracy of output, not brand recognition. A well-calibrated tool from a new brand can outperform an established brand's article.`,
+      execution_difficulty:        `Building a calculator requires defining inputs/outputs, UX design, and calculation logic — harder than an article, but not a software engineering project.`,
+      realistic_entry_strategy:    `Build the tool first, thin landing page second. Gate the export or full report behind email. Invest in one targeted backlink campaign from a practitioner community to seed initial authority.`,
+    },
+    comparison_page: {
+      incumbent_strength:          `Comparison SERPs are often dominated by large review aggregators (G2, Capterra) with deep domain authority and review volume built over years.`,
+      format_defensibility:        `A vendor-owned comparison page with an explicit, reasoned recommendation is structurally different from neutral aggregator pages. Users wanting a direct answer will prefer it.`,
+      brand_trust_barrier:         `Comparison content requires credibility — readers need to believe the comparison is fair. A vendor comparing competitors faces a trust challenge aggregators do not.`,
+      execution_difficulty:        `Requires accurate, current competitor data, a clear comparison framework, and ongoing maintenance as competitors evolve. This is not a one-time asset.`,
+      realistic_entry_strategy:    `Focus on a specific audience segment or use case ("best for teams under 50" or "for agencies") rather than a generic alternatives page. Specificity beats authority from a standing start.`,
+    },
+    lead_magnet: {
+      incumbent_strength:          `Most lead magnets in this category are generic gated PDFs or repackaged blog posts — weak competition on utility. The bar for a genuinely useful downloadable is low.`,
+      format_defensibility:        `A working document (checklist with logic, scorecard with scoring, template with fill-in fields) is difficult to replicate with article content — the format itself creates the moat.`,
+      brand_trust_barrier:         `Users opt in for a lead magnet if the promise is specific and the format is clearly useful. Brand trust is secondary to the quality of the offer and the specificity of the promise.`,
+      execution_difficulty:        `Moderate — requires designing a genuinely useful document, not a repackaged blog post. The real effort is in the distribution mechanism and opt-in page.`,
+      realistic_entry_strategy:    `Make the asset specific to a single workflow or decision. Distribute via LinkedIn ads targeting the practitioner persona before relying on organic. The opt-in headline should be a specific promise, not a topic label.`,
+    },
+    landing_page: {
+      incumbent_strength:          `Conversion-intent SERPs are typically dominated by direct competitors with paid budgets and established brand recognition — organic ranking requires trust and authority signals.`,
+      format_defensibility:        `A landing page that specifically matches the keyword intent has a message-match advantage over generic homepages. Most competitors send conversion traffic to pages that do not address the specific search context.`,
+      brand_trust_barrier:         `Users need enough trust to convert. Social proof, specific results, and a low-friction CTA are essential — a new brand must earn this with proof, not promises.`,
+      execution_difficulty:        `Moderate — requires strong copy, specific social proof, and a tested CTA. Meaningful A/B testing requires enough traffic volume to reach statistical significance.`,
+      realistic_entry_strategy:    `Lead with the most specific social proof available (named customer + specific metric) in the hero. Name the exact outcome and timeline. Pair the page with retargeting to compensate for lower brand recognition.`,
+    },
+    product_page: {
+      incumbent_strength:          `Product page SERPs are owned by the product vendors — competition is on product quality, review volume, and trust signals, not content. Established players have an authority and review volume advantage.`,
+      format_defensibility:        `As the product owner, you are the canonical source for this page. No one can replicate your product data, pricing, or customer proof — the format is inherently defensible.`,
+      brand_trust_barrier:         `Users evaluating a product need proof. Case studies with specific metrics, authentic reviews, and trust signals carry more weight than brand name alone.`,
+      execution_difficulty:        `The page itself is not complex to build. The constraint is sourcing real proof elements: named case studies, specific outcome metrics, and authentic reviews that make abstract claims credible.`,
+      realistic_entry_strategy:    `Lead with one or two case studies with specific, named metrics rather than generic testimonials. Differentiate on the buying decision, not the feature list — name the exact scenario where you win and why.`,
+    },
+    ai_visibility_asset: {
+      incumbent_strength:          `AI citation opportunities are newer and less systematically contested than traditional SERP positions. The competition is in building structured factual assets rather than generic articles.`,
+      format_defensibility:        `Purpose-built AI citation assets (structured facts, Q&A blocks, schema markup) are rare. Most competitors are publishing standard articles that are less likely to be cited by LLMs.`,
+      brand_trust_barrier:         `AI tools cite based on content structure and factual accuracy, not brand authority. A well-structured new source can be cited alongside established brands.`,
+      execution_difficulty:        `Relatively straightforward to produce — the challenge is defining key facts, Q&A pairs, and schema markup in a form that AI tools find citable. Structure is the hard part.`,
+      realistic_entry_strategy:    `Focus on factual completeness and structural clarity. Lead with a precise entity definition, then numbered key facts, then Q&A pairs — each self-contained. Schema markup is required, not optional.`,
+    },
+    category_page: {
+      incumbent_strength:          `Category SERPs are often dominated by large aggregators and established category leaders with domain authority and backlink profiles built over years.`,
+      format_defensibility:        `A category page with opinionated, curated recommendations is more useful than a generic directory — but the format is not hard to replicate. The moat is editorial quality and brand authority.`,
+      brand_trust_barrier:         `Users browsing a category page want to trust the source of recommendations. Established category authorities are hard to displace without significant brand-building investment.`,
+      execution_difficulty:        `Requires content breadth across all subcategories, ongoing maintenance, and a meaningful authority base. High production effort with slow organic maturity.`,
+      realistic_entry_strategy:    `Focus on a specific sub-category or audience segment rather than the full category. Dominate a niche first and expand laterally — category authority is built bottom-up, not by targeting the top keyword first.`,
+    },
+    blog_article: {
+      incumbent_strength:          `Informational keywords are heavily competed by established publishers with high domain authority and content depth. Displacing them requires a demonstrably better angle, not just better writing.`,
+      format_defensibility:        `Articles are the default format in this SERP — the format creates no structural advantage. Differentiation must come from angle, depth, or specificity, not format choice.`,
+      brand_trust_barrier:         `For informational content, users make implicit trust judgements based on publication authority, author credentials, and content specificity. New brands can overcome this with demonstrably better content.`,
+      execution_difficulty:        `Articles are the lowest production barrier entry point — but the low barrier means high competition. The execution challenge is finding the specific angle that incumbents are not covering.`,
+      realistic_entry_strategy:    `Target a specific long-tail variant or audience segment where you can write with genuine practitioner authority. Pair organic with a strong distribution strategy — community, newsletter, or partner channels — before relying on organic signals alone.`,
+    },
+  };
+
+  const attackAngleMap = {
+    tool_or_calculator:  `Build the tool, not the article. Incumbents cannot compete with a utility asset on their terms — they write about how to calculate, you do the calculation. Gate the export or full report behind email and invest in one targeted link campaign from a practitioner community.`,
+    comparison_page:     `Compete on specificity, not neutrality. Own a specific segment or use case ("for teams under 50" or "for agencies") rather than a generic alternatives page. Depth and specificity on a narrower audience beats an authoritative-looking broad page.`,
+    lead_magnet:         `Make the asset do the work, not just describe it. A checklist with actual logic, a scorecard with scoring criteria, or a template with pre-filled structure outcompetes generic gated PDFs without needing domain authority.`,
+    landing_page:        `Match the message to the search intent precisely. The message-match gap between what users search and what competitors serve is the entry point. Name the outcome, name the timeline, lead with the most specific social proof you have.`,
+    product_page:        `Lead with specificity, not brand. Established competitors have brand — you have specificity. Name the exact use case where you win, the specific metric you deliver, and the one customer who proves it.`,
+    ai_visibility_asset: `Structured facts beat generic articles for AI citation. Focus on a precise entity definition, 6–8 numbered self-contained facts, and Q&A pairs that directly answer common queries. Schema markup is not optional.`,
+    category_page:       `Own a niche segment before the category. Category authority is built bottom-up — dominate a specific audience segment or sub-category first, then expand. Do not try to compete on category breadth from a standing start.`,
+    blog_article:        `Angle and distribution beat content volume. Pick the narrowest, most specific variant of this keyword where you can write with genuine practitioner authority. Invest in distribution before expecting organic to work.`,
+  };
+
+  const moatDescriptions = {
+    'weak moat':         `The current competitive landscape is winnable. Competitors are using generic formats that do not directly address the keyword intent — a well-executed ${ct.replace(/_/g, ' ')} creates a format advantage that article-based incumbents cannot easily replicate.`,
+    'moderate moat':     `The SERP has real competition, but no single incumbent has an unassailable position. A ${ct.replace(/_/g, ' ')} with a specific, differentiated angle can capture meaningful demand without requiring domain authority that takes years to build.`,
+    'strong moat':       `This keyword is well-defended by established players with meaningful authority and trust advantages. Winning here requires a specific entry strategy — niche audience focus, a format incumbents cannot replicate, or a proof-based advantage that overcomes the trust gap.`,
+    'very hard to beat': `This SERP is dominated by incumbents with deep authority, trust advantages, and established assets. The opportunity exists only if you have a structural advantage — a utility tool, proprietary data, or credentialed proof — that generic content cannot compete with.`,
+  };
+
+  const typeReasons = reasoningMap[ct] || reasoningMap.blog_article;
+  return {
+    dimensions: {
+      incumbent_strength:   { score: incumbentStrength,   reasoning: typeReasons.incumbent_strength },
+      format_defensibility: { score: formatDefensibility, reasoning: typeReasons.format_defensibility },
+      brand_trust_barrier:  { score: brandTrustBarrier,   reasoning: typeReasons.brand_trust_barrier },
+      execution_difficulty: { score: executionDifficulty, reasoning: typeReasons.execution_difficulty },
+    },
+    realistic_entry_strategy: typeReasons.realistic_entry_strategy,
+    moat_level,
+    moat_reasoning: moatDescriptions[moat_level],
+    attack_angle:   attackAngleMap[ct] || attackAngleMap.blog_article,
+  };
+}
+
+function renderCompetitiveMoat(moat) {
+  if (!moat) return '';
+  const moatStyles = {
+    'weak moat':         { color: 'var(--green)', bg: 'var(--green-bg)', border: '#2d6a4f33' },
+    'moderate moat':     { color: 'var(--gold)',  bg: 'var(--gold-bg)',  border: '#b8860b33' },
+    'strong moat':       { color: '#b04000',      bg: '#fdf2ea',        border: '#b0400033' },
+    'very hard to beat': { color: 'var(--red)',   bg: 'var(--red-bg)',  border: '#c0392b33' },
+  };
+  const ms = moatStyles[moat.moat_level] || moatStyles['moderate moat'];
+  const dimLabels = {
+    incumbent_strength:   'Incumbent strength',
+    format_defensibility: 'Format defensibility',
+    brand_trust_barrier:  'Brand / trust barrier',
+    execution_difficulty: 'Execution difficulty',
+  };
+  // Color semantics: incumbent_strength/trust_barrier/exec = threat (higher=red); format_def = advantage (higher=green)
+  const dimColor = (key, score) => {
+    if (key === 'format_defensibility') return score >= 65 ? 'var(--green)' : score >= 45 ? 'var(--gold)' : 'var(--red)';
+    return score >= 65 ? 'var(--red)' : score >= 40 ? 'var(--gold)' : 'var(--green)';
+  };
+  const dimCards = Object.entries(moat.dimensions || {}).map(([key, dim]) => `
+    <div class="research-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="rc-label">${dimLabels[key] || key}</div>
+        <span style="font-size:13px;font-weight:600;font-family:var(--mono);color:${dimColor(key, dim.score)}">${dim.score}</span>
+      </div>
+      <div style="height:3px;background:#e8e4db;border-radius:2px;margin-bottom:8px">
+        <div style="height:3px;width:${dim.score}%;background:${dimColor(key, dim.score)};border-radius:2px"></div>
+      </div>
+      <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
+    </div>`).join('');
+  return `<div class="brief-section">
+    <div class="bs-header">
+      <span class="bs-title">Competitive moat</span>
+      <span class="bs-tag">entry analysis</span>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding:16px;background:${ms.bg};border-radius:6px;border:1px solid ${ms.border}">
+      <span style="display:inline-block;background:${ms.bg};color:${ms.color};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-family:var(--mono);border:1px solid ${ms.border};white-space:nowrap;flex-shrink:0">${moat.moat_level}</span>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6">${moat.moat_reasoning || ''}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      ${dimCards}
+    </div>
+    <div class="research-card" style="border-left:3px solid ${ms.color}">
+      <div class="rc-label" style="margin-bottom:8px">Recommended attack angle</div>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6">${moat.attack_angle || ''}</div>
+    </div>
+    ${moat.realistic_entry_strategy ? `<div class="research-card" style="margin-top:12px">
+      <div class="rc-label" style="margin-bottom:8px">Realistic entry strategy</div>
+      <div style="font-size:13px;color:var(--ink);line-height:1.6">${moat.realistic_entry_strategy}</div>
+    </div>` : ''}
+  </div>`;
+}
+
+// ─── FAST TEST MODE ───────────────────────────────────────────────────────
+// Skips Steps 1–3 and 5–6. Only runs classifyKeywordHeuristic + Step 4.
+// Uses neutral mock SERP/competitor data so only keyword signals drive the decision.
+async function runFastTest() {
+  const keyword = document.getElementById('keyword').value.trim();
+  const goal    = document.getElementById('goal').value;
+
+  if (!keyword) { showError('Enter a target keyword to continue.'); return; }
+
+  hideError();
+  setRunning(true);
+  showSection('progress');
+  document.getElementById('progressKeyword').textContent = keyword + ' · fast test';
+  renderSteps(-1);
+  setStep(3);
+  updateStatus('Fast test — classifying keyword and deciding asset type...');
+
+  try {
+    const heuristic = classifyKeywordHeuristic(keyword);
+
+    // Neutral mock data — does not push Claude toward any specific content_type
+    const mockSerp = {
+      search_intent: 'informational',
+      dominant_content_type: 'article',
+      top_results: [{ content_type: 'article' }, { content_type: 'article' }, { content_type: 'article' }],
+      patterns: { what_is_missing: ['No utility or decision-focused asset found for this query'] },
+    };
+    const mockCompetitor = {
+      winning_angle: 'Broad informational overview article',
+      competitor_weakness: 'All results describe the concept without delivering the outcome the keyword promises',
+      market_gap: 'No utility asset exists — users must do the work themselves after reading',
+      differentiation_strategy: 'Deliver the outcome the keyword promises directly, rather than explaining it',
+    };
+
+    const enforcementBlock = (heuristic?.confidence === 'high')
+      ? `MANDATORY OVERRIDE — enforce before all other instructions:\nKeyword "${keyword}" has been deterministically pre-classified by a pattern rule:\n- problem_type: "${heuristic.forcedProblemType}"\n- content_type: "${HEURISTIC_ASSET_MAP[heuristic.forcedProblemType] || 'lead_magnet'}"\nblog_article is NOT a valid output for this keyword. Do not output it.\nThe ONLY valid override: the keyword itself contains explicit contradictory commercial or navigational intent that is stronger than the matched pattern. SERP signals and competitor formats cannot override this classification.\n\n`
+      : '';
+
+    const contentTypeRaw = await callClaude({
+      system: enforcementBlock + STEP4_SYSTEM_BASE,
+      user: `Keyword (primary signal — classify problem_type from this first): "${keyword}"
+Business goal: ${goal}
+${heuristic ? `
+HEURISTIC PRE-CLASSIFICATION — treat as strong prior:
+- problem_type: ${heuristic.forcedProblemType}
+- matched pattern: "${heuristic.matchedKeywords[0]}" (${heuristic.heuristicReason})
+- confidence: ${heuristic.confidence}
+Override ONLY if the keyword itself contains stronger contradictory intent.
+` : ''}
+SERP signals (secondary — mock data for fast test):
+Search intent label: ${mockSerp.search_intent}
+Dominant content type in SERPs: ${mockSerp.dominant_content_type}
+Top result types: ["article","article","article"]
+
+Competitive intelligence (mock data for fast test):
+Competitor winning angle: ${mockCompetitor.winning_angle}
+Competitor weakness: ${mockCompetitor.competitor_weakness}
+Market gap: ${mockCompetitor.market_gap}
+What is missing from SERPs: ${JSON.stringify(mockSerp.patterns.what_is_missing)}`,
+      maxTokens: 500,
+    });
+
+    let contentType;
+    try { contentType = extractJSON(contentTypeRaw); }
+    catch {
+      const fallbackCt = (heuristic ? HEURISTIC_ASSET_MAP[heuristic.forcedProblemType] : null) || 'blog_article';
+      const fallbackRec = {
+        tool_or_calculator: {
+          what_to_build: `Interactive calculator for "${keyword}" — user enters the key cost, volume, or rate inputs and instantly receives the calculated figure, a benchmark comparison, and a plain-language interpretation of the result.`,
+          why_it_fits: `The keyword signals utility intent: the user needs an answer, not an explanation. A calculator delivers the specific number in under 60 seconds and removes the need to read a 2,000-word article to get it.`,
+          business_impact: `Gate the result or full report behind an email capture. Users who self-qualify by entering real business data are high-intent — the tool becomes a lead capture mechanism, not just a content page.`,
+          execution_steps: [
+            `Define the 3–5 user inputs (e.g. spend, volume, channel mix) and the 2–3 calculated outputs (e.g. blended figure, per-channel breakdown, payback period) before writing a line of copy`,
+            `Build the output panel to show the result, a benchmark range ("industry average: X"), and a one-line interpretation — the benchmark is what makes the result actionable`,
+            `Place the email gate on the full report or export, not the basic result — gate friction after value delivery, not before it`,
+          ],
+        },
+        lead_magnet: {
+          what_to_build: `Downloadable implementation asset for "${keyword}" — a structured checklist, scorecard, or framework the user can apply immediately, not a repackaged blog post in PDF form.`,
+          why_it_fits: `The keyword signals implementation intent: the user is ready to act and needs a reusable tool to do it systematically. A downloadable framework captures that intent with a low-friction opt-in and delivers immediate utility.`,
+          business_impact: `Email capture at the moment of highest intent. The follow-up sequence has a concrete hook: "You downloaded the checklist — here is how to action step 3, which is where most teams stall."`,
+          execution_steps: [
+            `Identify the single decision or process the user is trying to execute — the lead magnet should cover that one thing completely, not broadly survey the topic`,
+            `Build it as a working document: a checklist with checkboxes, a scorecard with scoring logic, or a template with fill-in fields — not a PDF of bullet points`,
+            `Write the opt-in headline as a specific promise: "Get the [keyword] checklist — 23 steps, built for [audience], takes 15 minutes to complete"`,
+          ],
+        },
+        comparison_page: {
+          what_to_build: `Structured comparison page for "${keyword}" — a decision-support page with an explicit recommendation, not a neutral "here are your options" list that leaves the user to figure it out.`,
+          why_it_fits: `The keyword signals commercial evaluation intent: the user has narrowed their options and is deciding. A comparison page with a clear recommendation removes the final friction point and keeps them from bouncing to a competitor who will give them the answer.`,
+          business_impact: `Captures buyers at the highest-intent moment before a purchase decision. An explicit recommendation with reasoning increases conversion from page visit to next step (trial, demo, or purchase) compared to neutral comparison content.`,
+          execution_steps: [
+            `Define the comparison criteria from the buyer's perspective, not the vendor's — focus on the decisions that actually determine fit (e.g. team size, use case, budget tier, integration requirements)`,
+            `Write a final recommendation section that names the best option for at least 3 distinct use cases — "best for X if Y" is more useful than "it depends"`,
+            `Add a CTA that matches the decision stage: "Start your free trial" or "Book a 20-minute demo — we will show you side-by-side with [competitor]"`,
+          ],
+        },
+        landing_page: {
+          what_to_build: `Conversion-focused landing page for "${keyword}" — hero, specific outcome promise, 3–5 benefits framed as pain-point resolutions, social proof with named results, and a single CTA repeated at top and bottom.`,
+          why_it_fits: `The keyword signals transactional or high-consideration intent. A landing page built around the specific outcome the user is searching for (not a generic product overview) removes evaluation friction and converts at a higher rate than sending traffic to a homepage.`,
+          business_impact: `A keyword-matched landing page increases paid and organic conversion rate by eliminating message mismatch between what the user searched and what they land on. Every 1% lift in conversion rate on a high-intent keyword compounds across the full traffic volume.`,
+          execution_steps: [
+            `Write the hero headline as the outcome the user wants, not the product name — "Get X in Y without Z" outperforms "[Product] — [Category Leader]"`,
+            `Identify the 2–3 objections that kill conversions for this keyword and address each one explicitly in the body copy — not in an FAQ, in the main flow`,
+            `Gate the CTA on the specific offer, not a generic "get started" — "Request a 20-minute demo — we will show it with your data" converts better than "Sign up free"`,
+          ],
+        },
+        product_page: {
+          what_to_build: `Product page for "${keyword}" — hero with a one-line value prop, feature list with specific differentiators (not generic capabilities), benefit statements tied to pain points, specs that support the buying decision, and a CTA with a trust element.`,
+          why_it_fits: `The keyword signals transactional intent at the product level. Users arriving on a well-structured product page with clear differentiators and buying-decision data convert at higher rates than those landing on category pages or articles that require additional clicks to reach a decision.`,
+          business_impact: `A product page that answers the 5 buying-decision questions (what is it, who is it for, what makes it different, what does it cost, why should I trust you) on a single page shortens the sales cycle and reduces drop-off between intent and conversion.`,
+          execution_steps: [
+            `Lead with the one differentiator that no competitor claims — not "easy to use" or "powerful", but the specific outcome or mechanism that is genuinely distinct`,
+            `List specs as buying-decision signals, not technical inventory — the spec that matters is the one that answers "will this work for my situation"`,
+            `Pair social proof with the specific outcome: "Reduced CAC by 34% in 90 days — Acme Corp" beats "Great product — happy customer"`,
+          ],
+        },
+        blog_article: {
+          what_to_build: `Opinionated practitioner guide on "${keyword}" — the decisions, tradeoffs, and implementation specifics that generic top-ranking results avoid.`,
+          why_it_fits: `The keyword attracts buyers mapping the landscape before committing. An editorial article with a concrete, opinionated answer captures that demand and positions the brand as the credible next step.`,
+          business_impact: `Captures decision-stage buyers 30–60 days before a purchase, keeping the brand in the consideration set at the moment intent is forming.`,
+          execution_steps: [
+            `Audit the top 5 ranking articles and build a gap map — list every specific question each one fails to answer before writing a single heading`,
+            `Build the outline around the decision the reader is trying to make, not the topic in the abstract — each section answers a specific question, not a subtopic`,
+            `Place 3–5 internal links from existing high-traffic pages within 48 hours of publication to accelerate indexing`,
+          ],
+        },
+      };
+      const rec = fallbackRec[fallbackCt] || fallbackRec.blog_article;
+      contentType = {
+        problem_type: heuristic?.forcedProblemType || 'learning',
+        content_type: fallbackCt,
+        reasoning: `Fast test fallback — heuristic matched "${heuristic?.heuristicReason || 'none'}"`,
+        user_intent: 'informational',
+        funnel_stage: 'awareness',
+        strategic_recommendation: rec,
+      };
+    }
+    contentType = validateContentTypeAlignment(contentType);
+
+    // Decision source
+    let decision_source = heuristic ? 'hybrid' : 'ai-driven';
+    if (heuristic?.confidence === 'high') {
+      const expectedAsset = HEURISTIC_ASSET_MAP[heuristic.forcedProblemType];
+      const problemMatches = contentType.problem_type === heuristic.forcedProblemType;
+      const assetMatches = !expectedAsset || contentType.content_type === expectedAsset;
+      decision_source = (problemMatches && assetMatches) ? 'heuristic-driven' : 'ai-overridden';
+      if (decision_source === 'ai-overridden' && contentType.content_type === 'blog_article') {
+        console.warn(`[Growth Asset Strategist] Heuristic override drift detected: "${keyword}" matched "${heuristic.forcedProblemType}" (${heuristic.heuristicReason}) but model returned blog_article`);
+      }
+    }
+
+    const opportunity = computeFastOpportunityScore(keyword, heuristic, contentType);
+
+    const moat = computeCompetitiveMoat(keyword, contentType, opportunity, mockSerp, mockCompetitor);
+
+    setStep(7);
+    const fastResult = { keyword, goal, heuristic, contentType, decision_source, opportunity, moat, isFastTest: true, date: new Date().toLocaleDateString('en-GB') };
+    currentResult = fastResult;
+    renderFastResult(fastResult);
+    showSection('result');
+
+  } catch (err) {
+    showError('Agent error: ' + err.message + '\n\nMake sure server.js is running (node server.js) and your API key is set.');
+    showSection('empty');
+  } finally {
+    setRunning(false);
+  }
+}
+
+function renderFastResult(r) {
+  const ct = r.contentType;
+  const srcColor = r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)';
+  document.getElementById('resultSection').innerHTML = `
+    <div class="result-header">
+      <div class="result-keyword">${r.keyword}</div>
+      <div class="result-meta">${r.date} · fast test mode · classification &amp; decision only</div>
+    </div>
+
+    <!-- Keyword heuristic signal -->
+    ${r.heuristic ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card">
+          <div class="rc-label">Matched pattern</div>
+          <div class="rc-value">${r.heuristic.heuristicReason}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Pre-classification</div>
+          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Decision source</div>
+          <div class="rc-value" style="color:${srcColor}">${r.decision_source || '—'}</div>
+        </div>
+      </div>
+    </div>` : `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">no pattern match</span>
+      </div>
+      <div class="bs-body" style="color:var(--ink-muted)">No deterministic heuristic matched. Decision is AI-driven.</div>
+    </div>`}
+
+    <!-- Asset type decision -->
+    ${ct ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Recommended asset type</span>
+        <span class="bs-tag">${ct.funnel_stage || ''} funnel</span>
+      </div>
+      <div style="margin-bottom:14px">
+        <span style="display:inline-block;background:var(--ink);color:var(--bg);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:8px">${(ct.content_type || 'blog_article').replace(/_/g,' ')}</span>
+        ${ASSET_BEHAVIOR_MAP[ct.content_type]?.strategic_role ? `<div style="font-size:11px;color:var(--ink-muted);font-family:var(--mono);margin-bottom:10px;line-height:1.5">${ASSET_BEHAVIOR_MAP[ct.content_type].strategic_role}</div>` : ''}
+        <div class="bs-body">${ct.reasoning || '—'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card"><div class="rc-label">Problem type</div><div class="rc-value">${ct.problem_type || '—'}</div></div>
+        <div class="research-card"><div class="rc-label">User intent</div><div class="rc-value">${ct.user_intent || '—'}</div></div>
+        <div class="research-card"><div class="rc-label">Funnel stage</div><div class="rc-value">${ct.funnel_stage || '—'}</div></div>
+      </div>
+    </div>` : ''}
+
+    <!-- Opportunity analysis -->
+    ${renderOpportunityAnalysis(r.opportunity)}
+
+    <!-- Competitive moat -->
+    ${renderCompetitiveMoat(r.moat)}
+
+    <!-- Strategic recommendation -->
+    ${ct?.strategic_recommendation ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Strategic recommendation</span>
+        <span class="bs-tag">AI decision</span>
+      </div>
+      <div class="outline-item outline-h2" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
+        ${ct.strategic_recommendation.what_to_build || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
+        ${ct.strategic_recommendation.why_it_fits || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
+        ${ct.strategic_recommendation.business_impact || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0;border-bottom:none">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
+        ${(ct.strategic_recommendation.execution_steps || []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Asset Logic debug (fast test only) -->
+    ${(() => {
+      const behavior = ASSET_BEHAVIOR_MAP[ct?.content_type];
+      if (!behavior) return '';
+      return `<div class="brief-section" style="border-left:2px solid var(--gold);background:rgba(200,160,60,0.04)">
+        <div class="bs-header">
+          <span class="bs-title">Asset logic</span>
+          <span class="bs-tag" style="background:var(--gold);color:#fff">debug</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="research-card">
+            <div class="rc-label">Strategic role</div>
+            <div class="rc-value" style="font-size:12px;line-height:1.5">${behavior.strategic_role}</div>
+          </div>
+          <div class="research-card">
+            <div class="rc-label">Interaction model</div>
+            <div class="rc-value" style="font-size:12px;line-height:1.5">${behavior.interaction_model}</div>
+          </div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Conversion mechanism</div>
+          <div class="rc-value" style="font-size:12px;line-height:1.5">${behavior.conversion_mechanism}</div>
+        </div>
+      </div>`;
+    })()}
+  `;
+  document.getElementById('resultSection').classList.add('visible');
+}
+
+// ─── AGENT ────────────────────────────────────────────────────────────────
+async function runAgent() {
+  const keyword  = document.getElementById('keyword').value.trim();
+  const niche    = document.getElementById('niche').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const goal     = document.getElementById('goal').value;
+  const context  = document.getElementById('context').value.trim();
+
+  if (!keyword) { showError('Enter a target keyword to continue.'); return; }
+
+  // Branch to fast test mode if checkbox is checked
+  if (document.getElementById('fastTestMode')?.checked) { return runFastTest(); }
+
+  hideError();
+  setRunning(true);
+  showSection('progress');
+  document.getElementById('progressKeyword').textContent = keyword;
+  renderSteps(-1);
+
+  try {
+    // ── Step 1: SERP Research ──────────────────────────────────────────────
+    setStep(0);
+    updateStatus('Researching SERPs...');
+
+    const serpRaw = await callClaude({
+      useWebSearch: true,
+      system: `You are an SEO research analyst. Search the web for the keyword, analyse what you find, and return ONLY a JSON object (no markdown, no backticks):
+{
+  "top_results": [
+    { "position": 1, "title": "...", "url": "...", "content_type": "article|listicle|guide|product|video", "estimated_word_count": 1200 }
+  ],
+  "search_intent": "informational|commercial|transactional|navigational",
+  "dominant_content_type": "...",
+  "serp_features": ["featured snippet", "people also ask"],
+  "difficulty_signal": "low|medium|high",
+  "patterns": {
+    "common_headings": ["section topics that appear across multiple results, inferred from titles and snippets"],
+    "avg_section_count": 7,
+    "recurring_angles": ["e.g. step-by-step tutorial", "tools comparison", "beginner overview"],
+    "what_is_missing": ["specific topic, format or angle not covered by any visible result"]
+  }
+}`,
+      user: `Keyword: "${keyword}"\nNiche: ${niche || 'general'}`,
+      maxTokens: 800,
+    });
+
+    let serp;
+    try { serp = extractJSON(serpRaw); }
+    catch { serp = { top_results: [], dominant_content_type: 'article', serp_features: [], search_intent: 'informational', difficulty_signal: 'medium', patterns: { common_headings: [], avg_section_count: 7, recurring_angles: [], what_is_missing: [] } }; }
+
+    // ── Step 2: Competitor Analysis ────────────────────────────────────────
+    await sleep(3000);
+    setStep(1);
+    updateStatus('Analysing competitors...');
+
+    const competitorRaw = await callClaude({
+      system: `You are a competitive intelligence analyst and marketing strategist. Based on the SERP data, identify the specific market opportunity. Return ONLY a JSON object (no markdown):
+{
+  "common_headings": ["specific section topics multiple competitors cover — name the topic, not a generic label"],
+  "content_gaps": ["a concrete topic or angle no top result covers — name the missing answer, not just 'more detail'"],
+  "winning_angle": "the precise approach top results use — e.g. 'step-by-step for beginners with tool recommendations'",
+  "competitor_weakness": "the specific structural or strategic weakness across the top 3 results — e.g. 'all focus on setup but skip pricing comparison' or 'none address the enterprise migration use case'",
+  "market_gap": "the specific unmet need this keyword reveals that no current result satisfies — name the user's actual frustration or unanswered question, not a content format suggestion",
+  "differentiation_strategy": "the one concrete positioning move that makes a new asset clearly superior — name the specific angle, data, format, or use case that competitors lack",
+  "avg_depth": "shallow|moderate|deep",
+  "differentiation_tactics": ["specific execution tactic — e.g. 'add a side-by-side pricing table' or 'include anonymised before/after data from real implementations'"]
+}
+Never use: 'provide more value', 'be comprehensive', 'add more examples', 'build trust', 'optimize for SEO', or 'create engaging content'.`,
+      user: `Keyword: "${keyword}"\nTop results: ${JSON.stringify(serp.top_results?.slice(0,5))}\nSERP patterns: ${JSON.stringify(serp.patterns)}`,
+      maxTokens: 600,
+    });
+
+    let competitor;
+    try { competitor = extractJSON(competitorRaw); }
+    catch { competitor = { common_headings: [], content_gaps: ['No result directly answers the decision-stage question'], winning_angle: 'Broad informational overview', competitor_weakness: 'Top results cover the topic at surface level without addressing implementation specifics or decision criteria', market_gap: 'Users need a clear decision framework or comparison, not another overview of the topic', differentiation_strategy: 'Build a structured asset that answers the specific question rather than explaining the topic broadly', avg_depth: 'moderate', differentiation_tactics: [] }; }
+
+    // ── Step 3: Keyword Strategy ───────────────────────────────────────────
+    await sleep(3000);
+    setStep(2);
+    updateStatus('Building keyword map...');
+
+    const keywordRaw = await callClaude({
+      system: `You are an SEO keyword strategist. Return ONLY a JSON object (no markdown):
+{
+  "primary_keyword": "exact target keyword",
+  "by_intent": {
+    "informational": ["how-to, what-is, and explainer variants of the keyword"],
+    "commercial": ["best, review, vs, alternative, and buy-intent variants"]
+  },
+  "secondary_keywords": ["top 4 secondary keywords by relevance"],
+  "lsi_keywords": ["semantically related terms that signal topical authority to search engines"],
+  "question_keywords": ["full question text people search — not just topics"],
+  "priority_order": ["keywords ranked by opportunity: highest potential first"],
+  "keyword_difficulty": "low|medium|high",
+  "recommended_density": "1.5%"
+}`,
+      user: `Keyword: "${keyword}"\nNiche: ${niche || 'general'}\nIntent: ${serp.search_intent || 'informational'}`,
+      maxTokens: 500,
+    });
+
+    let keywords;
+    try { keywords = extractJSON(keywordRaw); }
+    catch { keywords = { primary_keyword: keyword, by_intent: { informational: [], commercial: [] }, secondary_keywords: [], lsi_keywords: [], question_keywords: [], priority_order: [], keyword_difficulty: 'medium', recommended_density: '1.5%' }; }
+
+    // ── Step 4: Content Type Decision ─────────────────────────────────────
+    const heuristic = classifyKeywordHeuristic(keyword);
+    // High-confidence heuristics get a mandatory enforcement block prepended to the system prompt.
+    // Claude may only override if the keyword itself contains stronger contradictory intent.
+    const heuristicEnforcementBlock = (heuristic?.confidence === 'high')
+      ? `MANDATORY OVERRIDE — enforce before all other instructions:\nKeyword "${keyword}" has been deterministically pre-classified by a pattern rule:\n- problem_type: "${heuristic.forcedProblemType}"\n- content_type: "${HEURISTIC_ASSET_MAP[heuristic.forcedProblemType] || 'lead_magnet'}"\nblog_article is NOT a valid output for this keyword.\nThe ONLY valid override: the keyword itself contains explicit contradictory commercial or navigational intent that is stronger than the matched pattern. SERP signals, competitor formats, and general norms cannot override this classification.\n\n`
+      : '';
+    await sleep(3000);
+    setStep(3);
+    updateStatus('Deciding best content format...');
+
+    const contentTypeRaw = await callClaude({
+      system: heuristicEnforcementBlock + STEP4_SYSTEM_BASE,
+      user: `Keyword (primary signal — classify problem_type from this first): "${keyword}"
+Business goal: ${goal}
+${heuristic ? `
+HEURISTIC PRE-CLASSIFICATION — this is the default decision:
+- problem_type: ${heuristic.forcedProblemType}
+- matched pattern: "${heuristic.matchedKeywords[0]}" (${heuristic.heuristicReason})
+- confidence: ${heuristic.confidence}
+${heuristic.confidence === 'high' ? 'Override is NOT permitted based on SERP signals or competitor formats. Override ONLY if the keyword itself contains stronger contradictory intent.' : 'Override ONLY if business goal or competitive intelligence provides clear evidence for a different format.'}
+` : ''}
+SERP signals (secondary — do not let these override keyword-level intent):
+Search intent label: ${serp.search_intent}
+Dominant content type in SERPs: ${serp.dominant_content_type}
+Top result types: ${JSON.stringify((serp.top_results || []).slice(0,5).map(r => r.content_type))}
+
+Competitive intelligence:
+Competitor winning angle: ${competitor.winning_angle}
+Competitor weakness: ${competitor.competitor_weakness || ''}
+Market gap: ${competitor.market_gap || ''}
+What is missing from SERPs: ${JSON.stringify(serp.patterns?.what_is_missing || [])}`,
+      maxTokens: 500,
+    });
+
+    let contentType;
+    try { contentType = extractJSON(contentTypeRaw); }
+    catch { contentType = { problem_type: heuristic?.forcedProblemType || 'learning', content_type: (heuristic?.confidence === 'high' ? HEURISTIC_ASSET_MAP[heuristic.forcedProblemType] : null) || 'blog_article', reasoning: `Competitors are capturing early-stage research traffic on "${keyword}" but none are giving readers a concrete decision framework — an opinionated editorial article that fills that gap is the most defensible entry point.`, user_intent: serp.search_intent || 'informational', funnel_stage: 'awareness', strategic_recommendation: { what_to_build: `Opinionated practitioner guide on "${keyword}": the decisions, tradeoffs, and implementation specifics that the current top-ranking results avoid`, why_it_fits: `This keyword attracts buyers mapping the landscape before committing — an editorial article with a concrete, opinionated answer captures that demand before competitors intercept it and positions your brand as the credible next step`, business_impact: `Captures decision-stage buyers 30–60 days before a purchase — keeping your brand in the consideration set at the moment intent is forming, before potential customers begin evaluating alternatives`, execution_steps: ['Step 1: Audit the top 5 ranking articles and build a gap map — list every specific question each one fails to answer before writing a single heading', 'Step 2: Build the outline around the decision your reader is trying to make, not the topic in the abstract — each section should answer a specific question, not cover a subtopic', 'Step 3: Place 3–5 internal links from existing high-traffic pages within 48 hours of publication to accelerate indexing and establish relevance signals'] } }; }
+    contentType = validateContentTypeAlignment(contentType);
+
+    // Compute decision_source: did the model follow the heuristic or override it?
+    let decision_source = heuristic ? 'hybrid' : 'ai-driven';
+    if (heuristic?.confidence === 'high') {
+      const expectedAsset = HEURISTIC_ASSET_MAP[heuristic.forcedProblemType];
+      const problemMatches = contentType.problem_type === heuristic.forcedProblemType;
+      const assetMatches = !expectedAsset || contentType.content_type === expectedAsset;
+      decision_source = (problemMatches && assetMatches) ? 'heuristic-driven' : 'ai-overridden';
+      if (decision_source === 'ai-overridden' && contentType.content_type === 'blog_article') {
+        console.warn(`[Growth Asset Strategist] Heuristic override drift detected: "${keyword}" matched "${heuristic.forcedProblemType}" (${heuristic.heuristicReason}) but model returned blog_article`);
+      }
+    }
+
+    // ── Step 5: Opportunity Analysis ──────────────────────────────────────
+    await sleep(3000);
+    setStep(4);
+    updateStatus('Scoring opportunity...');
+
+    const opportunityRaw = await callClaude({
+      system: `You are a market intelligence analyst. Evaluate the strategic attractiveness of a keyword opportunity. Be specific — name actual signals, not generic assessments. Return ONLY a JSON object (no markdown):
+{
+  "dimensions": {
+    "acquisition_potential":     { "score": 0-100, "reasoning": "1–2 specific sentences naming the volume signal, intent signal, or competitive factor driving this score" },
+    "commercial_intent":         { "score": 0-100, "reasoning": "1–2 specific sentences naming the intent signal and distance to purchase decision" },
+    "competitive_saturation":    { "score": 0-100, "reasoning": "Higher score = LESS saturated = more opportunity. Name the format or authority gap you observe" },
+    "differentiation_potential": { "score": 0-100, "reasoning": "1–2 sentences naming the specific format or angle advantage available" },
+    "conversion_leverage":       { "score": 0-100, "reasoning": "1–2 sentences naming how the recommended asset type captures leads or revenue" },
+    "speed_to_value":            { "score": 0-100, "reasoning": "1–2 sentences on build effort and time to organic or paid returns" },
+    "strategic_roi":             { "score": 0-100, "reasoning": "1–2 sentences on effort vs expected business upside — name the mechanism" }
+  },
+  "overall_score": 0-100,
+  "verdict": "low opportunity|moderate opportunity|strong opportunity|asymmetric opportunity",
+  "verdict_reasoning": "2–3 sentences on the core opportunity and key leverage point. Name the specific signal. No generic statements."
+}
+Scoring rules:
+- competitive_saturation: high score (80+) = format gap or weak competitors. Low score (20-) = top brands with dedicated assets dominating.
+- asymmetric opportunity: use ONLY when a format gap exists (e.g. articles dominate a calculation keyword), OR volume is low but conversion intent is very high, OR competitors are weak in a utility format.
+- Never score above 85 without naming a concrete specific reason. Never score below 20 without naming the specific barrier.
+- reasoning must be specific and data-driven — no phrases like "high potential" or "valuable" without naming the signal.`,
+      user: `Keyword: "${keyword}"
+Recommended asset type: ${contentType.content_type}
+Business goal: ${goal}
+SERP search intent: ${serp.search_intent}
+SERP difficulty signal: ${serp.difficulty_signal || 'unknown'}
+SERP dominant content type: ${serp.dominant_content_type || 'article'}
+Top result content types: ${JSON.stringify((serp.top_results || []).slice(0, 3).map(r => r.content_type))}
+What is missing from SERPs: ${JSON.stringify(serp.patterns?.what_is_missing || [])}
+Competitor winning angle: ${competitor.winning_angle || ''}
+Competitor weakness: ${competitor.competitor_weakness || ''}
+Market gap: ${competitor.market_gap || ''}`,
+      maxTokens: 500,
+    });
+
+    let opportunity;
+    try { opportunity = extractJSON(opportunityRaw); }
+    catch { opportunity = computeFastOpportunityScore(keyword, heuristic, contentType); }
+
+    const moat = computeCompetitiveMoat(keyword, contentType, opportunity, serp, competitor);
+
+    // ── Step 6: Brief Generation ───────────────────────────────────────────
+    await sleep(3000);
+    setStep(5);
+    updateStatus('Writing content brief...');
+
+    const structureGuide = {
+      blog_article:       'Use heading-based h2/h3 outline. Each section needs a specific argument, stat, or real example — not a generic topic.',
+      landing_page:       'Structure as: Hero (headline + subheadline + CTA copy), Benefits (3–5 specific outcomes), Social proof (type and source), Objection handling, CTA section (exact button text + value prop).',
+      product_page:       'Structure as: Hero (product headline + one-line value prop), Features (with specific differentiators), Benefits (pain point each feature solves), Specs (buying-decision data), Reviews/proof, CTA (with trust element).',
+      comparison_page:    'Structure as: Comparison table (list exact criteria/columns), individual option sections (specific pros/cons per option), final recommendation (best for which use case with explicit reasoning).',
+      category_page:      'Structure as: Category overview (who it\'s for + what\'s covered), Subcategory breakdown (name each with 1-line description), Featured items (top 3–5 with brief rationale), Category FAQ.',
+      tool_or_calculator: 'Structure as: Tool headline + one-line description, Who benefits + specific use case, Input fields (list each), How to interpret results, Supporting educational content.',
+      lead_magnet:        'Structure as: Offer headline (specific promise: "Get [X] in [Y] without [Z]"), Value exchange (exactly what they receive + format: PDF, template, video etc.), Lead capture form (list fields — keep friction low), Immediate value delivery description, Follow-up sequence angle (name the first 3 email topics).',
+      ai_visibility_asset:'Structure as: Entity/topic definition (1–2 sentence factual definition optimized for AI extraction), Key facts section (5–8 numbered self-contained claims), Q&A blocks (question as h2, direct 2-sentence answer), Stats and citations (specific figures with named sources), Schema markup recommendations (FAQ, HowTo, or Article).',
+    }[contentType.content_type] || 'Use heading-based h2/h3 outline.';
+
+    const typeSpecificInstruction = {
+      blog_article:       '',
+      landing_page:       'Each outline item must be a conversion section (hero, benefits, social proof, objection handling, CTA) — no informational article headings.',
+      product_page:       'Title must be the product name or category. Outline items are product page zones. Do not generate an article-style title or structure.',
+      category_page:      'Title is the category name. Outline items are page zones (intro, subcategories, featured items, FAQ). Do not generate a blog-style title.',
+      comparison_page:    'Title must explicitly name what is being compared (e.g. "Tool A vs Tool B"). Outline items are: comparison table criteria, one section per option, final recommendation. Do NOT write a how-to or listicle title.',
+      tool_or_calculator: 'Title names the tool (e.g. "Free [Keyword] Calculator"). Outline covers tool description, inputs, output interpretation, and supporting content.',
+      lead_magnet:        'Title is the lead magnet name — a specific offer (e.g. "Free [Keyword] Audit Checklist"). Outline covers offer, value exchange, form fields, delivery, and follow-up angle. Recommended word count applies to the lead magnet content, not a blog post.',
+      ai_visibility_asset:'Title is a factual statement or direct question (e.g. "What is [Keyword]? Definition, Key Facts & Data"). Outline is structured for AI citation: entity definition, numbered facts, Q&A sections, stats with sources. Write to be cited by AI tools — direct, factual, no fluff.',
+    }[contentType.content_type] || '';
+
+    const briefRaw = await callClaude({
+      system: `You are a senior marketing strategist. Write a format-specific asset brief for a ${contentType.content_type.replace(/_/g, ' ')} that wins against current top results by being built for a different format and intent — not just longer. Return ONLY a JSON object (no markdown).${typeSpecificInstruction ? `\n\nCRITICAL for ${contentType.content_type.replace(/_/g,' ')}: ${typeSpecificInstruction}` : ''}
+{
+  "recommended_title": "specific title — avoid 'Ultimate Guide' or 'Complete Guide' unless competitors don't already use them",
+  "alt_titles": ["Alternative title 1", "Alternative title 2"],
+  "meta_description": "max 155 chars — include primary keyword naturally, make it click-worthy",
+  "recommended_word_count": 2200,
+  "tone_of_voice": "specific description — e.g. 'direct and data-backed for practitioners, not a beginner overview'",
+  "unique_angle": "the one concrete thing this asset does that no competitor does — name it explicitly, not 'more comprehensive'",
+  "hook": "write the actual first 1–2 sentences of the opening copy, ready to publish. Start with a specific claim, a concrete data point, or a direct challenge to the reader's current assumption. Do NOT use brackets. Do NOT describe what the hook should do — write it as it will appear on the page.",
+  "outline": [
+    { "level": "h2", "heading": "exact heading text", "notes": "name a specific stat, comparison framework, trust mechanism, conversion lever, proof element, or real named example — not a topic description like 'discuss the benefits' or 'explain the concept'" }
+  ],
+  "must_include": ["a specific named stat, study, tool, or real example — not a vague topic"],
+  "avoid": ["a specific topic or angle competitors already cover well — name it"],
+  "internal_linking_suggestions": ["related topic"],
+  "cta": "write the actual CTA copy naming a specific offer — e.g. 'Download the free comparison worksheet', 'Request a 20-minute demo — we will show it with your data', 'Start your free trial, no credit card required', 'Get the free audit', 'Download the migration checklist'. Match funnel stage: awareness = resource download or newsletter; consideration = free trial or demo; conversion = buy or book. Write it as it appears on the page."
+}
+Never use: 'start with a compelling hook', 'provide value', 'be comprehensive', 'featured snippet', 'topical authority', 'drive traffic', 'increase visibility', 'SEO-optimised', 'engaging content', or 'build trust'. Never use bracket placeholders like [Opening observation] or [Insert keyword here].`,
+      user: `Keyword: "${keyword}"
+Audience: ${audience || 'general readers'}
+Goal: ${goal}
+Problem type: ${contentType.problem_type || 'learning'}
+Content type: ${contentType.content_type}
+Funnel stage: ${contentType.funnel_stage}
+Asset strategic role: ${ASSET_BEHAVIOR_MAP[contentType.content_type]?.strategic_role || ''}
+Asset interaction model: ${ASSET_BEHAVIOR_MAP[contentType.content_type]?.interaction_model || ''}
+Asset conversion mechanism: ${ASSET_BEHAVIOR_MAP[contentType.content_type]?.conversion_mechanism || ''}
+Asset differentiation strategy: ${ASSET_BEHAVIOR_MAP[contentType.content_type]?.differentiation_strategy || ''}
+Structure guide: ${structureGuide}
+Search intent: ${serp.search_intent}
+Market gap: ${competitor.market_gap}
+Competitor weakness: ${competitor.competitor_weakness}
+Differentiation strategy: ${competitor.differentiation_strategy}
+Winning angle competitors use: ${competitor.winning_angle}
+Common headings to reference: ${JSON.stringify(competitor.common_headings)}
+Keywords to include: primary="${keywords.primary_keyword}", secondary=${JSON.stringify(keywords.secondary_keywords?.slice(0,3))}
+Extra context: ${context || 'none'}`,
+      maxTokens: 1200,
+    });
+
+    let brief;
+    try { brief = extractJSON(briefRaw); }
+    catch {
+      const ct = contentType?.content_type || 'blog_article';
+      const fallbackTitles = {
+        blog_article:        `${keyword}: A Practitioner's Breakdown`,
+        landing_page:        `${keyword} — Built for Teams That Need Results`,
+        product_page:        keyword,
+        category_page:       keyword,
+        comparison_page:     `${keyword}: Side-by-Side Comparison`,
+        tool_or_calculator:  `Free ${keyword} Calculator`,
+        lead_magnet:         `Free ${keyword} Checklist — Download Now`,
+        ai_visibility_asset: `What Is ${keyword}? Definition, Facts & Data`,
+      };
+      const fallbackHooks = {
+        blog_article:        `Most content on ${keyword} explains the basics. This goes further: the specific decisions, tradeoffs, and implementation details that separate approaches that work from ones that stall — with real examples from practitioners who have been through it.`,
+        landing_page:        `Stop patching together a solution for ${keyword}. This is purpose-built for teams that need a result, not a six-month implementation. Here is exactly what you get — and why it works.`,
+        product_page:        `${keyword} is built for the use cases that actually matter. Here is what makes it different from the alternatives, what it does better, and why that difference affects your specific workflow.`,
+        comparison_page:     `Every ${keyword} option claims to solve the same problem. They do not. Here is an honest breakdown of exactly where they diverge — and which one wins depending on your situation, your team size, and what you are actually trying to accomplish.`,
+        category_page:       `The ${keyword} category has more options than it did two years ago. Here is a clear map of what is available, what the real differences are, and how to identify the right fit without wasting evaluation time on the wrong shortlist.`,
+        tool_or_calculator:  `Get a specific answer on ${keyword} in under 60 seconds. Enter your inputs — the calculator gives you the figure you need to make the decision you are currently stalling on.`,
+        lead_magnet:         `Everything you need to move faster on ${keyword} — in one place, free. The checklist, the framework, and the decision criteria that practitioners actually use.`,
+        ai_visibility_asset: `${keyword} is a concept that gets oversimplified in most explanations. Here is a precise definition, the key facts that matter, the distinctions that get misunderstood most often, and the data sources worth citing.`,
+      };
+      const fallbackUniqueAngles = {
+        blog_article:        `Goes beyond explaining ${keyword} to giving a concrete decision framework readers can apply to their own situation — the gap every top-ranking competitor currently skips`,
+        landing_page:        `Addresses the specific objections and use-case fit questions that generic ${keyword} landing pages avoid — built to convert consideration-stage buyers, not just capture clicks`,
+        product_page:        `Names the specific use cases and tradeoffs that competitor product pages hide behind feature lists — built to support the final purchase decision, not just awareness`,
+        comparison_page:     `Makes the final recommendation explicit — names exactly which option wins for which situation instead of ending with the 'it depends' hedge that most comparison content uses`,
+        category_page:       `Cuts through category noise with explicit evaluative criteria and direct recommendations — not a list of options with no guidance on how to choose`,
+        tool_or_calculator:  `Delivers a specific, actionable output in under 60 seconds — no spreadsheet, no consultant, no prerequisite reading required`,
+        lead_magnet:         `Delivers the exact framework and decision criteria practitioners use — not a repackaged overview of a topic the target audience already understands at a surface level`,
+        ai_visibility_asset: `Written specifically for AI citation: self-contained facts, direct definitions, and structured Q&A that AI tools can extract, attribute, and repeat with confidence`,
+      };
+      const fallbackOutlines = {
+        blog_article: [
+          { level: 'h2', heading: `What most approaches to ${keyword} get wrong`, notes: 'Address the most common misconception directly — earns immediate credibility with practitioners who have tried and failed with standard advice' },
+          { level: 'h2', heading: 'The decision framework: how to evaluate your options', notes: 'Give readers 3–5 explicit criteria they can apply to their own situation — name the criteria, not a description of the evaluation process' },
+          { level: 'h2', heading: 'What actually works in practice', notes: 'Specific implementation steps or named approaches with real examples — not a generic process walkthrough' },
+          { level: 'h2', heading: 'Measuring success and knowing when to adjust', notes: 'Name the specific signals or metrics that indicate whether it is working — give readers a clear threshold, not a vague recommendation to track things' },
+        ],
+        landing_page: [
+          { level: 'h2', heading: 'Hero', notes: 'Primary outcome in the headline. Who it is for and the specific result in the subheadline. Primary CTA visible above the fold.' },
+          { level: 'h2', heading: 'Key benefits', notes: '3–5 specific outcomes — name the pain point each one eliminates, not just what the feature does' },
+          { level: 'h2', heading: 'Social proof', notes: 'Named testimonials with a specific result stated — role, company type, measurable outcome. Not just satisfaction.' },
+          { level: 'h2', heading: 'Objection handling', notes: 'Name the top 2–3 reasons someone would not convert and address each directly — not defensively, specifically' },
+          { level: 'h2', heading: 'Final CTA', notes: 'Repeat the primary offer with a risk-reduction element: free trial, money-back guarantee, or no credit card required' },
+        ],
+        product_page: [
+          { level: 'h2', heading: 'Product overview', notes: 'One-line value prop. Who it is for. What specific problem it solves better than alternatives — name the comparison if possible' },
+          { level: 'h2', heading: 'Key features', notes: 'For each feature: name what it does, then name the specific advantage over the closest competitor version of the same capability' },
+          { level: 'h2', heading: 'Customer proof', notes: 'Named customer results with specific metrics. Link to case study if available. Show the type of team or use case this works best for.' },
+          { level: 'h2', heading: 'Pricing and next step', notes: 'Clear pricing with inclusions. Primary CTA: buy, start trial, or book demo. Add one trust element: guarantee, security badge, or named clients.' },
+        ],
+        comparison_page: [
+          { level: 'h2', heading: `${keyword}: who should choose what`, notes: 'State upfront who each option is best for — give readers a fast exit if the answer is obvious from their situation' },
+          { level: 'h2', heading: 'Evaluation criteria', notes: 'Name the exact dimensions being compared: pricing model, integration depth, support tier, specific feature gaps — not just features or pricing' },
+          { level: 'h2', heading: 'Option A — where it wins and where it falls short', notes: 'Be specific about the exact use cases it handles well and the scenarios where it fails — do not hedge' },
+          { level: 'h2', heading: 'Option B — where it wins and where it falls short', notes: 'Same structure as Option A for direct comparison parity' },
+          { level: 'h2', heading: 'Final recommendation', notes: 'Explicit call: X is best if [specific condition]. Y is better if [different condition]. Name the scenario, not a preference score.' },
+        ],
+        category_page: [
+          { level: 'h2', heading: `What to look for in ${keyword}`, notes: 'Name 4–5 criteria that separate strong options from weak ones — give each criterion a name and one line on why it matters' },
+          { level: 'h2', heading: 'Top options in this category', notes: 'Each option: one-line summary of who it is best for and its primary differentiator — not a feature list' },
+          { level: 'h2', heading: `${keyword} FAQ`, notes: 'The most common questions buyers have when evaluating this category — answer each directly, not with it depends' },
+        ],
+        tool_or_calculator: [
+          { level: 'h2', heading: 'How to use this calculator', notes: 'Name each input field, what value to enter, and what unit or range applies — be explicit, assume no prior knowledge' },
+          { level: 'h2', heading: 'How to interpret your result', notes: 'Name the threshold ranges: what is a strong result, what is a warning signal, and what the next action is in each case' },
+          { level: 'h2', heading: `${keyword}: why this number matters`, notes: 'Enough context to understand why this metric matters for decision-making — brief, do not expand into a full article' },
+        ],
+        lead_magnet: [
+          { level: 'h2', heading: 'What you get', notes: 'Specific deliverable list: what is in the download, what format, how many items, and what it enables the reader to do immediately' },
+          { level: 'h2', heading: 'Who this is for', notes: 'Name the exact role, company stage, or situation this is built for — exclusion is as important as inclusion for qualified lead capture' },
+          { level: 'h2', heading: 'How to use it', notes: 'Brief walkthrough of how to apply the resource — enough to make the value feel real before the reader enters their email' },
+        ],
+        ai_visibility_asset: [
+          { level: 'h2', heading: `What is ${keyword}?`, notes: 'Factual 2-sentence definition optimised for AI extraction — self-contained, no jargon without explanation, readable without context' },
+          { level: 'h2', heading: 'Key facts', notes: '5–8 numbered facts. Each: a standalone specific claim with a figure or named source. Structured for direct citation. No filler.' },
+          { level: 'h2', heading: `Common questions about ${keyword}`, notes: 'Q&A format — question as heading, 2-sentence direct answer below. Write for AI extraction: factual, self-contained, no preamble.' },
+          { level: 'h2', heading: 'Data and sources', notes: 'Named sources with specific figures in citation-ready format — organisation name, year, and the exact claim each source supports' },
+        ],
+      };
+      const fallbackCtas = {
+        blog_article:        `Schedule a free strategy call to apply this framework to your specific situation`,
+        landing_page:        `Start your free trial — no credit card required`,
+        product_page:        `Request a demo — see it working with your data in 20 minutes`,
+        category_page:       `Download the free comparison guide — side-by-side breakdown of every option in this category`,
+        comparison_page:     `Download the comparison worksheet — apply the scoring criteria to your specific situation`,
+        tool_or_calculator:  `Get the full ${keyword} playbook — the strategy and context behind the numbers`,
+        lead_magnet:         `Download free — enter your email for instant access`,
+        ai_visibility_asset: `Get a free audit of how your brand currently appears in AI search results`,
+      };
+      brief = {
+        recommended_title: fallbackTitles[ct] || keyword,
+        alt_titles: [],
+        meta_description: ct === 'comparison_page' ? `${keyword}: honest comparison. Which option wins, where each falls short, and the criteria to use. Updated ${new Date().getFullYear()}.` : ct === 'tool_or_calculator' ? `Free ${keyword} calculator. Enter your inputs, get a specific answer in 60 seconds. No signup required.` : ct === 'ai_visibility_asset' ? `What is ${keyword}? Definition, key facts, sourced data, and common questions. The clear, citable answer.` : `${keyword}: the decisions, tradeoffs, and specifics that matter — written for practitioners, not general readers.`,
+        recommended_word_count: ct === 'landing_page' ? 800 : ct === 'lead_magnet' ? 1200 : ct === 'ai_visibility_asset' ? 1500 : 2000,
+        tone_of_voice: 'Direct, specific, and opinionated — no hedging, no generic filler, no content written to rank rather than to inform',
+        unique_angle: fallbackUniqueAngles[ct] || `Takes the specific angle on ${keyword} that no top competitor currently covers`,
+        hook: fallbackHooks[ct] || `Most content on ${keyword} explains the surface. This goes deeper — into the specifics that determine whether the approach actually works for your situation.`,
+        outline: fallbackOutlines[ct] || [{ level: 'h2', heading: `${keyword}: what matters most`, notes: 'Build the outline around the decision the reader is trying to make — not the topic in the abstract' }],
+        must_include: [],
+        avoid: [],
+        internal_linking_suggestions: [],
+        cta: fallbackCtas[ct] || `Take the next step — see how this applies to your situation`,
+      };
+    }
+
+    // ── Step 6: Quality Check ──────────────────────────────────────────────
+    await sleep(3000);
+    setStep(6);
+    updateStatus('Scoring brief...');
+
+    const qualityRaw = await callClaude({
+      system: `You are a senior content strategist scoring a content brief. Be direct — penalise vague or generic output. Return ONLY a JSON object (no markdown):
+{
+  "score": 82,
+  "grade": "B+",
+  "strengths": ["name exactly what is strong — not 'good structure' or 'clear outline'"],
+  "improvements": ["one specific, actionable change — not 'add more detail' or 'be more specific'"],
+  "competitive_advantage": "name the exact gap this article fills that competitors don't — one concrete sentence naming the differentiator"
+}
+Score 0-100. If the unique_angle is vague, the hook is a description rather than actual text, or must_include items are generic topics, score below 65.`,
+      user: `Keyword: "${keyword}"
+Brief: ${JSON.stringify(brief)}
+Competitor gaps identified: ${JSON.stringify(competitor.content_gaps)}
+Search intent: ${serp.search_intent}
+Evaluate this brief.`,
+      maxTokens: 400,
+    });
+
+    let quality;
+    try { quality = extractJSON(qualityRaw); }
+    catch { quality = { score: 75, grade: 'B', strengths: ['Solid structure'], weaknesses: [], improvements: [], competitive_advantage: 'Addresses key gaps' }; }
+
+    // ── Render result ──────────────────────────────────────────────────────
+    setStep(7); // all done
+    currentResult = { keyword, niche, audience, goal, serp, competitor, keywords, contentType, brief, quality, heuristic, decision_source, opportunity, moat, date: new Date().toLocaleDateString('en-GB') };
+
+    // Save to history
+    history.unshift(currentResult);
+    if (history.length > 20) history = history.slice(0, 20);
+    localStorage.setItem('seo_history', JSON.stringify(history));
+
+    renderResult(currentResult);
+    renderHistory();
+    showSection('result');
+
+  } catch (err) {
+    showError('Agent error: ' + err.message + '\n\nMake sure server.js is running (node server.js) and your API key is set.');
+    showSection('empty');
+  } finally {
+    setRunning(false);
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────
+function renderSteps(activeIndex) {
+  const list = document.getElementById('stepsList');
+  list.innerHTML = STEPS.map((s, i) => {
+    let cls = 'pending';
+    if (i < activeIndex) cls = 'done';
+    else if (i === activeIndex) cls = 'active';
+    const num = i < activeIndex ? '✓' : (i + 1);
+    return `<div class="step-item ${cls}" id="stepItem${i}">
+      <div class="step-number">${num}</div>
+      <div class="step-info">
+        <div class="step-name">${s.name}</div>
+        <div class="step-desc">${s.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setStep(index) {
+  renderSteps(index);
+}
+
+function renderResult(r) {
+  const score = r.quality.score || 0;
+  const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : 'low';
+
+  const outlineHtml = (r.brief.outline || []).map(item =>
+    `<div class="outline-item ${item.level === 'h2' ? 'outline-h2' : 'outline-h3'}">
+      ${item.level === 'h3' ? '↳ ' : ''}<strong>${item.heading}</strong>${item.notes ? ` — <span style="font-weight:300;color:var(--ink-muted)">${item.notes}</span>` : ''}
+    </div>`
+  ).join('');
+
+  const primaryKw = r.keywords.primary_keyword || r.keyword;
+  const secondaryKws = (r.keywords.secondary_keywords || []).map(k => `<span class="kw-tag secondary">${k}</span>`).join('');
+  const lsiKws = (r.keywords.lsi_keywords || []).map(k => `<span class="kw-tag lsi">${k}</span>`).join('');
+  const questionKws = (r.keywords.question_keywords || []).map(k => `<span class="kw-tag lsi">${k}</span>`).join('');
+  // Intent-grouped keywords — built from by_intent if available, else falls back to secondaryKws
+  const byIntentHtml = r.keywords.by_intent ? [
+    (r.keywords.by_intent.informational || []).length ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Informational</div><div class="kw-list">${r.keywords.by_intent.informational.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
+    (r.keywords.by_intent.commercial || []).length   ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Commercial</div><div class="kw-list">${r.keywords.by_intent.commercial.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
+  ].join('') : '';
+  const priorityKws = (r.keywords.priority_order || []).map((k, i) => `<span class="kw-tag secondary"><span style="color:var(--ink-muted);margin-right:3px">${i + 1}.</span>${k}</span>`).join('');
+
+  const altTitles = (r.brief.alt_titles || []).map(t => `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink-mid)">${t}</div>`).join('');
+  const mustInclude = (r.brief.must_include || []).map(t => `<div class="outline-item">• ${t}</div>`).join('');
+  const avoid = (r.brief.avoid || []).map(t => `<div class="outline-item" style="color:var(--red)">✕ ${t}</div>`).join('');
+  const strengths = (r.quality.strengths || []).map(s => `<div style="font-size:12px;color:var(--green);padding:3px 0">✓ ${s}</div>`).join('');
+  const improvements = (r.quality.improvements || []).map(s => `<div style="font-size:12px;color:var(--gold);padding:3px 0">→ ${s}</div>`).join('');
+
+  document.getElementById('resultSection').innerHTML = `
+    <div class="result-header">
+      <div class="result-keyword">${r.keyword}</div>
+      <div class="result-meta">${r.date} · ${r.serp?.search_intent || 'informational'} intent · ${r.serp?.difficulty_signal || 'medium'} difficulty</div>
+    </div>
+
+    <!-- Keyword heuristic signal -->
+    ${r.heuristic ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card">
+          <div class="rc-label">Matched pattern</div>
+          <div class="rc-value">${r.heuristic.heuristicReason}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Pre-classification</div>
+          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Decision source</div>
+          <div class="rc-value" style="color:${r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)'}">${r.decision_source || '—'}</div>
+        </div>
+      </div>
+    </div>` : ''}
+
+    <!-- Asset type decision -->
+    ${r.contentType ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Recommended asset type</span>
+        <span class="bs-tag">${r.contentType.funnel_stage || ''} funnel</span>
+      </div>
+      <div style="margin-bottom:14px">
+        <span style="display:inline-block;background:var(--ink);color:var(--bg);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:8px">${(r.contentType.content_type || 'blog_article').replace(/_/g,' ')}</span>
+        ${ASSET_BEHAVIOR_MAP[r.contentType.content_type]?.strategic_role ? `<div style="font-size:11px;color:var(--ink-muted);font-family:var(--mono);margin-bottom:10px;line-height:1.5">${ASSET_BEHAVIOR_MAP[r.contentType.content_type].strategic_role}</div>` : ''}
+        <div class="bs-body">${r.contentType.reasoning || '—'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card">
+          <div class="rc-label">Problem type</div>
+          <div class="rc-value">${r.contentType.problem_type || '—'}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">User intent</div>
+          <div class="rc-value">${r.contentType.user_intent || '—'}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Funnel stage</div>
+          <div class="rc-value">${r.contentType.funnel_stage || '—'}</div>
+        </div>
+      </div>
+    </div>` : ''}
+
+    <!-- Opportunity analysis -->
+    ${renderOpportunityAnalysis(r.opportunity)}
+
+    <!-- Competitive moat -->
+    ${renderCompetitiveMoat(r.moat)}
+
+    <!-- Strategic recommendation -->
+    ${r.contentType?.strategic_recommendation ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Strategic recommendation</span>
+        <span class="bs-tag">AI decision</span>
+      </div>
+      <div class="outline-item outline-h2" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
+        ${r.contentType.strategic_recommendation.what_to_build || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
+        ${r.contentType.strategic_recommendation.why_it_fits || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
+        ${r.contentType.strategic_recommendation.business_impact || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0;border-bottom:none">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
+        ${(r.contentType.strategic_recommendation.execution_steps || []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Score -->
+    <div class="score-card">
+      <div class="score-number ${scoreClass}">${score}</div>
+      <div class="score-info">
+        <div class="score-label">Brief quality score · ${r.quality.grade || ''}</div>
+        <div class="score-bar-track"><div class="score-bar-fill ${scoreClass}" id="scoreBar" style="width:0%"></div></div>
+        <div class="score-notes">${r.quality.competitive_advantage || ''}</div>
+      </div>
+    </div>
+
+    <!-- Competing pages -->
+    ${(r.serp?.top_results?.length) ? `
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Top ranking pages</span>
+        <span class="bs-tag">${r.serp.top_results.length} results analysed</span>
+      </div>
+      ${r.serp.top_results.slice(0, 5).map((p, i) => `
+        <div class="competitor-row">
+          <span class="comp-pos">${p.position || i + 1}</span>
+          <div class="comp-info">
+            <a class="comp-title" href="${p.url || '#'}" target="_blank" rel="noopener">${p.title || 'Untitled'}</a>
+            <div class="comp-meta">${extractDomain(p.url || '')}${p.estimated_word_count ? ' · ' + p.estimated_word_count + ' words' : ''}</div>
+          </div>
+          <span class="comp-type">${p.content_type || 'article'}</span>
+        </div>
+      `).join('')}
+    </div>
+    ` : ''}
+
+    <!-- SERP overview -->
+    <div class="research-grid">
+      <div class="research-card">
+        <div class="rc-label">Search intent</div>
+        <div class="rc-value">${r.serp?.search_intent || '—'}</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">Dominant content type</div>
+        <div class="rc-value">${r.serp?.dominant_content_type || '—'}</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">Avg. word count (competitors)</div>
+        <div class="rc-value">${r.serp?.avg_word_count || '—'} words</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">SERP features present</div>
+        <div class="rc-value">${(r.serp?.serp_features || []).join(', ') || 'None detected'}</div>
+      </div>
+    </div>
+
+    <!-- Recommended title -->
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Title</span>
+        <span class="bs-tag">Recommended</span>
+      </div>
+      <div style="font-size:15px;font-weight:500;color:var(--ink);padding:10px 0;border-bottom:1px solid var(--border)">${r.brief.recommended_title || '—'}</div>
+      ${altTitles}
+      <div style="margin-top:12px;font-size:12px;color:var(--ink-muted)">
+        <strong style="color:var(--ink-mid)">Meta description:</strong> ${r.brief.meta_description || '—'}
+      </div>
+    </div>
+
+    <!-- Brief specs -->
+    <div class="research-grid">
+      <div class="research-card">
+        <div class="rc-label">Recommended word count</div>
+        <div class="rc-value" style="font-size:18px;font-family:var(--serif);font-style:italic">${r.brief.recommended_word_count || '—'}</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">Tone of voice</div>
+        <div class="rc-value">${r.brief.tone_of_voice || '—'}</div>
+      </div>
+    </div>
+
+    <!-- Hook -->
+    <div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Opening hook</span></div>
+      <div class="bs-body">${r.brief.hook || '—'}</div>
+    </div>
+
+    <!-- Unique angle -->
+    ${r.brief.unique_angle ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Unique angle</span>
+        <span class="bs-tag">Differentiator</span>
+      </div>
+      <div class="bs-body">${r.brief.unique_angle}</div>
+    </div>` : ''}
+
+    <!-- Keywords -->
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Keywords</span>
+        <span class="bs-tag">Volume: ${r.keywords.search_volume_estimate || '—'} · Difficulty: ${r.keywords.keyword_difficulty || '—'}</span>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="rc-label" style="margin-bottom:6px">Primary</div>
+        <div class="kw-list"><span class="kw-tag primary">${primaryKw}</span></div>
+      </div>
+      ${byIntentHtml || `<div style="margin-bottom:10px">
+        <div class="rc-label" style="margin-bottom:6px">Secondary</div>
+        <div class="kw-list">${secondaryKws || '<span class="kw-tag">—</span>'}</div>
+      </div>`}
+      ${priorityKws ? `<div style="margin-bottom:10px">
+        <div class="rc-label" style="margin-bottom:6px">Priority order</div>
+        <div class="kw-list">${priorityKws}</div>
+      </div>` : ''}
+      <div style="margin-bottom:10px">
+        <div class="rc-label" style="margin-bottom:6px">LSI / Related</div>
+        <div class="kw-list">${lsiKws || '<span class="kw-tag">—</span>'}</div>
+      </div>
+      ${questionKws ? `<div>
+        <div class="rc-label" style="margin-bottom:6px">Question keywords</div>
+        <div class="kw-list">${questionKws}</div>
+      </div>` : ''}
+    </div>
+
+    <!-- Outline -->
+    <div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Content outline</span></div>
+      ${outlineHtml || '<div class="bs-body">No outline generated.</div>'}
+    </div>
+
+    <!-- Gap & opportunity -->
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Competitive opportunity</span>
+        <span class="bs-tag">Why you can rank</span>
+      </div>
+      <div class="outline-item outline-h2" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Market gap</span>
+        ${r.competitor?.market_gap || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Competitor weakness</span>
+        ${r.competitor?.competitor_weakness || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0${(r.competitor?.differentiation_tactics || []).length ? '' : ';border-bottom:none'}">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">How to differentiate</span>
+        ${r.competitor?.differentiation_strategy || '—'}
+      </div>
+      ${(r.competitor?.differentiation_tactics || []).map((t, i, a) => `<div class="outline-item" style="margin-top:6px${i === a.length-1 ? ';border-bottom:none' : ''}">→ ${t}</div>`).join('')}
+    </div>
+
+    <!-- Must include / avoid -->
+    ${mustInclude ? `<div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Must include</span></div>
+      ${mustInclude}
+    </div>` : ''}
+
+    ${avoid ? `<div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Avoid</span></div>
+      ${avoid}
+    </div>` : ''}
+
+    <!-- CTA -->
+    <div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Call to action</span></div>
+      <div class="bs-body">${r.brief.cta || '—'}</div>
+    </div>
+
+    <!-- Quality review -->
+    <div class="brief-section">
+      <div class="bs-header"><span class="bs-title">Quality review</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div><div class="rc-label" style="margin-bottom:6px">Strengths</div>${strengths || '<div style="font-size:12px;color:var(--ink-muted)">—</div>'}</div>
+        <div><div class="rc-label" style="margin-bottom:6px">Improvements</div>${improvements || '<div style="font-size:12px;color:var(--ink-muted)">—</div>'}</div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="export-bar">
+      <button class="export-btn primary" onclick="copyBrief()">Copy full brief</button>
+      <button class="export-btn" onclick="downloadBrief()">Download .txt</button>
+    </div>
+  `;
+  // Trigger score bar animation on next frame (CSS transition needs an initial paint at width:0)
+  requestAnimationFrame(() => {
+    const bar = document.getElementById('scoreBar');
+    if (bar) bar.style.width = score + '%';
+  });
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!history.length) {
+    list.innerHTML = '<div class="history-empty">No briefs yet</div>';
+    return;
+  }
+  list.innerHTML = history.map((h, i) => `
+    <div class="history-item ${i === 0 && currentResult ? 'active' : ''}" onclick="loadHistory(${i})">
+      <div class="history-keyword">${h.keyword}</div>
+      <div class="history-meta">${h.date} · score ${h.quality?.score || '?'}</div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(index) {
+  currentResult = history[index];
+  renderResult(currentResult);
+  showSection('result');
+  document.querySelectorAll('.history-item').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+}
+
+// ─── EXPORT ───────────────────────────────────────────────────────────────
+function buildPlainText(r) {
+  if (!r) return '';
+  const lines = [
+    `SEO CONTENT BRIEF`,
+    `Generated: ${r.date}`,
+    `${'─'.repeat(50)}`,
+    ``,
+    `KEYWORD: ${r.keyword}`,
+    `NICHE: ${r.niche || '—'}  |  AUDIENCE: ${r.audience || '—'}  |  INTENT: ${r.serp?.search_intent || '—'}`,
+    `BRIEF SCORE: ${r.quality?.score}/100 (${r.quality?.grade})`,
+    ``,
+    `RECOMMENDED TITLE`,
+    r.brief?.recommended_title,
+    ``,
+    `META DESCRIPTION`,
+    r.brief?.meta_description,
+    ``,
+    `WORD COUNT: ${r.brief?.recommended_word_count}  |  TONE: ${r.brief?.tone_of_voice}`,
+    ``,
+    `OPENING HOOK`,
+    r.brief?.hook,
+    ``,
+    `KEYWORDS`,
+    `Primary: ${r.keywords?.primary_keyword}`,
+    `Secondary: ${(r.keywords?.secondary_keywords || []).join(', ')}`,
+    `LSI: ${(r.keywords?.lsi_keywords || []).join(', ')}`,
+    ``,
+    `CONTENT OUTLINE`,
+    ...(r.brief?.outline || []).map(o => `${o.level === 'h2' ? '' : '  '}${o.level.toUpperCase()}: ${o.heading}${o.notes ? ` (${o.notes})` : ''}`),
+    ``,
+    `COMPETITIVE OPPORTUNITY`,
+    r.competitor?.market_gap,
+    r.competitor?.competitor_weakness,
+    r.competitor?.differentiation_strategy,
+    ``,
+    `CALL TO ACTION`,
+    r.brief?.cta,
+    ``,
+    `QUALITY NOTES`,
+    ...(r.quality?.improvements || []).map(i => `→ ${i}`),
+  ];
+  return lines.join('\n');
+}
+
+function copyBrief() {
+  if (!currentResult) return;
+  navigator.clipboard.writeText(buildPlainText(currentResult)).then(() => {
+    const btn = document.querySelector('.export-btn.primary');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy full brief', 1500);
+  });
+}
+
+function downloadBrief() {
+  if (!currentResult) return;
+  const text = buildPlainText(currentResult);
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `seo-brief-${currentResult.keyword.replace(/\s+/g, '-')}.txt`;
+  a.click();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function showSection(name) {
+  document.getElementById('emptyState').style.display = name === 'empty' ? 'flex' : 'none';
+  document.getElementById('progressSection').classList.toggle('visible', name === 'progress');
+  document.getElementById('resultSection').classList.toggle('visible', name === 'result');
+}
+
+function updateStatus(msg) {
+  document.getElementById('progressStatus').textContent = msg;
+}
+
+function setRunning(state) {
+  document.getElementById('runBtn').disabled = state;
+  document.getElementById('spinner').style.display = state ? 'block' : 'none';
+  document.getElementById('btnText').textContent = state ? 'Researching...' : 'Generate Brief';
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('errorBox').classList.remove('visible');
+}
+
+// Init
+renderHistory();
+</script>
+</body>
+</html>
