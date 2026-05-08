@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const http = require('http');
 const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 const PORT = 3000;
 const API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -20,6 +22,17 @@ const server = http.createServer((req, res) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
 
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/index.html')) {
+    const indexPath = path.join(__dirname, 'index.html');
+    fs.readFile(indexPath, (err, data) => {
+      if (err) { res.writeHead(500); res.end('Could not read index.html'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+    return;
+  }
+
   if (req.method !== 'POST' || req.url !== '/api/claude') {
     res.writeHead(404); res.end('Not found'); return;
   }

@@ -18,11 +18,6 @@ A single-page AI application that analyses a keyword and decides what marketing 
 **Current positioning:**
 AI marketing strategy engine. Not an SEO tool, not a content brief generator. A strategic decision engine.
 
-**Key module-level constants (index.html):**
-- `STEP4_SYSTEM_BASE` — shared Step 4 system prompt (used by both full pipeline and fast test mode)
-- `HEURISTIC_ASSET_MAP` — maps problem_type to mandatory content_type for high-confidence heuristic matches
-- `ASSET_BEHAVIOR_MAP` — per-type behavioral profile: `strategic_role`, `user_value`, `interaction_model`, `conversion_mechanism`, `differentiation_strategy`, `reasoning_vocabulary`, `banned_vocabulary` for all 8 asset types
-
 **Main problem being solved:**
 Most companies default to writing a blog article for every keyword. This is wrong. Some keywords call for a landing page, some for a comparison page, some for a lead magnet, some for an AI-optimised factual asset. The app solves the *format decision* problem before the content problem — and then adapts the brief to the chosen format.
 
@@ -40,9 +35,6 @@ The product started as an SEO content brief generator. It evolved through severa
 4. **Phase 4:** Improved intelligence — SERP pattern extraction, keyword intent grouping, forced unique angle, concrete competitive gaps
 5. **Phase 5:** Content Type Decision step — agent now decides the right asset format before writing the brief
 6. **Phase 6:** Full strategic reposition — 8 asset types, Strategic Recommendation output, format-specific brief prompting, banned generic fallbacks
-7. **Phase 7:** Deterministic heuristic pre-classification layer — `classifyKeywordHeuristic()` runs before Step 4 and enforces format decisions for high-confidence keyword patterns; `ASSET_BEHAVIOR_MAP` makes the pipeline asset-aware end-to-end; `validateContentTypeAlignment()` catches and corrects vocabulary drift post-Step 4; Fast Test Mode (classification + Step 4 only) added for rapid iteration
-8. **Phase 8:** Opportunity Scoring Intelligence — `computeFastOpportunityScore()` (fast test heuristic) and full-mode API step scoring 7 dimensions (acquisition_potential, commercial_intent, competitive_saturation, differentiation_potential, conversion_leverage, speed_to_value, strategic_roi); 4 verdicts including "asymmetric opportunity"; rendered before Strategic Recommendation in both modes
-9. **Phase 9:** Competitive Moat Intelligence — `computeCompetitiveMoat()` pure client-side computation (no additional API calls); 4 scored dimensions (incumbent_strength, format_defensibility, brand_trust_barrier, execution_difficulty) + realistic_entry_strategy + attack_angle; 4 moat levels; uses real SERP difficulty and top_results in full mode; rendered after Opportunity Analysis, before Strategic Recommendation
 
 **The North Star:**
 The app should feel like hiring a senior marketing strategist for 60 seconds. It should tell you *what to build* and *why it will win*, not just *what to write*.
@@ -112,25 +104,6 @@ Non-200 responses log the full Anthropic error body.
 All API calls go through `callClaude()` in `index.html`. Each step runs sequentially with a 3-second sleep between them to stay within the 30,000 input tokens/minute rate limit.
 
 Web search is used **only in Step 1**. All subsequent steps work purely from previous step output.
-
-**Pre-Step 4: Heuristic pre-classification**
-`classifyKeywordHeuristic(keyword)` runs before Step 4 in both full pipeline and fast test mode. It uses 7 regex rules to assign a `problem_type` and `confidence` level (`high` or `medium`). High-confidence matches produce a `heuristicEnforcementBlock` that is prepended to the Step 4 system prompt, explicitly forbidding `blog_article` as output and stating SERP signals cannot override the classification.
-
-`HEURISTIC_ASSET_MAP` provides deterministic content_type assignments for high-confidence problem types:
-- `calculation` → `tool_or_calculator`
-- `implementation` → `lead_magnet`
-- `comparison` → `comparison_page`
-- `product_discovery` → `comparison_page`
-
-After Step 4 JSON is parsed, `decision_source` is computed: `heuristic-driven | ai-overridden | hybrid | ai-driven`.
-
-**Post-Step 4: Validation**
-`validateContentTypeAlignment(contentType)` checks `reasoning`, `what_to_build`, `why_it_fits`, `business_impact` for banned vocabulary from `ASSET_BEHAVIOR_MAP[content_type].banned_vocabulary`. On detection: logs a `console.warn` and auto-patches `reasoning` with `[Asset mode: ...]` annotation.
-
-**Fast Test Mode**
-A checkbox in the UI skips Steps 1–3 and 5–6, running only `classifyKeywordHeuristic()` + Step 4 with lightweight mock SERP/competitor data. After Step 4: computes `computeFastOpportunityScore()` (heuristic, no API) and `computeCompetitiveMoat()` using mock SERP/competitor data. Renders: Keyword signal + Opportunity Analysis + Competitive Moat + Asset type decision + Strategic recommendation + Asset Logic debug panel. Full mode is unaffected.
-
-**setStep() numbering (full mode):** 0→1→2→3→4(Opportunity Analysis)→5(Asset Brief)→6(Quality Score)→7(done). Fast test mode: runs to setStep(7) directly after heuristic + Step 4.
 
 ---
 
@@ -212,11 +185,11 @@ A checkbox in the UI skips Steps 1–3 and 5–6, running only `classifyKeywordH
 ---
 
 ### Step 4 — Asset Type Decision
-**Function:** `callClaude`, no web search, `maxTokens: 500`
+**Function:** `callClaude`, no web search, `maxTokens: 350`
 
-**What it does:** Decides the highest-ROI marketing asset format. The core strategic decision of the entire pipeline. Preceded by `classifyKeywordHeuristic()` and (for high-confidence matches) a mandatory enforcement block prepended to the system prompt.
+**What it does:** Decides the highest-ROI marketing asset format. The core strategic decision of the entire pipeline.
 
-**Input:** keyword, business goal, `serp.search_intent`, `serp.dominant_content_type`, top result type distribution, `competitor.winning_angle`, `serp.patterns.what_is_missing`, heuristic pre-classification (if matched)
+**Input:** keyword, business goal, `serp.search_intent`, `serp.dominant_content_type`, top result type distribution, `competitor.winning_angle`, `serp.patterns.what_is_missing`
 
 **Output schema:**
 ```json
@@ -238,61 +211,14 @@ A checkbox in the UI skips Steps 1–3 and 5–6, running only `classifyKeywordH
 
 ---
 
-### Step 4b — Opportunity Analysis (full mode only)
-**Function:** `callClaude`, no web search, `maxTokens: 500`
-
-**What it does:** Scores the strategic attractiveness of the keyword opportunity across 7 dimensions. Falls back to `computeFastOpportunityScore()` if JSON extraction fails.
-
-**Input:** keyword, recommended asset type, business goal, SERP search intent, difficulty signal, competitor weakness, market gap
-
-**Output schema:**
-```json
-{
-  "dimensions": {
-    "acquisition_potential":    { "score": 0-100, "reasoning": "..." },
-    "commercial_intent":        { "score": 0-100, "reasoning": "..." },
-    "competitive_saturation":   { "score": 0-100, "reasoning": "..." },
-    "differentiation_potential":{ "score": 0-100, "reasoning": "..." },
-    "conversion_leverage":      { "score": 0-100, "reasoning": "..." },
-    "speed_to_value":           { "score": 0-100, "reasoning": "..." },
-    "strategic_roi":            { "score": 0-100, "reasoning": "..." }
-  },
-  "overall_score": 0-100,
-  "verdict": "low opportunity|moderate opportunity|strong opportunity|asymmetric opportunity",
-  "verdict_reasoning": "..."
-}
-```
-
-**Verdict logic:** "asymmetric opportunity" requires high heuristic confidence + non-blog_article type + differentiation_potential ≥ 82. Score colours: ≥75 green, ≥55 gold, <55 red.
-
-**Competitive Moat (client-side, no API call):**
-`computeCompetitiveMoat(keyword, contentType, opportunity, serp, competitor)` runs immediately after the opportunity step in both modes. Pure computation — no additional API call.
-
-4 scored dimensions:
-- `incumbent_strength` — derived from `serp.difficulty_signal` (high=78, medium=55, low=38) ± saturation modifier
-- `format_defensibility` — per-type base (tool_or_calculator=88…) ± SERP top_results format match count
-- `brand_trust_barrier` — per-type base ± difficulty modifier
-- `execution_difficulty` — per-type constant
-
-Plus `realistic_entry_strategy` (text) and `attack_angle` (text).
-
-Weighted moat score: `moatScore = incumbentStrength×0.45 + brandTrustBarrier×0.30 + executionDifficulty×0.25`. Format bonus: −12 if formatDefensibility≥80, −6 if ≥65, else 0. `effectiveMoat = moatScore − formatBonus`.
-
-Moat levels: ≥72 = "very hard to beat" (red), ≥55 = "strong moat" (orange #b04000), ≥38 = "moderate moat" (gold), <38 = "weak moat" (green). Color semantics: format_defensibility higher=green (advantage); other dims higher=red (threat).
-
-**Flows into:** renderOpportunityAnalysis + renderCompetitiveMoat (both rendered before Strategic Recommendation)
-
----
-
 ### Step 5 — Asset Brief
 **Function:** `callClaude`, no web search, `maxTokens: 1200`
 
-**What it does:** Writes a format-specific brief for the chosen asset type. Uses three mechanisms to force type-specific output:
+**What it does:** Writes a format-specific brief for the chosen asset type. Uses two mechanisms to force type-specific output:
 1. `structureGuide` — a lookup table injected into the user message explaining the exact section structure for this asset type
 2. `typeSpecificInstruction` — a `CRITICAL:` block injected into the system prompt with hard rules (e.g. "comparison_page: title must name what is being compared, do NOT write a how-to title")
-3. `ASSET_BEHAVIOR_MAP` context — `strategic_role`, `interaction_model`, `conversion_mechanism`, `differentiation_strategy` for the chosen type are injected into the user message to anchor brief generation in the asset's behavioral profile
 
-**Input:** All previous step outputs + keyword, audience, business goal, context, asset behavior context from `ASSET_BEHAVIOR_MAP`
+**Input:** All previous step outputs + keyword, audience, business goal, context
 
 **Output schema:**
 ```json
@@ -343,12 +269,10 @@ Moat levels: ≥72 = "very hard to beat" (red), ≥55 = "strong moat" (orange #b
 | 1 — Market Signal Analysis | Yes (max_uses: 2) | 800 |
 | 2 — Competitive Intelligence | No | 600 |
 | 3 — Keyword Opportunity Map | No | 500 |
-| 4 — Asset Type Decision | No | 500 |
-| 4b — Opportunity Analysis | No | 500 |
+| 4 — Asset Type Decision | No | 350 |
 | 5 — Asset Brief | No | 1200 |
 | 6 — Strategy Quality Score | No | 400 |
 
-Competitive Moat (client-side): 0 API tokens.
 3-second sleep before each of steps 2–6 to stay within 30,000 input tokens/minute.
 
 ---
@@ -367,12 +291,6 @@ All 8 currently supported asset types and what they mean:
 | `tool_or_calculator` | Problem-solving intent, user needs an answer/calculation | Tool description, Inputs, Output interpretation, Supporting content |
 | `lead_magnet` | Resource-seeking intent, not-yet-buying user | Offer headline, Value exchange, Form fields, Delivery, Follow-up sequence |
 | `ai_visibility_asset` | Definition/concept queries likely answered by ChatGPT or Perplexity | Entity definition, Numbered facts, Q&A blocks, Stats with sources, Schema notes |
-
-**`ASSET_BEHAVIOR_MAP`** provides a full behavioral profile for each type: `strategic_role`, `user_value`, `interaction_model`, `conversion_mechanism`, `differentiation_strategy`, `reasoning_vocabulary` (terms to use), and `banned_vocabulary` (terms that indicate article-mode drift). This profile is used to:
-- Validate Step 4 output (`validateContentTypeAlignment()`) and warn/patch when banned vocabulary appears
-- Inject behavioral context into Step 5 user message to anchor brief generation
-- Render `strategic_role` under the asset type chip in both renderResult and renderFastResult
-- Show a full "Asset Logic" debug panel in Fast Test Mode (strategic role, interaction model, conversion mechanism)
 
 ---
 
@@ -422,21 +340,17 @@ All 8 currently supported asset types and what they mean:
 ## 9. Known Problems / Improvement Areas
 
 **Output quality:**
+- Outputs can still feel generic, especially for less common asset types (`tool_or_calculator`, `category_page`)
 - The `unique_angle` field in briefs sometimes defaults to describing a benefit rather than naming a concrete differentiator
 - `must_include` items can be vague topic labels rather than specific named resources
-- Fallback objects (Step 4 and Step 5) contain real, asset-type-specific copy — no bracket placeholders
 
 **Asset structure:**
+- `lead_magnet` and `ai_visibility_asset` are new types with less battle-tested prompting — they may need prompt iteration
 - The `outline` schema uses h2/h3 for all types, which maps awkwardly to landing pages and tool pages — a type-specific schema would be more accurate but would require renderResult changes
-- `category_page` has less battle-tested prompting and may need prompt iteration
 
 **Strategic reasoning:**
 - The `strategic_recommendation` fields sometimes reflect the keyword rather than the business context (goal, audience)
 - `growth_impact` can be too abstract — should name specific metrics (CAC, MQL volume, citation rate)
-
-**Heuristic system:**
-- Medium-confidence heuristic matches still allow AI override — this is intentional but means some keywords with genuinely ambiguous intent may get inconsistent decisions
-- `validateContentTypeAlignment()` patches `reasoning` text but cannot retroactively rewrite the full `strategic_recommendation` object — deep drift in `what_to_build` or `why_it_fits` requires the Step 4 prompt to do better
 
 **SERP intelligence:**
 - Step 1 infers word counts from snippets rather than actual crawling — estimates are approximate
@@ -465,19 +379,18 @@ All 8 currently supported asset types and what they mean:
 
 7. **Always use `extractJSON()` when parsing API responses.** Never use raw `JSON.parse()` on Claude output — the model sometimes wraps responses in markdown code fences.
 
-8. **Fallback objects must never use banned phrases or bracket placeholders:**
+8. **Fallback objects must never use banned phrases:**
    - "The Complete Guide to..."
    - "Start with a compelling statistic or question"
    - "Subscribe or contact us"
-   - "provide value" / "be comprehensive" / "add more examples"
-   - "featured snippet" / "topical authority" / "drive traffic" / "increase visibility"
-   - "builds authority" / "aligns with intent" / "create engaging content"
-   - Bracket placeholders like `[Opening observation]`, `[Your Value Proposition]`, `[Insert keyword]`
-   All fallbacks are asset-type-aware and contain real copy. Each hook is a publishable sentence. Each outline section names a real content device.
+   - "provide value"
+   - "be comprehensive"
+   - "add more examples"
+   All fallbacks are now asset-type-aware and use format-specific placeholder language.
 
 9. **Token budgets are load-bearing.** Do not increase `maxTokens` for any step without considering the cumulative input token cost per full pipeline run. The pipeline currently costs approximately 3,500–5,000 output tokens per run and significant input tokens due to inter-step context passing.
 
-10. **`setStep()` numbering must match the `STEPS` array.** The STEPS array has 7 entries (indices 0–6). The pipeline calls `setStep(0)` through `setStep(7)` — 0–6 for active steps, 7 to mark all done. Full mode sequence: setStep(0)→1→2→3→4(opportunity)→5(brief)→6(quality)→7(done). Fast test: setStep(3)→7. If steps are added or removed, both the `STEPS` array and all `setStep()` calls must be updated together.
+10. **`setStep()` numbering must match the `STEPS` array.** The pipeline calls `setStep(0)` through `setStep(6)` — 0–5 for active steps, 6 to mark all done. If steps are added or removed, both the `STEPS` array and all `setStep()` calls must be updated together.
 
 ---
 
@@ -544,5 +457,5 @@ Persistent principles for all development work on this project.
 
 ---
 
-*Last updated: May 2026 — Phase 9: Competitive Moat Intelligence (computeCompetitiveMoat, renderCompetitiveMoat — pure client-side, no API tokens, uses real SERP signals in full mode); Phase 8: Opportunity Scoring Intelligence (computeFastOpportunityScore heuristic + full-mode API step, 7 dimensions, 4 verdicts, renderOpportunityAnalysis); Phase 7: deterministic heuristic pre-classification (classifyKeywordHeuristic + HEURISTIC_ASSET_MAP), ASSET_BEHAVIOR_MAP end-to-end asset awareness, validateContentTypeAlignment, asset behavior context in Step 5, strategic_role under asset chip, Asset Logic debug panel*
+*Last updated: May 2026*
 *Project location: `/Users/garcia/Desktop/SEO-Agent/files/`*
