@@ -35,6 +35,8 @@ The product started as an SEO content brief generator. It evolved through severa
 4. **Phase 4:** Improved intelligence — SERP pattern extraction, keyword intent grouping, forced unique angle, concrete competitive gaps
 5. **Phase 5:** Content Type Decision step — agent now decides the right asset format before writing the brief
 6. **Phase 6:** Full strategic reposition — 8 asset types, Strategic Recommendation output, format-specific brief prompting, banned generic fallbacks
+7. **Phases 7–16:** Heuristic pre-classification, Opportunity Scoring, Competitive Moat, Executive Summary, Execution Asset Generation, Interactive Operator Workspace (per-block regen, inline editing, floating nav, collapsible sections, Build Mode), Visual Execution Preview (deterministic wireframe scaffolds for all 8 types)
+8. **Phase 17:** Stabilization & hardening sprint — `esc()` XSS helper, `ensureShape()` schema validator (with array type-enforcement), `loadStoredHistory()` / `saveHistory()` crash-safe localStorage handlers, null + type guards on `r.brief` / `r.quality` / `r.keywords` / `r.brief.outline` (null items) / `r.keywords.by_intent.*` / `r.contentType.strategic_recommendation.execution_steps` / `r.competitor.differentiation_tactics` / `r.serp.serp_features` in `renderResult`, `execRows` / `execChips` / `execList` array-safety guards, `content_type` null fallback in Step 5 system prompt, exec parse-failure recovery, SERP URL/title escaping, `api/claude.js` request hardening, execution data now persisted to localStorage via `saveHistory()` after generation and per-block regen
 
 **The North Star:**
 The app should feel like hiring a senior marketing strategist for 60 seconds. It should tell you *what to build* and *why it will win*, not just *what to write*.
@@ -53,7 +55,7 @@ The app should feel like hiring a senior marketing strategist for 60 seconds. It
 | Storage | `localStorage` — stores last 20 results as history |
 
 **Why a proxy server?**
-The frontend cannot call the Anthropic API directly (CORS + key exposure). `server.js` runs on `localhost:3000`, adds the API key and required headers, and forwards requests.
+The frontend cannot call the Anthropic API directly (CORS + key exposure). `local-server.js` runs on `localhost:3000`, adds the API key and required headers, and forwards requests. Start it with `npm run start:local`.
 
 **Environment variable setup:**
 ```
@@ -318,7 +320,67 @@ All 8 currently supported asset types and what they mean:
 - Instrument Serif + DM Mono font pairing
 - The 6-step progress indicator
 - The score card with animated fill bar
-- The section structure: Asset Type → Strategic Recommendation → Score → Competitors → SERP signals → Keywords → Brief → Quality review
+- The section structure (4 layers): ① Decision (exec summary → strategic rec → why this wins) → ② Reasoning (asset type decision → opportunity → moat) → ③ Execution (brief: title, hook, outline, keywords, must include, CTA) → ④ Research & Quality (score → quality review → competitors → SERP → heuristic signal)
+
+**Result page helper functions (shared by both render modes):**
+- `renderExecutiveSummary(r)` — dark card at top: verdict sentence, asset chip, opportunity score pill, moat level pill, verdict label. Has `data-section="summary" data-label="Summary"`.
+- `renderWhyThisWins(ct, moat)` — green-bordered 3-bullet section: beats competitor formats (moat.attack_angle), right format for intent (why_it_fits), business case (business_impact)
+- `renderOpportunityAnalysis(opp)` — collapsible `sec-collapsible sec-closed` with `data-section="opportunity" data-label="Opportunity" data-layer="reasoning"`
+- `renderCompetitiveMoat(moat)` — collapsible `sec-collapsible sec-closed` with `data-section="moat" data-label="Moat" data-layer="reasoning"`
+
+**Operator Workspace — Phase 15 (nav + collapse + build mode):**
+
+*Result navigation (`#resultNav`):*
+- Fixed `<div id="resultNav">` placed outside `#resultSection` in the HTML body — survives `innerHTML` re-renders
+- `initResultNav()` called at end of `renderResult`, `renderFastResult`, and inside `toggleResultMode()` — rebuilds nav from current visible `[data-section]` elements
+- `navScrollListener` module-level ref removes old scroll listener before adding new one (prevents accumulation)
+- `showSection()` clears nav when leaving the result screen
+- Nav hides on viewports ≤ 1100px; labels only visible on hover; active dot scales up on scroll
+
+*Section collapse:*
+- `toggleSection(el)` — toggles `.sec-closed` on a `.sec-collapsible` element
+- CSS: `grid-template-rows: 1fr → 0fr` on `.sec-body`; requires inner `<div class="sec-body-inner">` with `overflow:hidden; min-height:0`
+- Sections collapsed by default: Opportunity, Moat, Research & Quality
+- Chevron `▾` rotates to `▸` when closed via `.sec-collapsible.sec-closed .sec-chevron { transform: rotate(-90deg) }`
+
+*Build mode:*
+- `resultMode` module variable: `'strategist' | 'build'`
+- `toggleResultMode()` flips `resultMode`, applies/removes `.mode-build` from `#resultSection`, updates button text/state, re-runs `initResultNav()`
+- CSS: `.result-section.mode-build [data-layer="reasoning"], [data-layer="research"], [data-layer="debug"] { display: none }`
+- Mode persists across re-renders — both `renderResult` and `renderFastResult` apply `.mode-build` if `resultMode === 'build'` when they run
+
+*Data attribute convention:*
+- `data-section="<key>"` — nav anchor; must be unique per result page
+- `data-label="<label>"` — human-readable nav label
+- `data-layer="reasoning"` — hidden in build mode (Opportunity, Moat, Asset type decision, Keyword signal in fast test)
+- `data-layer="research"` — hidden in build mode (Research & Quality wrapper in full mode)
+- `data-layer="debug"` — hidden in build mode (Asset Logic panel in fast test mode only)
+
+**Visual Execution Preview — Phase 16:**
+
+Deterministic, template-driven wireframe scaffold rendered immediately after execution generation. No API calls. Reads from the already-parsed `exec` object.
+
+*Architecture:*
+- `renderVisualPreview(exec, ct)` — switches on `ct`, returns HTML string with outer `data-section="preview" data-label="Preview"` wrapper (no `data-layer` — always visible including in Build Mode)
+- Rendered into `<div id="previewAnchor">` which is a sibling of `<div id="execContainer">` inside the `data-section="execution"` wrapper
+- `renderExecutionPlaceholder(r)` now returns both `#execContainer` and `#previewAnchor` divs
+- `triggerExecutionGeneration()` populates `#previewAnchor` after `#execContainer` and calls `initResultNav()` so "Preview" appears as the 5th nav dot
+- `regenExecBlock()` re-renders `#previewAnchor` when `previewAnchor.innerHTML` is non-empty, keeping preview in sync with patched fields
+
+*Template field mappings (exact keys from `EXECUTION_SCHEMAS`):*
+| Asset type | Zones rendered |
+|---|---|
+| `tool_or_calculator` | Tool headline (`above_fold_headline`) → Inputs (`inputs[].label`) → Output (`output.primary_label`, dark box) → Lead gate (`lead_gate.offer` + `lead_gate.cta`, gold bg) |
+| `blog_article` | Intro (`intro`) → Article sections (`section_leads[].heading`, numbered list) → CTA (`cta_placements[0].copy`) |
+| `landing_page` | Hero (`hero.h1` + `hero.subheadline`) → Benefits (`benefits[].label` chips) → Social proof → CTA (`hero.cta_primary`) |
+| `product_page` | Product headline (`hero_headline`) → Differentiators (numbered list) → Social proof → CTA (`cta.copy` + `cta.trust_element`) |
+| `category_page` | Category headline (`h1`) → Subcategories (`subcategories[].name`, numbered) → Filters (chips) → Featured format |
+| `comparison_page` | Criteria chips (`table_columns`) → Table (columns + `decision_guide[].profile` rows) → CTA (`cta.copy`) |
+| `lead_magnet` | Cover (dark — `titles[0]` + `opt_in.subheadline`) → Contents (`content_sections[]`, numbered) → Download gate (`opt_in.headline` + `opt_in.button`, gold bg) |
+| `ai_visibility_asset` | Entity definition → Q&A pairs (`qa_pairs[].q`, 3 items) → Key facts (chips) → Citation hooks (chips) |
+
+*CSS primitives (`.vp-` prefix):*
+`.vp-outer`, `.vp-header`, `.vp-title`, `.vp-type-badge`, `.vp-frame`, `.vp-zone`, `.vp-zone--hero`, `.vp-zone--cta`, `.vp-zone--gate`, `.vp-zone-label`, `.vp-zone-headline`, `.vp-zone-body`, `.vp-cta-btn`, `.vp-output-box`, `.vp-placeholder`, `.vp-chip-row`, `.vp-chip`, `.vp-row`, `.vp-row-key`, `.vp-row-val`, `.vp-table`, `.vp-section-list`, `.vp-section-item`, `.vp-section-num`, `.vp-cover`, `.vp-cover-title`, `.vp-calc-inputs`, `.vp-calc-input-row`, `.vp-calc-label`, `.vp-calc-field`
 
 ---
 
@@ -333,7 +395,7 @@ All 8 currently supported asset types and what they mean:
 | Single-file frontend (`index.html`) | No build tooling — intentional for simplicity and portability |
 | No database | localStorage only — fine for the current single-user prototype stage |
 | No authentication | Local-only prototype, not deployed |
-| `extractJSON()` required | Claude sometimes returns JSON wrapped in markdown fences — parser handles plain JSON, fenced JSON, and embedded JSON |
+| `extractJSON()` required | Claude sometimes returns JSON with prose before/after or in markdown fences. Parser has three layers: (1) direct `JSON.parse`, (2) markdown-fence regex (case-insensitive, catches `json`/`JSON`), (3) `extractFirstJSONObject()` — brace-counting with string-literal awareness, stops at the first balanced `}` so postamble text containing `{field}` notation doesn't overshoot the real closing brace |
 
 ---
 
@@ -355,6 +417,9 @@ All 8 currently supported asset types and what they mean:
 **SERP intelligence:**
 - Step 1 infers word counts from snippets rather than actual crawling — estimates are approximate
 - SERP patterns (`common_headings`, `recurring_angles`) are inferred from titles and snippets, not full page content
+
+**Token budget — execution generation:**
+- `lead_magnet` execution JSON (titles × 3 + opt_in + 7 content_sections + email_sequence) reliably exceeds the 900-token execution budget, causing `extractJSON` to fail on the truncated response. The UI now recovers gracefully (button resets, retry shown), but the type itself needs either a higher token budget or a slimmed schema. Do not increase `maxTokens` beyond 2000 without checking the `MAX_TOKENS_HARD_CAP` in `api/claude.js`.
 
 **Future expansion areas:**
 - AI visibility strategy is an emerging area — `ai_visibility_asset` type could be expanded with structured data schema templates
@@ -457,5 +522,95 @@ Persistent principles for all development work on this project.
 
 ---
 
-*Last updated: May 2026*
+## Deployment Workflow
+
+**When to use:** Any time changes are ready to ship to production.
+
+**Rules:**
+
+1. Before deploying, always run `git status` and review what is staged.
+2. Never commit or push if `.env`, API keys, `node_modules`, or any secrets are staged. Stop and remove them first.
+3. Run a quick local sanity check when possible — confirm the server starts and `/api/claude` responds.
+4. Stage all safe changes with `git add -A`.
+5. Write a concise, accurate commit message based on the actual changes — not generic filler.
+6. Push to GitHub.
+7. Remind the user that Vercel will auto-deploy after the push — no manual trigger needed.
+8. If deployment fails, inspect Vercel logs rather than guessing at the cause.
+
+**Command sequence:**
+
+```bash
+git status
+git add -A
+git commit -m "short clear message"
+git push
+```
+
+**Trigger phrase:** When the user says "deploy this" or "push this", Claude Code may execute this workflow — but it must first confirm that no secrets, `.env` files, or `node_modules` are staged before proceeding.
+
+---
+
+---
+
+## Browser Testing Workflow
+
+**When to use:** After any UI or pipeline change, to verify the affected flow works correctly in a live browser before considering the task complete.
+
+**Setup:** `http://localhost:3000` requires `npm run start:local` to be running. The Claude in Chrome MCP extension provides screenshot, click, JS execution, and console-reading capabilities.
+
+**Rules:**
+
+1. Before making UI changes, inspect the current app state in Chrome when it helps confirm structure or current behaviour.
+2. After UI changes, test the affected flow in Chrome.
+3. Use `http://localhost:3000` for local testing.
+4. Prefer Fast Test Mode for rapid validation — completes in seconds vs ~40s for a full pipeline run.
+5. Check browser console errors after changes.
+6. Test core flows as relevant to the change:
+   - Homepage loads
+   - Fast Test Mode runs and renders a result
+   - Full pipeline result renders
+   - Execution Assets generate
+   - Per-block regen works
+   - Inline editing works
+   - Build Mode works (reasoning/debug sections hidden, nav updates)
+   - Copy / export controls work
+7. Do not make extra UI improvements beyond the requested task scope. Report unrelated issues found — do not fix them silently.
+8. Report all issues found before fixing anything out of scope.
+
+**Scope boundary:** Browser access is a verification tool, not a directive to self-improve the UI autonomously without direction.
+
+---
+
+---
+
+## Codex Review Workflow
+
+Codex is a secondary reviewer and debugging agent. Claude Code remains the primary implementation agent and product architect.
+
+**When to invoke Codex:**
+- After implementing a large feature
+- When a bug is hard to isolate
+- When a deployment fails and the root cause is unclear
+- Before pushing a risky change, for a second opinion
+- When adversarial review of a completed implementation is warranted
+
+**What Codex should check:**
+- Syntax issues and broken function signatures
+- Duplicate logic or conflicting declarations
+- Fragile field accesses or assumptions about model response shape
+- Export, build, or routing problems
+- Obvious UX regressions
+- Security risks — secrets, exposed keys, unvalidated inputs
+
+**Deployment gate for major changes:**
+1. Claude Code implements
+2. Browser testing validates (see Browser Testing Workflow)
+3. Codex reviews if the change is large or going to production
+4. Then deploy
+
+**Constraint:** Codex and Claude Code must not edit the same files simultaneously unless on separate branches or worktrees. Codex output is advisory — Claude Code evaluates it before acting.
+
+---
+
+*Last updated: May 2026 — Phase 17 (extended): Post-stabilization adversarial review + fixes. Additional guards added after Codex adversarial review: `Array.isArray()` enforcement at all nested `.map()`/`.join()` sites that bypassed `ensureShape` (`execution_steps`, `differentiation_tactics`, `serp_features`, `by_intent.informational/commercial`), `filter(Boolean)` on `r.brief.outline` to strip null items, `execRows/execChips/execList` upgraded from `?.length` to `Array.isArray()` guard, `content_type || 'blog_article'` fallback in Step 5 system prompt to prevent pipeline abort on partial Step 4 response, `saveHistory()` called after execution generation and per-block regen so execution data survives page reload for full-pipeline results. Full browser validation passed: Fast Test Mode (3/4 canonical keywords correct — `ai_visibility_asset` miss is pre-existing), full pipeline, execution generation, regen, visual preview, Build Mode, nav, export, history restore. Zero console errors. Phase 17: Stabilization & Hardening Sprint. Five areas hardened: (1) XSS prevention — `esc()` HTML entity escaper applied to all user-controlled and web-sourced content rendered into innerHTML; SERP `top_results` URLs validated against `javascript:` URIs, titles escaped; (2) localStorage crash protection — `loadStoredHistory()` catches `JSON.parse` errors, removes corrupted key, returns `[]`; `saveHistory()` handles `QuotaExceededError` by trimming to 10 entries; (3) `currentResult` race condition — snapshot guards (`const targetResult = currentResult` before async, `if (currentResult !== targetResult) return` after await) in `triggerExecutionGeneration` and `regenExecBlock`; (4) API proxy hardening in `api/claude.js` — `MAX_TOKENS_HARD_CAP = 2000`, model prefix whitelist (`claude-`), message count cap (10), string length cap (60 000 chars), field whitelist (only `model/max_tokens/messages/system/tools` forwarded), tool type filter (only `web_search*`); (5) Runtime schema validation — `ensureShape()` null-merges `r.brief`, `r.quality`, `r.keywords` at the top of `renderResult` to prevent crash on corrupted history entries; exec parse-failure path now resets button state + shows inline Retry instead of freezing. Key deferred issues: AI output fields (`r.brief.hook`, `r.contentType.reasoning`, etc.) rendered unescaped — risk is low (Anthropic API source) but not eliminated; `lead_magnet` execution JSON reliably exceeds 900-token budget (see Known Problems). Phase 16: Visual Execution Preview (deterministic wireframe scaffold, 8 asset types, no API calls, renders after execution generation, stays in sync with per-block regen, visible in Build Mode). Phase 15: Operator Workspace (nav + collapse + build mode). Fixed `data-layer` on Asset type decision sections (both render modes) and on Keyword signal section in renderFastResult — they were missing the reasoning layer attribute and would not hide in build mode. Phase 14 complete: `buildBlockRegenCall(r, key)` + `regenExecBlock(btn)` per-block regen. Export controls restore: `renderFastResult` never had an export bar — added `<div class="export-bar">` with Copy full brief + Download .txt buttons after `renderExecutionPlaceholder(r)`. `renderResult` had the export bar at the very bottom of the page (after all Research & Quality sections) with `position: sticky; bottom: 0` — moved it to immediately after `renderExecutionPlaceholder(r)` and before the Research & Quality `<hr>` separator. `.export-bar` CSS updated: removed `position: sticky; bottom: 0` and `background: var(--surface)` (no longer a viewport-pinned footer); now uses `border-top` + `padding: 18px 0 6px` + `margin-top: 32px` as a natural content separator. Export bar is now in the same position in both modes: ③ Execution layer → export bar → Research & Quality. `buildPlainText` already handles sparse fast-test results gracefully via optional chaining. Phase 14: Interactive operator workspace — per-block regeneration and inline editing. `execBlock(label, inner, variant, key)` now takes a 4th `key` param rendered as `data-exec-key` attribute on each `.exec-block`; `renderExecutionSection` `add()` helper signature changed to `add(key, label, inner, variant)` — all 34+ calls updated with JSON field keys. Inline editing: `contenteditable="true" spellcheck="false"` on all `.exec-row-val`, `.exec-chip`, `.exec-headline`, `.exec-quote`, `.exec-text` elements — edits persist in per-block copy via `copyExecBlock` DOM traversal. Per-block regen: `buildBlockRegenCall(r, key)` builds a focused single-field API call (maxTokens: 500) — system prompt instructs Claude to return `{"key": <new value>}` only, using full `EXECUTION_SCHEMAS[ct]` as structural context; `regenExecBlock(btn)` async handler reads `block.dataset.execKey`, shows inline loading state (btn disabled + content opacity), calls `callClaude`, merges `patch[key]` into `currentResult.execution[key]`, re-renders `#execContainer` via `renderExecutionSection`, finds updated block and adds `.just-updated` for 400ms flash animation, handles errors with 3-second self-removing inline error message. New CSS: `.exec-block-actions` (flex container for regen + copy buttons), `.exec-regen-btn` (↺ icon button, matches copy btn style), `@keyframes exec-block-flash` + `.exec-block.just-updated .exec-block-content` (opacity flash on regen). Regen fails gracefully without full re-render — button restores to ↺ and block content opacity clears; Phase 13: Execution layer UX refine — two-tier block system: `execBlock(label, inner, variant)` accepts `'copy'` variant → `.exec-block--copy` (3px left border) + `.exec-block-variant` paste badge; collapsible blocks: header `onclick="toggleExecBlock(this)"` toggles `.is-collapsed`, `▾`/`▸` chevron via `.exec-block-toggle`, content wrapped in `.exec-block-content`; plan overview chip strip: `renderExecutionSection` accumulates labels via `add(label, inner, variant)` helper, renders `.exec-plan-overview` / `.exec-plan-chip` / `.exec-plan-chip--copy` before first block; `.exec-quote` replaces inline prose styles for blog intro and entity definition blocks; density tightened: exec-block padding 16/18 → 14/16, exec-row-key width 130px → 100px, exec-copy-btn opacity 0.65 → 0.85; copy-ready blocks across all 8 asset types explicitly tagged with variant='copy'; Phase 12b: Execution parse reliability fix — root causes: (1) `maxTokens: 700` caused truncation on verbose schemas (lead_magnet, ai_visibility_asset) making all three extractJSON attempts fail; (2) system prompt placed "Return ONLY JSON" after the schema with "Rules:" following it, giving Claude opportunity to add post-JSON prose; fixes: bumped `maxTokens` to 900, rewrote system prompt with JSON-only constraint as the first explicit instruction ("first char must be {, last must be }") before the schema, removed ambiguous "no markdown" phrasing in favour of explicit "no backticks, no fences"; added `console.log/warn` debug logging in `generateExecutionAssets` (raw response preview + full dump on failure); error state now shows inline Retry button instead of dead error + re-enabled generate button; Phase 12a: Execution Export — execution assets are now durable and exportable: `triggerExecutionGeneration()` persists `exec` to `currentResult.execution` on success; `buildExecutionText(exec, ct)` serialises execution JSON to plain text (type-specific, all 8 asset types); `buildPlainText(r)` appends execution section when `r.execution` exists — making Copy and Download automatically include it; per-block copy buttons added inside each `execBlock()` card (`.exec-block-header` flex layout, `.exec-copy-btn` style, `copyExecBlock(btn)` DOM-traversal function); Phase 11: Execution Asset Generation — on-demand API call (700 tokens) triggered by "⚡ Generate" button in result; `EXECUTION_SCHEMAS` per-type JSON schema constants; `buildExecutionCall(r)` constructs type-specific prompt; `renderExecutionSection(exec, ct)` renders 5–7 execution blocks per asset type (inputs, copy, structure, CTAs); `renderExecutionPlaceholder(r)` + `triggerExecutionGeneration()` handle button UX; placed between ③ Execution and ④ Research & Quality layers in both renderResult and renderFastResult; Phase 10: Executive Summary card (dark, verdict sentence + asset chip + opportunity score + moat level pills), Why This Wins section (green-bordered 3-bullet: beats competitor formats / right format for intent / business case), 4-layer result hierarchy (① Decision → ② Reasoning → ③ Execution → ④ Research & Quality), heuristic signal moved to bottom*
 *Project location: `/Users/garcia/Desktop/SEO-Agent/files/`*

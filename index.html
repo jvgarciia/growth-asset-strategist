@@ -410,14 +410,11 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
 /* Export bar */
 .export-bar {
-  position: sticky;
-  bottom: 0;
-  background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 14px 0;
+  padding: 18px 0 6px;
   display: flex;
   gap: 10px;
-  margin-top: 40px;
+  margin-top: 32px;
 }
 .export-btn {
   background: var(--surface2);
@@ -541,6 +538,605 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   .main { padding: 24px 20px; }
   .research-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Executive Summary ─────────────────────────────────── */
+.exec-summary {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 8px;
+  padding: 22px 24px 20px;
+  margin-bottom: 28px;
+}
+.exec-verdict {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.5;
+  color: #f5f2eb;
+  margin-bottom: 18px;
+}
+.exec-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.exec-asset {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #f5f2eb;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.exec-pill {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.exec-pill-val {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+.exec-pill-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,242,235,0.55);
+}
+
+/* ── Why this wins ─────────────────────────────────────── */
+.why-wins {
+  border-left: 3px solid var(--green);
+  background: var(--green-bg);
+  padding: 18px 20px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 28px;
+}
+.why-wins-header {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+  font-family: var(--mono);
+}
+.why-bullet {
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(45,106,79,0.12);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.why-bullet:last-child { border-bottom: none; padding-bottom: 0; }
+.why-icon {
+  color: var(--green);
+  font-size: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* ── Section divider ───────────────────────────────────── */
+.section-break {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+/* ── Execution Assets ──────────────────────────────────── */
+.exec-trigger-wrap {
+  border: 1px dashed var(--border-dark);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--surface);
+}
+.exec-trigger-label {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+.exec-trigger-label strong {
+  display: block;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.exec-trigger-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 5px;
+  padding: 9px 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.exec-trigger-btn:hover { opacity: 0.82; }
+.exec-trigger-btn:disabled { opacity: 0.45; cursor: default; }
+.exec-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.exec-section-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  font-style: italic;
+}
+.exec-section-tag {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.exec-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.exec-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.exec-block-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+}
+.exec-copy-btn {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--ink-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.exec-copy-btn:hover { opacity: 1; color: var(--ink); border-color: var(--border-dark); }
+.exec-headline {
+  font-family: var(--serif);
+  font-size: 19px;
+  color: var(--ink);
+  line-height: 1.45;
+  font-style: italic;
+}
+.exec-text {
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+.exec-row {
+  display: flex;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.exec-row:last-child { border-bottom: none; }
+.exec-row-key {
+  font-size: 11px;
+  color: var(--ink-muted);
+  width: 100px;
+  flex-shrink: 0;
+  padding-top: 1px;
+  font-family: var(--mono);
+}
+.exec-row-val {
+  font-size: 13px;
+  color: var(--ink);
+  flex: 1;
+  line-height: 1.5;
+}
+.exec-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.exec-chip {
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 3px;
+  color: var(--ink-mid);
+  font-family: var(--mono);
+}
+.exec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 768px) { .exec-grid { grid-template-columns: 1fr; } }
+
+/* Block variant: copy-ready (paste-ready content) */
+.exec-block--copy {
+  border-left: 3px solid var(--ink);
+}
+/* Paste badge next to label */
+.exec-block-variant {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+/* Collapse toggle chevron */
+.exec-block-toggle {
+  font-size: 10px;
+  color: var(--ink-muted);
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.12s;
+}
+/* Collapsed state: hide content */
+.exec-block.is-collapsed .exec-block-content { display: none; }
+.exec-block.is-collapsed .exec-block-header { margin-bottom: 0; }
+
+/* Plan overview: chip strip above first block */
+.exec-plan-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.exec-plan-chip {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--ink-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+.exec-plan-chip--copy {
+  color: var(--ink);
+  border-color: var(--border-dark);
+}
+
+/* Prose block quote style — for paste-ready text content */
+.exec-quote {
+  font-style: italic;
+  border-left: 3px solid var(--border-dark);
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* Action buttons group (copy + regen) in block header */
+.exec-block-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+
+/* Regenerate button — sibling of copy button */
+.exec-regen-btn {
+  font-size: 13px;
+  line-height: 1;
+  font-family: var(--mono);
+  color: var(--ink-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 7px;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s, transform 0.2s;
+}
+.exec-regen-btn:hover { opacity: 1; color: var(--ink); border-color: var(--border-dark); }
+.exec-regen-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Inline editing — contenteditable focus state within exec blocks */
+.exec-block [contenteditable] { cursor: text; }
+.exec-block [contenteditable]:focus {
+  outline: none;
+  background: rgba(26,24,20,0.04);
+  box-shadow: 0 0 0 1px var(--border-dark);
+  border-radius: 2px;
+  caret-color: var(--ink);
+}
+
+/* Update flash when a block is regenerated */
+@keyframes exec-block-flash { 0% { opacity: 0.45; } 100% { opacity: 1; } }
+.exec-block.just-updated .exec-block-content { animation: exec-block-flash 0.4s ease-out; }
+
+/* ══ PHASE 1 — Result navigation ══════════════════════════════════════════ */
+.result-nav {
+  position: fixed;
+  right: 26px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 200;
+  padding: 8px 0;
+}
+.result-nav.nav-visible { display: flex; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  padding: 5px 0;
+  opacity: 0.3;
+  transition: opacity 0.18s;
+  text-decoration: none;
+}
+.nav-item:hover { opacity: 0.75; }
+.nav-item.nav-active { opacity: 1; }
+.nav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex-shrink: 0;
+  transition: transform 0.18s;
+}
+.nav-item.nav-active .nav-dot { transform: scale(1.7); }
+.nav-label {
+  font-size: 9px;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Only show labels when result-nav is hovered */
+.result-nav:not(:hover) .nav-label { display: none; }
+@media (max-width: 1100px) { .result-nav { display: none !important; } }
+
+/* ══ PHASE 2 — Collapsible sections ═══════════════════════════════════════ */
+/* grid-template-rows transition — smooth open/close without JS height measurement */
+.sec-collapsible > .sec-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.22s ease;
+}
+.sec-collapsible.sec-closed > .sec-body {
+  grid-template-rows: 0fr;
+}
+/* Inner wrapper must have overflow:hidden and min-height:0 for the grid trick */
+.sec-body > .sec-body-inner { overflow: hidden; min-height: 0; }
+/* Chevron on collapsible section headers */
+.sec-chevron {
+  font-size: 10px;
+  color: var(--ink-muted);
+  transition: transform 0.22s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.sec-collapsible.sec-closed .sec-chevron { transform: rotate(-90deg); }
+/* Section header becomes a button affordance */
+.sec-toggle { cursor: pointer; user-select: none; }
+.sec-toggle:hover .bs-title { color: var(--ink-mid); }
+
+/* Research & Quality collapsible section header */
+.research-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  cursor: pointer;
+  user-select: none;
+}
+.research-section-header .bs-title { margin: 0; }
+.research-section-header:hover .bs-title { color: var(--ink-mid); }
+
+/* ══ PHASE 3 — Mode toggle ════════════════════════════════════════════════ */
+/* Result header — flex row so mode toggle button can sit right-aligned */
+.result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+}
+.mode-toggle-btn {
+  font-size: 10px;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  margin-top: 6px;
+}
+.mode-toggle-btn:hover { color: var(--ink); border-color: var(--border-dark); }
+.mode-toggle-btn.mode-active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* Build mode — hide reasoning and research layers instantly */
+.result-section.mode-build [data-layer="reasoning"],
+.result-section.mode-build [data-layer="research"],
+.result-section.mode-build [data-layer="debug"] {
+  display: none;
+}
+
+/* ─── Visual Execution Preview ─────────────────────────────── */
+.vp-outer {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 4px;
+}
+.vp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.vp-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink);
+  font-style: italic;
+}
+.vp-type-badge {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: var(--mono);
+}
+.vp-frame {
+  padding: 0;
+}
+.vp-zone {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 18px;
+}
+.vp-zone:last-child { border-bottom: none; }
+.vp-zone-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  margin-bottom: 6px;
+}
+.vp-zone-headline {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.4;
+}
+.vp-zone-body {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mid);
+  line-height: 1.55;
+  margin-top: 4px;
+}
+.vp-zone--hero { background: rgba(26,24,20,0.025); }
+.vp-zone--cta  { background: var(--green-bg); }
+.vp-zone--gate { background: var(--gold-bg); }
+.vp-cta-btn {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 10px;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  margin-top: 6px;
+}
+.vp-output-box {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  margin-top: 6px;
+}
+.vp-placeholder {
+  background: var(--surface2);
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+  height: 28px;
+  margin-top: 6px;
+}
+.vp-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.vp-chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 8px;
+  color: var(--ink-mid);
+}
+.vp-row { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.vp-row:last-child { border-bottom: none; }
+.vp-row-key { font-family: var(--mono); font-size: 10px; color: var(--ink-muted); flex: 0 0 120px; }
+.vp-row-val { font-family: var(--mono); font-size: 10px; color: var(--ink-mid); flex: 1; }
+.vp-table { width: 100%; border-collapse: collapse; font-size: 10px; font-family: var(--mono); margin-top: 8px; }
+.vp-table th { background: var(--ink); color: var(--bg); padding: 5px 10px; text-align: left; font-weight: normal; letter-spacing: 0.08em; }
+.vp-table td { padding: 5px 10px; border-bottom: 1px solid var(--border); color: var(--ink-mid); }
+.vp-table tr:last-child td { border-bottom: none; }
+.vp-section-list { list-style: none; padding: 0; margin: 6px 0 0; }
+.vp-section-item { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.vp-section-item:last-child { border-bottom: none; }
+.vp-section-num { font-family: var(--mono); font-size: 9px; color: var(--ink-muted); flex: 0 0 18px; }
+.vp-cover {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 18px 16px 14px;
+  margin-top: 4px;
+}
+.vp-cover-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+.vp-calc-inputs { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.vp-calc-input-row { display: flex; align-items: center; gap: 10px; }
+.vp-calc-label { font-family: var(--mono); font-size: 10px; color: var(--ink-muted); flex: 0 0 130px; }
+.vp-calc-field { flex: 1; height: 22px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -632,6 +1228,9 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   </main>
 </div>
 
+<!-- Result nav — fixed overlay, lives outside #resultSection so it survives re-renders -->
+<div id="resultNav" class="result-nav"></div>
+
 <script>
 const STEPS = [
   { name: 'Market Signal Analysis', desc: 'Reading what the SERP reveals about demand, intent, and competition' },
@@ -645,8 +1244,65 @@ const STEPS = [
 
 const MODEL = 'claude-sonnet-4-6';
 
-let history = JSON.parse(localStorage.getItem('seo_history') || '[]');
+// ─── SAFETY HELPERS ───────────────────────────────────────────────────────
+// Escapes HTML entities — prevents XSS when interpolating user/AI strings into innerHTML
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Lightweight schema safety: merges obj into defaults so required fields always exist.
+// Does NOT throw — returns a safe-to-render object even if the API response was malformed.
+function ensureShape(obj, defaults) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return { ...defaults };
+  const result = { ...defaults, ...obj };
+  // Type-enforce: if a field's default is an array but the incoming value isn't, restore the default.
+  // Prevents corrupted history entries (e.g. outline:"x") from crashing downstream .map() calls.
+  for (const key of Object.keys(defaults)) {
+    if (Array.isArray(defaults[key]) && !Array.isArray(result[key])) result[key] = defaults[key];
+  }
+  return result;
+}
+
+// Safe localStorage reader — returns empty array and recovers on any parse failure.
+// Prevents a single corrupted localStorage entry from crashing the entire app on load.
+function loadStoredHistory() {
+  try {
+    const raw = localStorage.getItem('seo_history');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(h => h && typeof h === 'object');
+  } catch {
+    console.warn('[storage] seo_history corrupted — resetting to empty');
+    try { localStorage.removeItem('seo_history'); } catch {}
+    return [];
+  }
+}
+
+// Safe localStorage writer — handles QuotaExceededError by trimming history and retrying.
+// The current run's result is never discarded; only old history entries are trimmed.
+function saveHistory() {
+  try {
+    localStorage.setItem('seo_history', JSON.stringify(history));
+  } catch (e) {
+    if (e && (e.name === 'QuotaExceededError' || e.code === 22 || e.code === '22')) {
+      // Trim to newest 10 entries (history is newest-first via unshift) and retry once
+      history = history.slice(0, 10);
+      try { localStorage.setItem('seo_history', JSON.stringify(history)); } catch {}
+    }
+  }
+}
+
+let history = loadStoredHistory();
 let currentResult = null;
+let resultMode = 'strategist';   // 'strategist' | 'build'
+let navScrollListener = null;    // stored so we can remove it on re-init
 
 // ─── API ───────────────────────────────────────────────────────────────────
 async function callClaude({ system, user, useWebSearch = false, maxTokens = 1500 }) {
@@ -680,12 +1336,33 @@ async function callClaude({ system, user, useWebSearch = false, maxTokens = 1500
 // ─── HELPERS ──────────────────────────────────────────────────────────────
 // Handles plain JSON, ```json fences, and JSON embedded in prose
 function extractJSON(raw) {
+  // 1. Direct parse — succeeds if response is clean JSON
   try { return JSON.parse(raw); } catch {}
-  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  // 2. Markdown fence — case-insensitive to handle ```JSON, ```json, ``` etc.
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
   if (fenced) { try { return JSON.parse(fenced[1]); } catch {} }
-  const obj = raw.match(/\{[\s\S]*\}/);
-  if (obj) { try { return JSON.parse(obj[0]); } catch {} }
+  // 3. Brace-counting extraction — finds the first balanced JSON object.
+  //    More reliable than a greedy regex, which overshoots when Claude adds
+  //    postamble text containing {field_name} or {keyword} notation.
+  const candidate = extractFirstJSONObject(raw);
+  if (candidate) { try { return JSON.parse(candidate); } catch {} }
   throw new SyntaxError('No valid JSON found in response');
+}
+
+// Finds the first balanced { ... } object in a string, correctly skipping
+// braces inside string literals so "note: use {field}" doesn't confuse it.
+function extractFirstJSONObject(str) {
+  let depth = 0, start = -1, inStr = false, esc = false;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (esc) { esc = false; continue; }
+    if (ch === '\\' && inStr) { esc = true; continue; }
+    if (ch === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (ch === '{') { if (depth++ === 0) start = i; }
+    else if (ch === '}' && depth > 0) { if (--depth === 0) return str.slice(start, i + 1); }
+  }
+  return null;
 }
 
 function extractDomain(url) {
@@ -1096,12 +1773,14 @@ function renderOpportunityAnalysis(opp) {
       </div>
       <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
     </div>`).join('');
-  return `<div class="brief-section">
-    <div class="bs-header">
+  return `<div class="brief-section sec-collapsible sec-closed" data-section="opportunity" data-label="Opportunity" data-layer="reasoning">
+    <div class="bs-header sec-toggle" onclick="toggleSection(this.parentElement)">
       <span class="bs-title">Opportunity analysis</span>
       <span class="bs-tag">${opp.is_fast_heuristic ? 'heuristic scoring' : 'AI scored'}</span>
+      <span class="sec-chevron">▾</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:20px;padding:16px;background:${vs.bg};border-radius:6px;border:1px solid ${vs.border}">
+    <div class="sec-body"><div class="sec-body-inner">
+    <div style="display:flex;align-items:flex-start;gap:20px;margin:14px 0 20px;padding:16px;background:${vs.bg};border-radius:6px;border:1px solid ${vs.border}">
       <div style="text-align:center;min-width:64px;flex-shrink:0">
         <div style="font-size:38px;font-weight:700;font-family:var(--mono);color:${scoreColor(opp.overall_score)};line-height:1">${opp.overall_score}</div>
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:4px">/ 100</div>
@@ -1114,6 +1793,7 @@ function renderOpportunityAnalysis(opp) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       ${dimCards}
     </div>
+    </div></div>
   </div>`;
 }
 
@@ -1294,12 +1974,14 @@ function renderCompetitiveMoat(moat) {
       </div>
       <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
     </div>`).join('');
-  return `<div class="brief-section">
-    <div class="bs-header">
+  return `<div class="brief-section sec-collapsible sec-closed" data-section="moat" data-label="Moat" data-layer="reasoning">
+    <div class="bs-header sec-toggle" onclick="toggleSection(this.parentElement)">
       <span class="bs-title">Competitive moat</span>
       <span class="bs-tag">entry analysis</span>
+      <span class="sec-chevron">▾</span>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding:16px;background:${ms.bg};border-radius:6px;border:1px solid ${ms.border}">
+    <div class="sec-body"><div class="sec-body-inner">
+    <div style="display:flex;align-items:flex-start;gap:16px;margin:14px 0 20px;padding:16px;background:${ms.bg};border-radius:6px;border:1px solid ${ms.border}">
       <span style="display:inline-block;background:${ms.bg};color:${ms.color};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-family:var(--mono);border:1px solid ${ms.border};white-space:nowrap;flex-shrink:0">${moat.moat_level}</span>
       <div style="font-size:13px;color:var(--ink);line-height:1.6">${moat.moat_reasoning || ''}</div>
     </div>
@@ -1314,7 +1996,738 @@ function renderCompetitiveMoat(moat) {
       <div class="rc-label" style="margin-bottom:8px">Realistic entry strategy</div>
       <div style="font-size:13px;color:var(--ink);line-height:1.6">${moat.realistic_entry_strategy}</div>
     </div>` : ''}
+    </div></div>
   </div>`;
+}
+
+// ─── EXECUTION ASSET GENERATION ───────────────────────────────────────────
+
+// Per-type JSON schema strings injected into the system prompt
+const EXECUTION_SCHEMAS = {
+  tool_or_calculator: `{
+  "inputs": [{ "label": "Human-readable input label", "example": "e.g. 10000", "unit": "$/%/days/units" }],
+  "output": { "primary_label": "What the main result represents", "format": "currency|percentage|number", "benchmark": "One sentence showing what a good vs bad result looks like" },
+  "lead_gate": { "timing": "after basic result|on export|on detailed breakdown", "offer": "Exactly what they get for their email", "cta": "Exact button text" },
+  "above_fold_headline": "Exact tool page headline — name the tool and its value",
+  "page_zones": ["Zone name: one-line description of what this zone does"]
+}`,
+  landing_page: `{
+  "hero": { "h1": "Exact headline", "subheadline": "Exact subheadline — one sentence, benefit-led", "cta_primary": "Exact button text", "cta_secondary": "Secondary link text or null" },
+  "benefits": [{ "label": "3-word label", "body": "One sentence naming the specific outcome" }],
+  "objections": [{ "raise": "Exact objection a skeptic would say", "reframe": "Exact 1-sentence response" }],
+  "social_proof": "What format to use and why it fits this offer",
+  "bottom_cta": { "copy": "Exact CTA copy", "trust_element": "Exact trust line below button" }
+}`,
+  blog_article: `{
+  "intro": "First 2 sentences of the article — ready to publish, not a description of what it will say",
+  "section_leads": [{ "heading": "Exact H2 text", "lead": "First sentence of that section, ready to publish" }],
+  "cta_placements": [{ "position": "after intro|mid-article|end", "copy": "Exact CTA text", "offer": "What they get" }],
+  "email_capture": { "headline": "Opt-in offer headline", "button": "Exact button text" }
+}`,
+  ai_visibility_asset: `{
+  "entity_definition": "1-2 sentence factual definition written for AI extraction — precise, no marketing language",
+  "key_facts": ["Self-contained claim with a number or named entity — no vague statements"],
+  "qa_pairs": [{ "q": "Question as it would appear in ChatGPT or Perplexity", "a": "Direct 2-sentence answer" }],
+  "schema_type": "FAQ|HowTo|Article — state which and why in one sentence",
+  "citation_hooks": ["Specific data point or named source worth citing by an AI model"]
+}`,
+  comparison_page: `{
+  "table_columns": ["Specific criterion — not 'Features' but e.g. 'Free tier limit', 'Setup time', 'Pricing model'"],
+  "scoring_rubric": "One sentence explaining how to rate options across these columns",
+  "decision_guide": [{ "profile": "Who this option is best for", "verdict": "Option name + 1-line reason" }],
+  "cta": { "copy": "Exact CTA text", "placement": "top of table|after recommendation|both" }
+}`,
+  lead_magnet: `{
+  "titles": ["Exact title option 1", "Exact title option 2", "Exact title option 3"],
+  "opt_in": { "headline": "Exactly what they get", "subheadline": "Who it's for + time-to-value", "button": "Exact button text", "fields": ["Field label"] },
+  "content_sections": ["Section name: what it covers in one line"],
+  "email_sequence": [{ "subject": "Exact email subject line", "angle": "One sentence: what this email does and why" }]
+}`,
+  product_page: `{
+  "hero_headline": "Exact H1 — product name + specific value prop",
+  "differentiators": ["Feature name: specific differentiator with a real number or named contrast to competitors"],
+  "objections": [{ "raise": "Exact objection a buyer would voice", "reframe": "Exact 1-sentence response" }],
+  "social_proof": "What proof format to use and why it matches this buyer's mindset",
+  "cta": { "copy": "Exact CTA text", "trust_element": "Exact trust line below button" }
+}`,
+  category_page: `{
+  "h1": "Exact category page headline",
+  "subcategories": [{ "name": "Subcategory name", "description": "One-line description" }],
+  "filters": ["Filter label that meaningfully reduces choice — e.g. 'Under $50/mo', 'No credit card'"],
+  "featured_format": "How to display featured items and why this format converts",
+  "internal_link_targets": ["Page name + one-line reason it should link here"]
+}`,
+};
+
+// Build the callClaude arguments for execution generation
+function buildExecutionCall(r) {
+  const ct = r.contentType?.content_type || 'blog_article';
+  const schema = EXECUTION_SCHEMAS[ct] || EXECUTION_SCHEMAS.blog_article;
+  const rec = r.contentType?.strategic_recommendation || {};
+
+  return {
+    system: `You are a senior growth operator.
+
+RESPOND WITH ONLY A SINGLE JSON OBJECT. No markdown fences. No backticks. No code blocks. No explanation text before or after the JSON. The very first character of your response must be { and the very last must be }.
+
+Fill in this exact schema with specific, actionable content for the keyword and context provided:
+${schema}
+
+Output rules:
+- Write copy fields as exact text that appears verbatim on the asset — not descriptions of what to write
+- Use real numbers, named comparisons, and concrete mechanisms — no vague benefit statements
+- Never use bracket placeholders like [Your CTA] or [insert here]`,
+
+    user: `Keyword: "${r.keyword}"
+Asset type: ${ct.replace(/_/g, ' ')}
+What to build: ${rec.what_to_build || ''}
+Why it fits: ${rec.why_it_fits || ''}
+Business impact: ${rec.business_impact || ''}
+Recommended title: ${r.brief?.recommended_title || ''}
+Unique angle: ${r.brief?.unique_angle || ''}
+Opening hook: ${r.brief?.hook || ''}
+CTA: ${r.brief?.cta || ''}
+Market gap: ${r.competitor?.market_gap || ''}
+Competitor weakness: ${r.competitor?.competitor_weakness || ''}`,
+
+    maxTokens: 900,
+  };
+}
+
+// Make the API call and return parsed execution JSON
+async function generateExecutionAssets(r) {
+  const callArgs = buildExecutionCall(r);
+  const raw = await callClaude(callArgs);
+  console.log('[execution] raw response (' + raw.length + ' chars):', raw.substring(0, 200));
+  try {
+    return extractJSON(raw);
+  } catch (err) {
+    console.warn('[execution] parse failed. Full raw response:\n', raw);
+    throw err;
+  }
+}
+
+// ── Render helpers ──────────────────────────────────────────────────────────
+
+// Render a labelled exec block with arbitrary inner HTML.
+// variant: 'copy' = paste-ready (left border + paste badge), default = structural/guidance
+// key: the exec JSON field this block represents — enables per-block regeneration
+function execBlock(label, inner, variant, key) {
+  const isCopy = variant === 'copy';
+  const blockClass = isCopy ? ' exec-block--copy' : '';
+  const badge = isCopy ? '<span class="exec-block-variant">paste</span>' : '';
+  const keyAttr = key ? ` data-exec-key="${key}"` : '';
+  return `<div class="exec-block${blockClass}"${keyAttr}>
+    <div class="exec-block-header" onclick="toggleExecBlock(this)">
+      <div style="display:flex;align-items:center;gap:6px;min-width:0">
+        <span class="exec-block-toggle">▾</span>
+        <div class="exec-block-label">${label}</div>
+        ${badge}
+      </div>
+      <div class="exec-block-actions">
+        <button class="exec-regen-btn" onclick="event.stopPropagation();regenExecBlock(this)" title="Regenerate this section">↺</button>
+        <button class="exec-copy-btn" onclick="event.stopPropagation();copyExecBlock(this)">Copy</button>
+      </div>
+    </div>
+    <div class="exec-block-content">${inner}</div>
+  </div>`;
+}
+
+// Collapse / expand a block when its header is clicked
+function toggleExecBlock(header) {
+  const block = header.closest('.exec-block');
+  if (!block) return;
+  block.classList.toggle('is-collapsed');
+  const toggle = header.querySelector('.exec-block-toggle');
+  if (toggle) toggle.textContent = block.classList.contains('is-collapsed') ? '▸' : '▾';
+}
+
+// ─── SECTION COLLAPSE ─────────────────────────────────────────────────────
+// Toggle a .sec-collapsible section open/closed
+function toggleSection(el) {
+  if (!el) return;
+  el.classList.toggle('sec-closed');
+}
+
+// ─── BUILD MODE TOGGLE ────────────────────────────────────────────────────
+// Switch between 'strategist' (all sections) and 'build' (execution focus only)
+function toggleResultMode() {
+  resultMode = resultMode === 'strategist' ? 'build' : 'strategist';
+  const section = document.getElementById('resultSection');
+  if (!section) return;
+  section.classList.toggle('mode-build', resultMode === 'build');
+  // Update button label + active style
+  const btn = document.querySelector('.mode-toggle-btn');
+  if (btn) {
+    btn.textContent = resultMode === 'build' ? 'Strategist' : 'Build mode';
+    btn.classList.toggle('mode-active', resultMode === 'build');
+  }
+  // Rebuild nav to reflect visible sections
+  initResultNav();
+}
+
+// ─── RESULT NAVIGATION ────────────────────────────────────────────────────
+// Scans [data-section] anchors in #resultSection, builds floating dot nav,
+// tracks active section on scroll. Lives outside #resultSection so it
+// survives renderResult / renderFastResult re-renders.
+function initResultNav() {
+  const nav = document.getElementById('resultNav');
+  if (!nav) return;
+
+  // Remove previous scroll listener to avoid stacking listeners across re-renders
+  if (navScrollListener) {
+    window.removeEventListener('scroll', navScrollListener);
+    navScrollListener = null;
+  }
+
+  // Only show nav when result section is visible
+  const resultSection = document.getElementById('resultSection');
+  if (!resultSection || !resultSection.classList.contains('visible')) {
+    nav.classList.remove('nav-visible');
+    nav.innerHTML = '';
+    return;
+  }
+
+  // Collect sections that are currently visible (not hidden by build mode)
+  const sectionEls = Array.from(resultSection.querySelectorAll('[data-section]'))
+    .filter(el => el.offsetParent !== null);
+
+  if (sectionEls.length < 2) {
+    nav.classList.remove('nav-visible');
+    nav.innerHTML = '';
+    return;
+  }
+
+  // Build nav items
+  nav.innerHTML = sectionEls.map(el => {
+    const key = el.dataset.section;
+    const label = el.dataset.label || key;
+    return `<div class="nav-item" data-target="${key}" onclick="navScrollTo('${key}')">
+      <div class="nav-dot"></div>
+      <span class="nav-label">${label}</span>
+    </div>`;
+  }).join('');
+
+  nav.classList.add('nav-visible');
+
+  // Mark the active section based on scroll position
+  function updateNavActive() {
+    const scrollY = window.pageYOffset + 140;
+    let activeKey = sectionEls[0]?.dataset.section;
+    for (const el of sectionEls) {
+      if (el.offsetTop <= scrollY) activeKey = el.dataset.section;
+    }
+    nav.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.toggle('nav-active', item.dataset.target === activeKey);
+    });
+  }
+
+  navScrollListener = updateNavActive;
+  window.addEventListener('scroll', navScrollListener, { passive: true });
+  updateNavActive(); // set initial active state
+}
+
+// Smooth-scroll to a named section
+function navScrollTo(key) {
+  const el = document.querySelector(`[data-section="${key}"]`);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 72;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
+// Build a focused API call to regenerate a single execution field
+function buildBlockRegenCall(r, key) {
+  const ct = r.contentType?.content_type || 'blog_article';
+  const schema = EXECUTION_SCHEMAS[ct] || EXECUTION_SCHEMAS.blog_article;
+  const rec = r.contentType?.strategic_recommendation || {};
+
+  return {
+    system: `You are a senior growth operator.
+
+RESPOND WITH ONLY A SINGLE JSON OBJECT containing one key. No markdown fences. No backticks. No explanation text. The very first character must be { and the very last must be }.
+
+You are regenerating the "${key}" field of an execution plan. Here is the full schema for context (so you understand the field's role and expected type):
+${schema}
+
+Return only: {"${key}": <new value for this field>}
+
+Rules:
+- Match the exact value type from the schema (string, array of strings, array of objects, etc.)
+- Write copy fields as exact text — not descriptions
+- Use real numbers, named comparisons, concrete mechanisms
+- Never use bracket placeholders`,
+
+    user: `Keyword: "${r.keyword}"
+Asset type: ${ct.replace(/_/g, ' ')}
+What to build: ${rec.what_to_build || ''}
+Why it fits: ${rec.why_it_fits || ''}
+Recommended title: ${r.brief?.recommended_title || ''}
+Unique angle: ${r.brief?.unique_angle || ''}
+Opening hook: ${r.brief?.hook || ''}
+CTA: ${r.brief?.cta || ''}
+Market gap: ${r.competitor?.market_gap || ''}
+
+Current value of "${key}": ${JSON.stringify(r.execution?.[key] ?? null)}
+
+Provide a stronger alternative for "${key}" only.`,
+
+    maxTokens: 500,
+  };
+}
+
+// Per-block regeneration handler — reads data-exec-key, patches currentResult.execution, re-renders
+async function regenExecBlock(btn) {
+  const block = btn.closest('.exec-block');
+  if (!block) return;
+  const key = block.dataset.execKey;
+  if (!key) return;
+  if (!currentResult?.execution) return;
+
+  // Snapshot guard: captures which result this regen belongs to.
+  // Protects against the user loading a different history item during the API call.
+  const targetResult = currentResult;
+  const ct = targetResult.contentType?.content_type || 'blog_article';
+  const container = document.getElementById('execContainer');
+
+  // Loading state
+  btn.disabled = true;
+  btn.textContent = '…';
+  const content = block.querySelector('.exec-block-content');
+  if (content) content.style.opacity = '0.4';
+
+  // Error display helper — inline below the block
+  const errId = 'exec-regen-err-' + key;
+  const existingErr = document.getElementById(errId);
+  if (existingErr) existingErr.remove();
+
+  try {
+    const raw = await callClaude(buildBlockRegenCall(targetResult, key));
+    const patch = extractJSON(raw);
+    if (patch == null || !(key in patch)) throw new Error('Field "' + key + '" not found in response');
+
+    // Abort if user navigated to a different result while we were waiting
+    if (currentResult !== targetResult) return;
+
+    // Merge patch into targetResult.execution and re-render
+    targetResult.execution[key] = patch[key];
+    saveHistory(); // persist updated execution block so it survives page reload
+    container.innerHTML = renderExecutionSection(targetResult.execution, ct);
+
+    // Refresh preview to reflect patched field
+    const previewAnchor = document.getElementById('previewAnchor');
+    if (previewAnchor && previewAnchor.innerHTML) {
+      previewAnchor.innerHTML = renderVisualPreview(targetResult.execution, ct);
+    }
+
+    // Flash the updated block
+    const updated = container.querySelector('[data-exec-key="' + key + '"]');
+    if (updated) {
+      updated.classList.add('just-updated');
+      setTimeout(() => updated.classList.remove('just-updated'), 600);
+    }
+  } catch (err) {
+    // Restore button state in-place without full re-render
+    btn.disabled = false;
+    btn.textContent = '↺';
+    if (content) content.style.opacity = '';
+
+    // Show inline error beneath the block
+    const errEl = document.createElement('div');
+    errEl.id = errId;
+    errEl.style.cssText = 'font-size:11px;font-family:var(--mono);color:var(--red);padding:4px 0 0 20px;';
+    errEl.textContent = 'Regen failed — ' + (err.message || 'unknown error');
+    block.after(errEl);
+    setTimeout(() => errEl.remove(), 3000);
+  }
+}
+
+// Render a list of exec-row items from an array
+function execRows(items, keyFn, valFn) {
+  if (!Array.isArray(items) || !items.length) return '<div class="exec-text" style="color:var(--ink-muted)">—</div>';
+  return items.map(item => `
+    <div class="exec-row">
+      <div class="exec-row-key">${keyFn(item)}</div>
+      <div class="exec-row-val" contenteditable="true" spellcheck="false">${valFn(item)}</div>
+    </div>`).join('');
+}
+
+// Render a list of chips
+function execChips(items) {
+  if (!Array.isArray(items) || !items.length) return '—';
+  return `<div class="exec-chip-list">${items.map(i => `<span class="exec-chip" contenteditable="true" spellcheck="false">${i}</span>`).join('')}</div>`;
+}
+
+// Render a numbered list
+function execList(items) {
+  if (!Array.isArray(items) || !items.length) return '<div class="exec-text" style="color:var(--ink-muted)">—</div>';
+  return items.map((item, i) => `<div class="exec-row"><div class="exec-row-key" style="width:24px;font-family:var(--mono)">${i + 1}.</div><div class="exec-row-val" contenteditable="true" spellcheck="false">${item}</div></div>`).join('');
+}
+
+// Master render function — switches on content_type.
+// add(key, label, inner, variant): key = exec JSON field (enables per-block regen),
+// variant='copy' marks paste-ready blocks; omit for structural/guidance blocks.
+function renderExecutionSection(exec, contentType) {
+  if (!exec) return '';
+  const ct = contentType || 'blog_article';
+  let blocks = '';
+  const labels = [];
+  const ce = 'contenteditable="true" spellcheck="false"';
+  function add(key, label, inner, variant) {
+    labels.push({ label, copy: variant === 'copy' });
+    blocks += execBlock(label, inner, variant, key);
+  }
+
+  if (ct === 'tool_or_calculator') {
+    add('inputs', 'Calculator inputs',
+      execRows(exec.inputs, i => `${i.label}${i.unit ? ' ('+i.unit+')' : ''}`, i => i.example ? `e.g. ${i.example}` : '—'));
+    if (exec.output) add('output', 'Output format',
+      `<div class="exec-row"><div class="exec-row-key">Shows</div><div class="exec-row-val" ${ce}>${exec.output.primary_label || '—'}</div></div>
+       <div class="exec-row"><div class="exec-row-key">Format</div><div class="exec-row-val" ${ce}>${exec.output.format || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Benchmark</div><div class="exec-row-val" ${ce}>${exec.output.benchmark || '—'}</div></div>`);
+    if (exec.lead_gate) add('lead_gate', 'Lead gate',
+      `<div class="exec-row"><div class="exec-row-key">Gate after</div><div class="exec-row-val" ${ce}>${exec.lead_gate.timing || '—'}</div></div>
+       <div class="exec-row"><div class="exec-row-key">Offer</div><div class="exec-row-val" ${ce}>${exec.lead_gate.offer || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">CTA copy</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.lead_gate.cta || '—'}</div></div>`, 'copy');
+    if (exec.above_fold_headline) add('above_fold_headline', 'Tool page headline',
+      `<div class="exec-headline" ${ce}>${exec.above_fold_headline}</div>`, 'copy');
+    if (exec.page_zones?.length) add('page_zones', 'Page structure', execList(exec.page_zones));
+
+  } else if (ct === 'landing_page') {
+    if (exec.hero) add('hero', 'Hero section',
+      `<div class="exec-headline" style="margin-bottom:10px" ${ce}>${exec.hero.h1 || '—'}</div>
+       <div class="exec-text" style="margin-bottom:12px;color:var(--ink-mid)" ${ce}>${exec.hero.subheadline || ''}</div>
+       <div style="display:flex;gap:8px;flex-wrap:wrap">
+         ${exec.hero.cta_primary ? `<span class="exec-chip" style="background:var(--ink);color:var(--bg);border-color:var(--ink)" ${ce}>${exec.hero.cta_primary}</span>` : ''}
+         ${exec.hero.cta_secondary ? `<span class="exec-chip" ${ce}>${exec.hero.cta_secondary}</span>` : ''}
+       </div>`, 'copy');
+    if (exec.benefits?.length) add('benefits', 'Benefit copy',
+      execRows(exec.benefits, b => b.label, b => b.body), 'copy');
+    if (exec.objections?.length) add('objections', 'Objection handling',
+      execRows(exec.objections, o => o.raise, o => o.reframe), 'copy');
+    if (exec.social_proof) add('social_proof', 'Social proof format',
+      `<div class="exec-text" ${ce}>${exec.social_proof}</div>`);
+    if (exec.bottom_cta) add('bottom_cta', 'Bottom CTA',
+      `<div class="exec-row"><div class="exec-row-key">Copy</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.bottom_cta.copy || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Trust line</div><div class="exec-row-val" ${ce}>${exec.bottom_cta.trust_element || '—'}</div></div>`, 'copy');
+
+  } else if (ct === 'blog_article') {
+    if (exec.intro) add('intro', 'Opening copy',
+      `<div class="exec-quote" ${ce}>${exec.intro}</div>`, 'copy');
+    if (exec.section_leads?.length) add('section_leads', 'Section opening lines',
+      execRows(exec.section_leads, s => s.heading, s => s.lead), 'copy');
+    if (exec.cta_placements?.length) add('cta_placements', 'CTA placements',
+      execRows(exec.cta_placements, c => c.position, c => `<strong>${c.copy}</strong>${c.offer ? ' — '+c.offer : ''}`), 'copy');
+    if (exec.email_capture) add('email_capture', 'Email capture copy',
+      `<div class="exec-row"><div class="exec-row-key">Offer headline</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.email_capture.headline || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Button</div><div class="exec-row-val" ${ce}>${exec.email_capture.button || '—'}</div></div>`, 'copy');
+
+  } else if (ct === 'ai_visibility_asset') {
+    if (exec.entity_definition) add('entity_definition', 'Entity definition',
+      `<div class="exec-quote" ${ce}>${exec.entity_definition}</div>`, 'copy');
+    if (exec.key_facts?.length) add('key_facts', 'Key facts', execList(exec.key_facts), 'copy');
+    if (exec.qa_pairs?.length) add('qa_pairs', 'Q&A pairs',
+      execRows(exec.qa_pairs, q => q.q, q => q.a), 'copy');
+    if (exec.schema_type) add('schema_type', 'Schema markup',
+      `<div class="exec-text" ${ce}>${exec.schema_type}</div>`);
+    if (exec.citation_hooks?.length) add('citation_hooks', 'Citation hooks', execList(exec.citation_hooks), 'copy');
+
+  } else if (ct === 'comparison_page') {
+    if (exec.table_columns?.length) add('table_columns', 'Table columns',
+      execChips(exec.table_columns));
+    if (exec.scoring_rubric) add('scoring_rubric', 'Scoring rubric',
+      `<div class="exec-text" ${ce}>${exec.scoring_rubric}</div>`);
+    if (exec.decision_guide?.length) add('decision_guide', 'Decision guide',
+      execRows(exec.decision_guide, d => d.profile, d => d.verdict));
+    if (exec.cta) add('cta', 'Conversion CTA',
+      `<div class="exec-row"><div class="exec-row-key">Copy</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.cta.copy || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Placement</div><div class="exec-row-val" ${ce}>${exec.cta.placement || '—'}</div></div>`, 'copy');
+
+  } else if (ct === 'lead_magnet') {
+    if (exec.titles?.length) add('titles', 'Title options', execList(exec.titles), 'copy');
+    if (exec.opt_in) add('opt_in', 'Opt-in copy',
+      `<div class="exec-row"><div class="exec-row-key">Headline</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.opt_in.headline || '—'}</div></div>
+       <div class="exec-row"><div class="exec-row-key">Subheadline</div><div class="exec-row-val" ${ce}>${exec.opt_in.subheadline || '—'}</div></div>
+       <div class="exec-row"><div class="exec-row-key">Button</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.opt_in.button || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Fields</div><div class="exec-row-val" ${ce}>${(exec.opt_in.fields||[]).join(', ') || '—'}</div></div>`, 'copy');
+    if (exec.content_sections?.length) add('content_sections', 'Content sections', execList(exec.content_sections));
+    if (exec.email_sequence?.length) add('email_sequence', 'Email sequence',
+      execRows(exec.email_sequence, e => e.subject, e => e.angle), 'copy');
+
+  } else if (ct === 'product_page') {
+    if (exec.hero_headline) add('hero_headline', 'Hero headline',
+      `<div class="exec-headline" ${ce}>${exec.hero_headline}</div>`, 'copy');
+    if (exec.differentiators?.length) add('differentiators', 'Differentiators', execList(exec.differentiators), 'copy');
+    if (exec.objections?.length) add('objections', 'Objection handling',
+      execRows(exec.objections, o => o.raise, o => o.reframe), 'copy');
+    if (exec.social_proof) add('social_proof', 'Social proof format',
+      `<div class="exec-text" ${ce}>${exec.social_proof}</div>`);
+    if (exec.cta) add('cta', 'CTA block',
+      `<div class="exec-row"><div class="exec-row-key">Copy</div><div class="exec-row-val" style="font-weight:500" ${ce}>${exec.cta.copy || '—'}</div></div>
+       <div class="exec-row" style="border-bottom:none"><div class="exec-row-key">Trust line</div><div class="exec-row-val" ${ce}>${exec.cta.trust_element || '—'}</div></div>`, 'copy');
+
+  } else if (ct === 'category_page') {
+    if (exec.h1) add('h1', 'Category headline',
+      `<div class="exec-headline" ${ce}>${exec.h1}</div>`, 'copy');
+    if (exec.subcategories?.length) add('subcategories', 'Subcategory structure',
+      execRows(exec.subcategories, s => s.name, s => s.description));
+    if (exec.filters?.length) add('filters', 'Filter tags', execChips(exec.filters), 'copy');
+    if (exec.featured_format) add('featured_format', 'Featured item format',
+      `<div class="exec-text" ${ce}>${exec.featured_format}</div>`);
+    if (exec.internal_link_targets?.length) add('internal_link_targets', 'Internal link targets', execList(exec.internal_link_targets));
+  }
+
+  const overview = labels.length > 1
+    ? `<div class="exec-plan-overview">${labels.map(({ label, copy }) =>
+        `<span class="exec-plan-chip${copy ? ' exec-plan-chip--copy' : ''}">${label}</span>`
+      ).join('')}</div>`
+    : '';
+
+  return `
+  <div class="exec-section-header">
+    <span class="exec-section-title">Execution plan</span>
+    <span class="exec-section-tag">${ct.replace(/_/g,' ')}</span>
+  </div>
+  ${overview}
+  ${blocks || '<div class="exec-text" style="color:var(--ink-muted)">No execution assets generated.</div>'}`;
+}
+
+// ─── Visual Execution Preview ────────────────────────────────────────────────
+// Deterministic, template-driven wireframe scaffold. No API calls. Reads from
+// the already-generated exec object so it stays in sync with regen.
+function renderVisualPreview(exec, ct) {
+  if (!exec || !ct) return '';
+
+  function zone(label, content, mod) {
+    return `<div class="vp-zone${mod ? ' vp-zone--' + mod : ''}">
+      <div class="vp-zone-label">${label}</div>
+      ${content}
+    </div>`;
+  }
+  function headline(text) {
+    return `<div class="vp-zone-headline">${text || ''}</div>`;
+  }
+  function body(text) {
+    return text ? `<div class="vp-zone-body">${text}</div>` : '';
+  }
+  function chip(text) { return `<span class="vp-chip">${text}</span>`; }
+  function chips(arr) {
+    if (!arr || !arr.length) return '';
+    const strs = arr.map(item => typeof item === 'string' ? item : (item.label || item.name || ''));
+    return `<div class="vp-chip-row">${strs.slice(0, 6).map(chip).join('')}</div>`;
+  }
+  function placeholder() { return '<div class="vp-placeholder"></div>'; }
+  function ctaBtn(text) { return `<div class="vp-cta-btn">${text || 'Get started'}</div>`; }
+
+  const typeLabel = ct.replace(/_/g, ' ');
+  let inner = '';
+
+  if (ct === 'blog_article') {
+    // schema: intro, section_leads[{heading,lead}], cta_placements[{position,copy,offer}], email_capture{headline,button}
+    const sections = Array.isArray(exec.section_leads) ? exec.section_leads : [];
+    const sectionList = sections.length
+      ? `<ul class="vp-section-list">${sections.slice(0, 6).map((s, i) =>
+          `<li class="vp-section-item"><span class="vp-section-num">${String(i + 1).padStart(2, '0')}</span>
+           <span class="vp-zone-body" style="margin:0">${typeof s === 'string' ? s : (s.heading || '')}</span></li>`
+        ).join('')}</ul>`
+      : placeholder();
+    const ctaCopy = Array.isArray(exec.cta_placements) && exec.cta_placements[0]?.copy;
+    inner = zone('Intro', body(exec.intro) || placeholder(), 'hero')
+          + zone('Article sections', sectionList)
+          + zone('CTA', ctaBtn(ctaCopy || 'Read more'), 'cta');
+
+  } else if (ct === 'landing_page') {
+    // schema: hero{h1,subheadline,cta_primary}, benefits[{label,body}], social_proof, bottom_cta{copy}
+    const benefitChips = Array.isArray(exec.benefits)
+      ? exec.benefits.map(b => typeof b === 'string' ? b : b.label || '') : [];
+    inner = zone('Hero', headline(exec.hero?.h1) + body(exec.hero?.subheadline), 'hero')
+          + zone('Benefits', chips(benefitChips) || placeholder())
+          + zone('Social proof', body(exec.social_proof) || placeholder())
+          + zone('CTA', ctaBtn(exec.hero?.cta_primary || exec.bottom_cta?.copy || 'Start free'), 'cta');
+
+  } else if (ct === 'product_page') {
+    // schema: hero_headline, differentiators[], social_proof, cta{copy,trust_element}
+    const diffs = Array.isArray(exec.differentiators) ? exec.differentiators : [];
+    const diffList = diffs.length
+      ? `<ul class="vp-section-list">${diffs.slice(0, 4).map((d, i) =>
+          `<li class="vp-section-item"><span class="vp-section-num">${String(i + 1).padStart(2, '0')}</span>
+           <span class="vp-zone-body" style="margin:0">${typeof d === 'string' ? d : ''}</span></li>`
+        ).join('')}</ul>`
+      : placeholder();
+    inner = zone('Product headline', headline(exec.hero_headline), 'hero')
+          + zone('Differentiators', diffList)
+          + zone('Social proof', body(exec.social_proof) || placeholder())
+          + zone('CTA', body(exec.cta?.trust_element) + ctaBtn(exec.cta?.copy || 'Buy now'), 'cta');
+
+  } else if (ct === 'category_page') {
+    // schema: h1, subcategories[{name,description}], filters[], featured_format
+    const subCats = Array.isArray(exec.subcategories) ? exec.subcategories : [];
+    const subList = subCats.length
+      ? `<ul class="vp-section-list">${subCats.slice(0, 5).map((s, i) =>
+          `<li class="vp-section-item"><span class="vp-section-num">${String(i + 1).padStart(2, '0')}</span>
+           <span class="vp-zone-body" style="margin:0">${typeof s === 'string' ? s : (s.name || '')}</span></li>`
+        ).join('')}</ul>`
+      : placeholder();
+    inner = zone('Category headline', headline(exec.h1), 'hero')
+          + zone('Subcategories', subList)
+          + zone('Filters', chips(exec.filters || []) || placeholder())
+          + zone('Featured format', body(exec.featured_format) || placeholder(), 'cta');
+
+  } else if (ct === 'comparison_page') {
+    // schema: table_columns[], scoring_rubric, decision_guide[{profile,verdict}], cta{copy}
+    const cols = Array.isArray(exec.table_columns) ? exec.table_columns : [];
+    const guide = Array.isArray(exec.decision_guide) ? exec.decision_guide : [];
+    let tableHtml = placeholder();
+    if (cols.length) {
+      const thead = `<tr>${['Best for', ...cols.slice(0, 3)].map(c =>
+        `<th>${typeof c === 'string' ? c.split(':')[0] : c}</th>`).join('')}</tr>`;
+      const tbody = guide.slice(0, 4).map(g =>
+        `<tr><td>${g.profile || ''}</td>${cols.slice(0, 3).map(() => '<td>—</td>').join('')}</tr>`
+      ).join('');
+      tableHtml = `<table class="vp-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+    }
+    inner = zone('Criteria', chips(cols) || placeholder(), 'hero')
+          + zone('Comparison table', tableHtml)
+          + zone('CTA', ctaBtn(exec.cta?.copy || 'See recommendation'), 'cta');
+
+  } else if (ct === 'tool_or_calculator') {
+    // schema: inputs[{label,example,unit}], output{primary_label,benchmark}, lead_gate{offer,cta}, above_fold_headline, page_zones[]
+    const inputs = Array.isArray(exec.inputs) ? exec.inputs : [];
+    const inputsHtml = inputs.length
+      ? `<div class="vp-calc-inputs">${inputs.slice(0, 4).map(f => {
+          const lbl = typeof f === 'string' ? f : (f.label || '');
+          return `<div class="vp-calc-input-row">
+            <span class="vp-calc-label">${lbl}</span>
+            <div class="vp-calc-field"></div>
+          </div>`;
+        }).join('')}</div>`
+      : placeholder();
+    const outputLabel = exec.output?.primary_label || 'Result appears here';
+    const gateBtn = exec.lead_gate?.cta || 'Get full report';
+    inner = zone('Tool headline', headline(exec.above_fold_headline), 'hero')
+          + zone('Inputs', inputsHtml)
+          + zone('Output', `<div class="vp-output-box">${outputLabel}</div>`, 'cta')
+          + zone('Lead gate', body(exec.lead_gate?.offer) + ctaBtn(gateBtn), 'gate');
+
+  } else if (ct === 'lead_magnet') {
+    // schema: titles[], opt_in{headline,subheadline,button}, content_sections[], email_sequence[]
+    const title = Array.isArray(exec.titles) ? exec.titles[0] : '';
+    const sections = Array.isArray(exec.content_sections) ? exec.content_sections : [];
+    const sectionList = sections.length
+      ? `<ul class="vp-section-list">${sections.slice(0, 5).map((s, i) =>
+          `<li class="vp-section-item"><span class="vp-section-num">${String(i + 1).padStart(2, '0')}</span>
+           <span class="vp-zone-body" style="margin:0">${typeof s === 'string' ? s.split(':')[0] : ''}</span></li>`
+        ).join('')}</ul>`
+      : placeholder();
+    inner = `<div class="vp-zone vp-zone--hero">
+        <div class="vp-zone-label">Cover</div>
+        <div class="vp-cover">
+          <div class="vp-cover-title">${title}</div>
+          <div class="vp-zone-body" style="margin:0;color:rgba(245,242,235,0.7)">${exec.opt_in?.subheadline || ''}</div>
+        </div>
+      </div>`
+          + zone('Contents', sectionList)
+          + zone('Download gate', body(exec.opt_in?.headline) + ctaBtn(exec.opt_in?.button || 'Download free'), 'gate');
+
+  } else if (ct === 'ai_visibility_asset') {
+    // schema: entity_definition, key_facts[], qa_pairs[{q,a}], schema_type, citation_hooks[]
+    const pairs = Array.isArray(exec.qa_pairs) ? exec.qa_pairs : [];
+    const qaPairHtml = pairs.length
+      ? pairs.slice(0, 3).map(p =>
+          `<div class="vp-zone-body" style="padding:6px 0;border-bottom:1px solid var(--border)">${p.q || ''}</div>`
+        ).join('')
+      : placeholder();
+    inner = zone('Entity definition', body(exec.entity_definition) || placeholder(), 'hero')
+          + zone('Q&A pairs', qaPairHtml)
+          + zone('Key facts', chips(exec.key_facts || []) || placeholder())
+          + zone('Citation hooks', chips(exec.citation_hooks || []) || placeholder(), 'cta');
+
+  } else {
+    // Generic fallback for any future type
+    inner = zone('Title', headline(exec.title || exec.h1 || exec.above_fold_headline || ''), 'hero')
+          + zone('Body', body(exec.intro || exec.entity_definition) || placeholder())
+          + zone('CTA', ctaBtn('Learn more'), 'cta');
+  }
+
+  if (!inner) return '';
+
+  return `
+  <div data-section="preview" data-label="Preview" style="margin-bottom:28px">
+    <div class="vp-outer">
+      <div class="vp-header">
+        <span class="vp-title">Layout preview</span>
+        <span class="vp-type-badge">${typeLabel}</span>
+      </div>
+      <div class="vp-frame">${inner}</div>
+    </div>
+  </div>`;
+}
+
+// Renders the trigger button + empty container (injected by renderResult/renderFastResult)
+function renderExecutionPlaceholder(r) {
+  const ct = (r.contentType?.content_type || 'blog_article').replace(/_/g, ' ');
+  return `
+  <div class="exec-trigger-wrap" id="execTriggerWrap">
+    <div class="exec-trigger-label">
+      <strong>Generate execution plan</strong>
+      Build-ready copy, structure, and conversion specs for this ${ct} — drawn from the full analysis above.
+    </div>
+    <button class="exec-trigger-btn" id="execTriggerBtn" onclick="triggerExecutionGeneration()">
+      ⚡ Generate
+    </button>
+  </div>
+  <div id="execContainer"></div>
+  <div id="previewAnchor"></div>`;
+}
+
+// Called by the button — makes the API call and injects output
+async function triggerExecutionGeneration() {
+  if (!currentResult) return;
+  // Snapshot guard: capture the result this generation belongs to.
+  // If the user loads a different history item while the API call is in flight,
+  // currentResult changes — we detect that and discard the stale response.
+  const targetResult = currentResult;
+  const btn = document.getElementById('execTriggerBtn');
+  const wrap = document.getElementById('execTriggerWrap');
+  const container = document.getElementById('execContainer');
+  if (!btn || !container) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  container.innerHTML = `<div style="padding:16px 0;font-size:13px;color:var(--ink-muted);font-family:var(--mono)">Building execution plan — this takes a few seconds...</div>`;
+
+  try {
+    const exec = await generateExecutionAssets(targetResult);
+    // Abort if the user navigated to a different result while we were waiting
+    if (currentResult !== targetResult) return;
+
+    // Parse failure: generateExecutionAssets returns null — show retry, don't hide trigger wrap
+    if (!exec) {
+      btn.disabled = false;
+      btn.textContent = '⚡ Generate';
+      container.innerHTML = `<div style="padding:12px 0;display:flex;align-items:center;gap:12px">
+        <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Generation failed — response could not be parsed. Try again.</span>
+        <button onclick="triggerExecutionGeneration()" style="font-size:11px;font-family:var(--mono);background:none;border:1px solid var(--border-dark);border-radius:3px;padding:3px 10px;cursor:pointer;color:var(--ink)">Retry</button>
+      </div>`;
+      return;
+    }
+
+    targetResult.execution = exec;
+    saveHistory(); // persist execution data so it survives page reload
+    if (wrap) wrap.style.display = 'none';
+    container.innerHTML = renderExecutionSection(exec, targetResult.contentType?.content_type);
+    const anchor = document.getElementById('previewAnchor');
+    if (anchor) {
+      anchor.innerHTML = renderVisualPreview(exec, targetResult.contentType?.content_type);
+      initResultNav();
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '⚡ Generate';
+    container.innerHTML = `<div style="padding:12px 0;display:flex;align-items:center;gap:12px">
+      <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Generation failed — ${err.message}</span>
+      <button onclick="triggerExecutionGeneration()" style="font-size:11px;font-family:var(--mono);background:none;border:1px solid var(--border-dark);border-radius:3px;padding:3px 10px;cursor:pointer;color:var(--ink)">Retry</button>
+    </div>`;
+  }
 }
 
 // ─── FAST TEST MODE ───────────────────────────────────────────────────────
@@ -1487,68 +2900,114 @@ What is missing from SERPs: ${JSON.stringify(mockSerp.patterns.what_is_missing)}
   }
 }
 
+// ─── EXECUTIVE SUMMARY ────────────────────────────────────────────────────
+function renderExecutiveSummary(r) {
+  const ct     = r.contentType;
+  const opp    = r.opportunity;
+  const moat   = r.moat;
+  if (!ct) return '';
+
+  const assetLabel = (ct.content_type || 'blog_article').replace(/_/g, ' ');
+
+  // Opportunity score colour
+  const oppScore = opp?.overall_score;
+  const oppColor = oppScore >= 75 ? '#6fcf97' : oppScore >= 55 ? '#f2c94c' : '#eb5757';
+
+  // Moat level colour (weak = good for us = green, very hard = red)
+  const moatLevel = moat?.moat_level || '';
+  const moatColor = moatLevel === 'weak moat' ? '#6fcf97'
+    : moatLevel === 'moderate moat' ? '#f2c94c'
+    : moatLevel === 'strong moat'   ? '#f6a35a'
+    : moatLevel === 'very hard to beat' ? '#eb5757' : 'rgba(245,242,235,0.7)';
+
+  // Verdict — prefer opportunity verdict_reasoning, fall back to strategic why_it_fits
+  const verdict = opp?.verdict_reasoning
+    || ct.strategic_recommendation?.why_it_fits
+    || ct.reasoning
+    || '';
+
+  const oppPill = oppScore != null ? `
+    <span class="exec-pill">
+      <span class="exec-pill-val" style="color:${oppColor}">${oppScore}</span>
+      <span class="exec-pill-label">opportunity score</span>
+    </span>` : '';
+
+  const moatPill = moatLevel ? `
+    <span class="exec-pill">
+      <span class="exec-pill-val" style="color:${moatColor};font-size:11px;font-weight:500">${moatLevel}</span>
+      <span class="exec-pill-label">moat</span>
+    </span>` : '';
+
+  const verdictPill = opp?.verdict ? `
+    <span class="exec-pill">
+      <span class="exec-pill-val" style="font-size:10px;font-weight:400;letter-spacing:0.05em;text-transform:uppercase;color:rgba(245,242,235,0.8)">${opp.verdict}</span>
+    </span>` : '';
+
+  return `
+  <div class="exec-summary" data-section="summary" data-label="Summary">
+    <div class="exec-verdict">${verdict}</div>
+    <div class="exec-pills">
+      <span class="exec-asset">${assetLabel}</span>
+      ${oppPill}
+      ${moatPill}
+      ${verdictPill}
+    </div>
+  </div>`;
+}
+
+// ─── WHY THIS WINS ─────────────────────────────────────────────────────────
+function renderWhyThisWins(ct, moat) {
+  if (!ct) return '';
+  const rec = ct.strategic_recommendation || {};
+
+  // Build the 3 bullets from the best available data
+  const bullets = [
+    {
+      label: 'Beats competitor formats',
+      text: moat?.attack_angle || rec.why_it_fits || '',
+    },
+    {
+      label: 'Right format for this intent',
+      text: rec.why_it_fits || '',
+    },
+    {
+      label: 'Business case',
+      text: rec.business_impact || '',
+    },
+  ].filter(b => b.text);
+
+  if (!bullets.length) return '';
+
+  const bulletHtml = bullets.map(b => `
+    <div class="why-bullet">
+      <span class="why-icon">✦</span>
+      <div><strong>${b.label}</strong> — ${b.text}</div>
+    </div>`).join('');
+
+  return `
+  <div class="why-wins">
+    <div class="why-wins-header">Why this wins</div>
+    ${bulletHtml}
+  </div>`;
+}
+
 function renderFastResult(r) {
   const ct = r.contentType;
   const srcColor = r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)';
+  document.getElementById('resultSection').className = `result-section visible${resultMode === 'build' ? ' mode-build' : ''}`;
   document.getElementById('resultSection').innerHTML = `
     <div class="result-header">
-      <div class="result-keyword">${r.keyword}</div>
-      <div class="result-meta">${r.date} · fast test mode · classification &amp; decision only</div>
+      <div>
+        <div class="result-keyword">${esc(r.keyword)}</div>
+        <div class="result-meta">${esc(r.date)} · fast test mode · classification &amp; decision only</div>
+      </div>
+      <button class="mode-toggle-btn${resultMode === 'build' ? ' mode-active' : ''}" onclick="toggleResultMode()">${resultMode === 'build' ? 'Strategist' : 'Build mode'}</button>
     </div>
 
-    <!-- Keyword heuristic signal -->
-    ${r.heuristic ? `<div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Keyword signal</span>
-        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-        <div class="research-card">
-          <div class="rc-label">Matched pattern</div>
-          <div class="rc-value">${r.heuristic.heuristicReason}</div>
-        </div>
-        <div class="research-card">
-          <div class="rc-label">Pre-classification</div>
-          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
-        </div>
-        <div class="research-card">
-          <div class="rc-label">Decision source</div>
-          <div class="rc-value" style="color:${srcColor}">${r.decision_source || '—'}</div>
-        </div>
-      </div>
-    </div>` : `<div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Keyword signal</span>
-        <span class="bs-tag">no pattern match</span>
-      </div>
-      <div class="bs-body" style="color:var(--ink-muted)">No deterministic heuristic matched. Decision is AI-driven.</div>
-    </div>`}
+    <!-- Executive summary (nav anchor: Summary) -->
+    ${renderExecutiveSummary(r)}
 
-    <!-- Asset type decision -->
-    ${ct ? `<div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Recommended asset type</span>
-        <span class="bs-tag">${ct.funnel_stage || ''} funnel</span>
-      </div>
-      <div style="margin-bottom:14px">
-        <span style="display:inline-block;background:var(--ink);color:var(--bg);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:8px">${(ct.content_type || 'blog_article').replace(/_/g,' ')}</span>
-        ${ASSET_BEHAVIOR_MAP[ct.content_type]?.strategic_role ? `<div style="font-size:11px;color:var(--ink-muted);font-family:var(--mono);margin-bottom:10px;line-height:1.5">${ASSET_BEHAVIOR_MAP[ct.content_type].strategic_role}</div>` : ''}
-        <div class="bs-body">${ct.reasoning || '—'}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-        <div class="research-card"><div class="rc-label">Problem type</div><div class="rc-value">${ct.problem_type || '—'}</div></div>
-        <div class="research-card"><div class="rc-label">User intent</div><div class="rc-value">${ct.user_intent || '—'}</div></div>
-        <div class="research-card"><div class="rc-label">Funnel stage</div><div class="rc-value">${ct.funnel_stage || '—'}</div></div>
-      </div>
-    </div>` : ''}
-
-    <!-- Opportunity analysis -->
-    ${renderOpportunityAnalysis(r.opportunity)}
-
-    <!-- Competitive moat -->
-    ${renderCompetitiveMoat(r.moat)}
-
-    <!-- Strategic recommendation -->
+    <!-- Strategic recommendation (decision first) -->
     ${ct?.strategic_recommendation ? `<div class="brief-section">
       <div class="bs-header">
         <span class="bs-title">Strategic recommendation</span>
@@ -1572,11 +3031,68 @@ function renderFastResult(r) {
       </div>
     </div>` : ''}
 
+    <!-- Why this wins -->
+    ${renderWhyThisWins(ct, r.moat)}
+
+    <hr class="section-break">
+
+    <!-- Keyword heuristic signal -->
+    ${r.heuristic ? `<div class="brief-section" data-layer="reasoning">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card">
+          <div class="rc-label">Matched pattern</div>
+          <div class="rc-value">${r.heuristic.heuristicReason}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Pre-classification</div>
+          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Decision source</div>
+          <div class="rc-value" style="color:${srcColor}">${r.decision_source || '—'}</div>
+        </div>
+      </div>
+    </div>` : `<div class="brief-section" data-layer="reasoning">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">no pattern match</span>
+      </div>
+      <div class="bs-body" style="color:var(--ink-muted)">No deterministic heuristic matched. Decision is AI-driven.</div>
+    </div>`}
+
+    <!-- Asset type decision -->
+    ${ct ? `<div class="brief-section" data-layer="reasoning">
+      <div class="bs-header">
+        <span class="bs-title">Recommended asset type</span>
+        <span class="bs-tag">${ct.funnel_stage || ''} funnel</span>
+      </div>
+      <div style="margin-bottom:14px">
+        <span style="display:inline-block;background:var(--ink);color:var(--bg);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:8px">${(ct.content_type || 'blog_article').replace(/_/g,' ')}</span>
+        ${ASSET_BEHAVIOR_MAP[ct.content_type]?.strategic_role ? `<div style="font-size:11px;color:var(--ink-muted);font-family:var(--mono);margin-bottom:10px;line-height:1.5">${ASSET_BEHAVIOR_MAP[ct.content_type].strategic_role}</div>` : ''}
+        <div class="bs-body">${ct.reasoning || '—'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card"><div class="rc-label">Problem type</div><div class="rc-value">${ct.problem_type || '—'}</div></div>
+        <div class="research-card"><div class="rc-label">User intent</div><div class="rc-value">${ct.user_intent || '—'}</div></div>
+        <div class="research-card"><div class="rc-label">Funnel stage</div><div class="rc-value">${ct.funnel_stage || '—'}</div></div>
+      </div>
+    </div>` : ''}
+
+    <!-- Opportunity analysis (reasoning layer) -->
+    ${renderOpportunityAnalysis(r.opportunity)}
+
+    <!-- Competitive moat (reasoning layer) -->
+    ${renderCompetitiveMoat(r.moat)}
+
     <!-- Asset Logic debug (fast test only) -->
     ${(() => {
       const behavior = ASSET_BEHAVIOR_MAP[ct?.content_type];
       if (!behavior) return '';
-      return `<div class="brief-section" style="border-left:2px solid var(--gold);background:rgba(200,160,60,0.04)">
+      return `<div class="brief-section" data-layer="debug" style="border-left:2px solid var(--gold);background:rgba(200,160,60,0.04)">
         <div class="bs-header">
           <span class="bs-title">Asset logic</span>
           <span class="bs-tag" style="background:var(--gold);color:#fff">debug</span>
@@ -1597,8 +3113,19 @@ function renderFastResult(r) {
         </div>
       </div>`;
     })()}
+
+    <hr class="section-break">
+
+    <!-- ⑤ EXECUTION PLAN (nav anchor: Execution) -->
+    <div data-section="execution" data-label="Execution">
+      ${renderExecutionPlaceholder(r)}
+      <div class="export-bar">
+        <button class="export-btn primary" onclick="copyBrief()">Copy full brief</button>
+        <button class="export-btn" onclick="downloadBrief()">Download .txt</button>
+      </div>
+    </div>
   `;
-  document.getElementById('resultSection').classList.add('visible');
+  initResultNav();
 }
 
 // ─── AGENT ────────────────────────────────────────────────────────────────
@@ -1831,7 +3358,7 @@ Market gap: ${competitor.market_gap || ''}`,
     }[contentType.content_type] || '';
 
     const briefRaw = await callClaude({
-      system: `You are a senior marketing strategist. Write a format-specific asset brief for a ${contentType.content_type.replace(/_/g, ' ')} that wins against current top results by being built for a different format and intent — not just longer. Return ONLY a JSON object (no markdown).${typeSpecificInstruction ? `\n\nCRITICAL for ${contentType.content_type.replace(/_/g,' ')}: ${typeSpecificInstruction}` : ''}
+      system: `You are a senior marketing strategist. Write a format-specific asset brief for a ${(contentType.content_type || 'blog_article').replace(/_/g, ' ')} that wins against current top results by being built for a different format and intent — not just longer. Return ONLY a JSON object (no markdown).${typeSpecificInstruction ? `\n\nCRITICAL for ${(contentType.content_type || 'blog_article').replace(/_/g,' ')}: ${typeSpecificInstruction}` : ''}
 {
   "recommended_title": "specific title — avoid 'Ultimate Guide' or 'Complete Guide' unless competitors don't already use them",
   "alt_titles": ["Alternative title 1", "Alternative title 2"],
@@ -2014,7 +3541,7 @@ Evaluate this brief.`,
     // Save to history
     history.unshift(currentResult);
     if (history.length > 20) history = history.slice(0, 20);
-    localStorage.setItem('seo_history', JSON.stringify(history));
+    saveHistory();
 
     renderResult(currentResult);
     renderHistory();
@@ -2051,10 +3578,16 @@ function setStep(index) {
 }
 
 function renderResult(r) {
+  if (!r) return;
+  // Guard against corrupted / partial history entries — prevents crash on null property access
+  r.brief    = ensureShape(r.brief,    { outline: [], alt_titles: [], must_include: [], avoid: [], cta: '', hook: '', recommended_title: '', meta_description: '', recommended_word_count: 0, tone_of_voice: '', unique_angle: '' });
+  r.quality  = ensureShape(r.quality,  { score: 0, grade: 'N/A', strengths: [], improvements: [] });
+  r.keywords = ensureShape(r.keywords, { primary_keyword: r.keyword || '', secondary_keywords: [], lsi_keywords: [], question_keywords: [], by_intent: null, priority_order: [] });
+
   const score = r.quality.score || 0;
   const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : 'low';
 
-  const outlineHtml = (r.brief.outline || []).map(item =>
+  const outlineHtml = (Array.isArray(r.brief.outline) ? r.brief.outline : []).filter(Boolean).map(item =>
     `<div class="outline-item ${item.level === 'h2' ? 'outline-h2' : 'outline-h3'}">
       ${item.level === 'h3' ? '↳ ' : ''}<strong>${item.heading}</strong>${item.notes ? ` — <span style="font-weight:300;color:var(--ink-muted)">${item.notes}</span>` : ''}
     </div>`
@@ -2066,8 +3599,8 @@ function renderResult(r) {
   const questionKws = (r.keywords.question_keywords || []).map(k => `<span class="kw-tag lsi">${k}</span>`).join('');
   // Intent-grouped keywords — built from by_intent if available, else falls back to secondaryKws
   const byIntentHtml = r.keywords.by_intent ? [
-    (r.keywords.by_intent.informational || []).length ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Informational</div><div class="kw-list">${r.keywords.by_intent.informational.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
-    (r.keywords.by_intent.commercial || []).length   ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Commercial</div><div class="kw-list">${r.keywords.by_intent.commercial.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
+    (Array.isArray(r.keywords.by_intent.informational) && r.keywords.by_intent.informational.length) ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Informational</div><div class="kw-list">${r.keywords.by_intent.informational.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
+    (Array.isArray(r.keywords.by_intent.commercial)    && r.keywords.by_intent.commercial.length)    ? `<div style="margin-bottom:10px"><div class="rc-label" style="margin-bottom:6px">Commercial</div><div class="kw-list">${r.keywords.by_intent.commercial.map(k => `<span class="kw-tag secondary">${k}</span>`).join('')}</div></div>` : '',
   ].join('') : '';
   const priorityKws = (r.keywords.priority_order || []).map((k, i) => `<span class="kw-tag secondary"><span style="color:var(--ink-muted);margin-right:3px">${i + 1}.</span>${k}</span>`).join('');
 
@@ -2077,38 +3610,56 @@ function renderResult(r) {
   const strengths = (r.quality.strengths || []).map(s => `<div style="font-size:12px;color:var(--green);padding:3px 0">✓ ${s}</div>`).join('');
   const improvements = (r.quality.improvements || []).map(s => `<div style="font-size:12px;color:var(--gold);padding:3px 0">→ ${s}</div>`).join('');
 
+  document.getElementById('resultSection').className = `result-section visible${resultMode === 'build' ? ' mode-build' : ''}`;
   document.getElementById('resultSection').innerHTML = `
     <div class="result-header">
-      <div class="result-keyword">${r.keyword}</div>
-      <div class="result-meta">${r.date} · ${r.serp?.search_intent || 'informational'} intent · ${r.serp?.difficulty_signal || 'medium'} difficulty</div>
+      <div>
+        <div class="result-keyword">${esc(r.keyword)}</div>
+        <div class="result-meta">${esc(r.date)} · ${esc(r.serp?.search_intent || 'informational')} intent · ${esc(r.serp?.difficulty_signal || 'medium')} difficulty</div>
+      </div>
+      <button class="mode-toggle-btn${resultMode === 'build' ? ' mode-active' : ''}" onclick="toggleResultMode()">${resultMode === 'build' ? 'Strategist' : 'Build mode'}</button>
     </div>
 
-    <!-- Keyword heuristic signal -->
-    ${r.heuristic ? `<div class="brief-section">
+    <!-- ① DECISION ─────────────────────────────────────────────── -->
+
+    <!-- Executive summary (nav anchor: Summary) -->
+    ${renderExecutiveSummary(r)}
+
+    <!-- Strategic recommendation -->
+    ${r.contentType?.strategic_recommendation ? `<div class="brief-section">
       <div class="bs-header">
-        <span class="bs-title">Keyword signal</span>
-        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
+        <span class="bs-title">Strategic recommendation</span>
+        <span class="bs-tag">AI decision</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-        <div class="research-card">
-          <div class="rc-label">Matched pattern</div>
-          <div class="rc-value">${r.heuristic.heuristicReason}</div>
-        </div>
-        <div class="research-card">
-          <div class="rc-label">Pre-classification</div>
-          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
-        </div>
-        <div class="research-card">
-          <div class="rc-label">Decision source</div>
-          <div class="rc-value" style="color:${r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)'}">${r.decision_source || '—'}</div>
-        </div>
+      <div class="outline-item outline-h2" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
+        ${r.contentType.strategic_recommendation.what_to_build || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
+        ${r.contentType.strategic_recommendation.why_it_fits || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
+        ${r.contentType.strategic_recommendation.business_impact || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0;border-bottom:none">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
+        ${(Array.isArray(r.contentType.strategic_recommendation.execution_steps) ? r.contentType.strategic_recommendation.execution_steps : []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>` : ''}
 
-    <!-- Asset type decision -->
-    ${r.contentType ? `<div class="brief-section">
+    <!-- Why this wins -->
+    ${renderWhyThisWins(r.contentType, r.moat)}
+
+    <hr class="section-break">
+
+    <!-- ② REASONING ────────────────────────────────────────────── -->
+
+    <!-- Asset type decision (classification detail) -->
+    ${r.contentType ? `<div class="brief-section" data-layer="reasoning">
       <div class="bs-header">
-        <span class="bs-title">Recommended asset type</span>
+        <span class="bs-title">Asset type decision</span>
         <span class="bs-tag">${r.contentType.funnel_stage || ''} funnel</span>
       </div>
       <div style="margin-bottom:14px">
@@ -2138,79 +3689,10 @@ function renderResult(r) {
     <!-- Competitive moat -->
     ${renderCompetitiveMoat(r.moat)}
 
-    <!-- Strategic recommendation -->
-    ${r.contentType?.strategic_recommendation ? `<div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Strategic recommendation</span>
-        <span class="bs-tag">AI decision</span>
-      </div>
-      <div class="outline-item outline-h2" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
-        ${r.contentType.strategic_recommendation.what_to_build || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
-        ${r.contentType.strategic_recommendation.why_it_fits || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
-        ${r.contentType.strategic_recommendation.business_impact || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0;border-bottom:none">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
-        ${(r.contentType.strategic_recommendation.execution_steps || []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
-      </div>
-    </div>` : ''}
+    <hr class="section-break">
 
-    <!-- Score -->
-    <div class="score-card">
-      <div class="score-number ${scoreClass}">${score}</div>
-      <div class="score-info">
-        <div class="score-label">Brief quality score · ${r.quality.grade || ''}</div>
-        <div class="score-bar-track"><div class="score-bar-fill ${scoreClass}" id="scoreBar" style="width:0%"></div></div>
-        <div class="score-notes">${r.quality.competitive_advantage || ''}</div>
-      </div>
-    </div>
-
-    <!-- Competing pages -->
-    ${(r.serp?.top_results?.length) ? `
-    <div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Top ranking pages</span>
-        <span class="bs-tag">${r.serp.top_results.length} results analysed</span>
-      </div>
-      ${r.serp.top_results.slice(0, 5).map((p, i) => `
-        <div class="competitor-row">
-          <span class="comp-pos">${p.position || i + 1}</span>
-          <div class="comp-info">
-            <a class="comp-title" href="${p.url || '#'}" target="_blank" rel="noopener">${p.title || 'Untitled'}</a>
-            <div class="comp-meta">${extractDomain(p.url || '')}${p.estimated_word_count ? ' · ' + p.estimated_word_count + ' words' : ''}</div>
-          </div>
-          <span class="comp-type">${p.content_type || 'article'}</span>
-        </div>
-      `).join('')}
-    </div>
-    ` : ''}
-
-    <!-- SERP overview -->
-    <div class="research-grid">
-      <div class="research-card">
-        <div class="rc-label">Search intent</div>
-        <div class="rc-value">${r.serp?.search_intent || '—'}</div>
-      </div>
-      <div class="research-card">
-        <div class="rc-label">Dominant content type</div>
-        <div class="rc-value">${r.serp?.dominant_content_type || '—'}</div>
-      </div>
-      <div class="research-card">
-        <div class="rc-label">Avg. word count (competitors)</div>
-        <div class="rc-value">${r.serp?.avg_word_count || '—'} words</div>
-      </div>
-      <div class="research-card">
-        <div class="rc-label">SERP features present</div>
-        <div class="rc-value">${(r.serp?.serp_features || []).join(', ') || 'None detected'}</div>
-      </div>
-    </div>
+    <!-- ③ EXECUTION + ⑤ BUILD PLAN (nav anchor: Execution) ─────── -->
+    <div data-section="execution" data-label="Execution">
 
     <!-- Recommended title -->
     <div class="brief-section">
@@ -2286,27 +3768,6 @@ function renderResult(r) {
       ${outlineHtml || '<div class="bs-body">No outline generated.</div>'}
     </div>
 
-    <!-- Gap & opportunity -->
-    <div class="brief-section">
-      <div class="bs-header">
-        <span class="bs-title">Competitive opportunity</span>
-        <span class="bs-tag">Why you can rank</span>
-      </div>
-      <div class="outline-item outline-h2" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Market gap</span>
-        ${r.competitor?.market_gap || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Competitor weakness</span>
-        ${r.competitor?.competitor_weakness || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0${(r.competitor?.differentiation_tactics || []).length ? '' : ';border-bottom:none'}">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">How to differentiate</span>
-        ${r.competitor?.differentiation_strategy || '—'}
-      </div>
-      ${(r.competitor?.differentiation_tactics || []).map((t, i, a) => `<div class="outline-item" style="margin-top:6px${i === a.length-1 ? ';border-bottom:none' : ''}">→ ${t}</div>`).join('')}
-    </div>
-
     <!-- Must include / avoid -->
     ${mustInclude ? `<div class="brief-section">
       <div class="bs-header"><span class="bs-title">Must include</span></div>
@@ -2324,6 +3785,40 @@ function renderResult(r) {
       <div class="bs-body">${r.brief.cta || '—'}</div>
     </div>
 
+    <hr class="section-break">
+
+    <!-- ⑤ EXECUTION PLAN (inside Execution wrapper) ─────────────── -->
+    ${renderExecutionPlaceholder(r)}
+
+    <!-- Export -->
+    <div class="export-bar">
+      <button class="export-btn primary" onclick="copyBrief()">Copy full brief</button>
+      <button class="export-btn" onclick="downloadBrief()">Download .txt</button>
+    </div>
+
+    </div><!-- /data-section="execution" -->
+
+    <hr class="section-break">
+
+    <!-- ④ RESEARCH & QUALITY — collapsible (nav anchor: Research) ── -->
+    <div class="sec-collapsible sec-closed" data-section="research" data-label="Research" data-layer="research">
+      <div class="research-section-header" onclick="toggleSection(this.parentElement)">
+        <span class="bs-title">Research &amp; Quality</span>
+        <span class="bs-tag">evidence layer</span>
+        <span class="sec-chevron">▾</span>
+      </div>
+      <div class="sec-body"><div class="sec-body-inner" style="padding-top:20px">
+
+    <!-- Score -->
+    <div class="score-card">
+      <div class="score-number ${scoreClass}">${score}</div>
+      <div class="score-info">
+        <div class="score-label">Brief quality score · ${r.quality.grade || ''}</div>
+        <div class="score-bar-track"><div class="score-bar-fill ${scoreClass}" id="scoreBar" style="width:0%"></div></div>
+        <div class="score-notes">${r.quality.competitive_advantage || ''}</div>
+      </div>
+    </div>
+
     <!-- Quality review -->
     <div class="brief-section">
       <div class="bs-header"><span class="bs-title">Quality review</span></div>
@@ -2333,17 +3828,101 @@ function renderResult(r) {
       </div>
     </div>
 
-    <!-- Export -->
-    <div class="export-bar">
-      <button class="export-btn primary" onclick="copyBrief()">Copy full brief</button>
-      <button class="export-btn" onclick="downloadBrief()">Download .txt</button>
+    <!-- Competing pages -->
+    ${(r.serp?.top_results?.length) ? `
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Top ranking pages</span>
+        <span class="bs-tag">${r.serp.top_results.length} results analysed</span>
+      </div>
+      ${r.serp.top_results.slice(0, 5).map((p, i) => {
+        // Validate URL: only allow http/https to prevent javascript: URIs in href
+        const safeUrl = (p.url && /^https?:\/\//i.test(p.url)) ? esc(p.url) : '#';
+        return `
+        <div class="competitor-row">
+          <span class="comp-pos">${p.position || i + 1}</span>
+          <div class="comp-info">
+            <a class="comp-title" href="${safeUrl}" target="_blank" rel="noopener">${esc(p.title || 'Untitled')}</a>
+            <div class="comp-meta">${esc(extractDomain(p.url || ''))}${p.estimated_word_count ? ' · ' + esc(String(p.estimated_word_count)) + ' words' : ''}</div>
+          </div>
+          <span class="comp-type">${esc(p.content_type || 'article')}</span>
+        </div>`;
+      }).join('')}
     </div>
+    ` : ''}
+
+    <!-- Competitive opportunity -->
+    <div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Competitive opportunity</span>
+        <span class="bs-tag">Why you can rank</span>
+      </div>
+      <div class="outline-item outline-h2" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Market gap</span>
+        ${r.competitor?.market_gap || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Competitor weakness</span>
+        ${r.competitor?.competitor_weakness || '—'}
+      </div>
+      <div class="outline-item" style="padding:12px 0${(Array.isArray(r.competitor?.differentiation_tactics) && r.competitor.differentiation_tactics.length) ? '' : ';border-bottom:none'}">
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">How to differentiate</span>
+        ${r.competitor?.differentiation_strategy || '—'}
+      </div>
+      ${(Array.isArray(r.competitor?.differentiation_tactics) ? r.competitor.differentiation_tactics : []).map((t, i, a) => `<div class="outline-item" style="margin-top:6px${i === a.length-1 ? ';border-bottom:none' : ''}">→ ${t}</div>`).join('')}
+    </div>
+
+    <!-- SERP overview -->
+    <div class="research-grid">
+      <div class="research-card">
+        <div class="rc-label">Search intent</div>
+        <div class="rc-value">${r.serp?.search_intent || '—'}</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">Dominant content type</div>
+        <div class="rc-value">${r.serp?.dominant_content_type || '—'}</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">Avg. word count (competitors)</div>
+        <div class="rc-value">${r.serp?.avg_word_count || '—'} words</div>
+      </div>
+      <div class="research-card">
+        <div class="rc-label">SERP features present</div>
+        <div class="rc-value">${(Array.isArray(r.serp?.serp_features) ? r.serp.serp_features : []).join(', ') || 'None detected'}</div>
+      </div>
+    </div>
+
+    <!-- Keyword signal (transparency / debug) -->
+    ${r.heuristic ? `<div class="brief-section">
+      <div class="bs-header">
+        <span class="bs-title">Keyword signal</span>
+        <span class="bs-tag">${r.heuristic.confidence} confidence</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="research-card">
+          <div class="rc-label">Matched pattern</div>
+          <div class="rc-value">${r.heuristic.heuristicReason}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Pre-classification</div>
+          <div class="rc-value">${r.heuristic.forcedProblemType}</div>
+        </div>
+        <div class="research-card">
+          <div class="rc-label">Decision source</div>
+          <div class="rc-value" style="color:${r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)'}">${r.decision_source || '—'}</div>
+        </div>
+      </div>
+    </div>` : ''}
+
+      </div></div><!-- /sec-body-inner /sec-body -->
+    </div><!-- /data-section="research" -->
   `;
   // Trigger score bar animation on next frame (CSS transition needs an initial paint at width:0)
   requestAnimationFrame(() => {
     const bar = document.getElementById('scoreBar');
     if (bar) bar.style.width = score + '%';
   });
+  initResultNav();
 }
 
 function renderHistory() {
@@ -2354,8 +3933,8 @@ function renderHistory() {
   }
   list.innerHTML = history.map((h, i) => `
     <div class="history-item ${i === 0 && currentResult ? 'active' : ''}" onclick="loadHistory(${i})">
-      <div class="history-keyword">${h.keyword}</div>
-      <div class="history-meta">${h.date} · score ${h.quality?.score || '?'}</div>
+      <div class="history-keyword">${esc(h.keyword)}</div>
+      <div class="history-meta">${esc(h.date)} · score ${esc(String(h.quality?.score || '?'))}</div>
     </div>
   `).join('');
 }
@@ -2411,6 +3990,10 @@ function buildPlainText(r) {
     `QUALITY NOTES`,
     ...(r.quality?.improvements || []).map(i => `→ ${i}`),
   ];
+  if (r.execution) {
+    lines.push('', '─'.repeat(50), '');
+    lines.push(...buildExecutionText(r.execution, r.contentType?.content_type));
+  }
   return lines.join('\n');
 }
 
@@ -2433,11 +4016,217 @@ function downloadBrief() {
   a.click();
 }
 
+// Per-block copy: extracts readable text from an exec-block card
+function copyExecBlock(btn) {
+  const block = btn.closest('.exec-block');
+  if (!block) return;
+  const lines = [];
+  const label = block.querySelector('.exec-block-label')?.textContent?.trim();
+  if (label) lines.push(label.toUpperCase(), '');
+  // Key-value rows
+  block.querySelectorAll('.exec-row').forEach(row => {
+    const key = row.querySelector('.exec-row-key')?.textContent?.trim() || '';
+    const val = row.querySelector('.exec-row-val')?.textContent?.trim() || '';
+    if (key || val) lines.push(`${key}: ${val}`);
+  });
+  // Headlines
+  block.querySelectorAll('.exec-headline').forEach(el => lines.push(el.textContent.trim()));
+  // Block-level text (not nested inside exec-row)
+  block.querySelectorAll('.exec-text').forEach(el => {
+    if (!el.closest('.exec-row')) {
+      const t = el.textContent.trim();
+      if (t) lines.push(t);
+    }
+  });
+  // Chip lists (e.g. table columns)
+  block.querySelectorAll('.exec-chip-list').forEach(list => {
+    const chips = [...list.querySelectorAll('.exec-chip')].map(c => c.textContent.trim());
+    if (chips.length) lines.push(chips.join(', '));
+  });
+  // Standalone chips (e.g. hero CTA buttons not in chip-list)
+  const standalone = [...block.querySelectorAll('.exec-chip')].filter(c => !c.closest('.exec-chip-list'));
+  if (standalone.length) lines.push(standalone.map(c => c.textContent.trim()).join(' / '));
+
+  navigator.clipboard.writeText(lines.filter(Boolean).join('\n')).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = orig, 1400);
+  });
+}
+
+// Serialize execution JSON to plain-text lines, keyed by asset type
+function buildExecutionText(exec, ct) {
+  if (!exec || !ct) return [];
+  const lines = [
+    `EXECUTION PLAN — ${ct.replace(/_/g, ' ').toUpperCase()}`,
+    '─'.repeat(50),
+    '',
+  ];
+  const push = (k, v) => { if (v) lines.push(`  ${k}: ${v}`); };
+  const numbered = items => (items || []).forEach((item, i) => lines.push(`  ${i + 1}. ${item}`));
+
+  if (ct === 'tool_or_calculator') {
+    if (exec.inputs?.length) {
+      lines.push('CALCULATOR INPUTS');
+      exec.inputs.forEach(i => lines.push(`  ${i.label}${i.unit ? ' (' + i.unit + ')' : ''}: ${i.example ? 'e.g. ' + i.example : '—'}`));
+      lines.push('');
+    }
+    if (exec.output) {
+      lines.push('OUTPUT FORMAT');
+      push('Shows', exec.output.primary_label);
+      push('Format', exec.output.format);
+      push('Benchmark', exec.output.benchmark);
+      lines.push('');
+    }
+    if (exec.lead_gate) {
+      lines.push('LEAD GATE STRATEGY');
+      push('Gate after', exec.lead_gate.timing);
+      push('Offer', exec.lead_gate.offer);
+      push('CTA copy', exec.lead_gate.cta);
+      lines.push('');
+    }
+    if (exec.above_fold_headline) {
+      lines.push('TOOL PAGE HEADLINE');
+      lines.push('  ' + exec.above_fold_headline);
+      lines.push('');
+    }
+    if (exec.page_zones?.length) {
+      lines.push('PAGE STRUCTURE');
+      numbered(exec.page_zones);
+      lines.push('');
+    }
+
+  } else if (ct === 'landing_page') {
+    if (exec.hero) {
+      lines.push('HERO SECTION');
+      push('H1', exec.hero.h1);
+      push('Subheadline', exec.hero.subheadline);
+      push('CTA primary', exec.hero.cta_primary);
+      push('CTA secondary', exec.hero.cta_secondary);
+      lines.push('');
+    }
+    if (exec.benefits?.length) {
+      lines.push('BENEFIT COPY');
+      exec.benefits.forEach(b => lines.push(`  ${b.label}: ${b.body}`));
+      lines.push('');
+    }
+    if (exec.objections?.length) {
+      lines.push('OBJECTION HANDLING');
+      exec.objections.forEach(o => lines.push(`  ${o.raise}: ${o.reframe}`));
+      lines.push('');
+    }
+    if (exec.social_proof) { lines.push('SOCIAL PROOF FORMAT'); lines.push('  ' + exec.social_proof); lines.push(''); }
+    if (exec.bottom_cta) {
+      lines.push('BOTTOM CTA');
+      push('Copy', exec.bottom_cta.copy);
+      push('Trust line', exec.bottom_cta.trust_element);
+      lines.push('');
+    }
+
+  } else if (ct === 'blog_article') {
+    if (exec.intro) { lines.push('OPENING COPY'); lines.push('  ' + exec.intro); lines.push(''); }
+    if (exec.section_leads?.length) {
+      lines.push('SECTION OPENING LINES');
+      exec.section_leads.forEach(s => lines.push(`  ${s.heading}: ${s.lead}`));
+      lines.push('');
+    }
+    if (exec.cta_placements?.length) {
+      lines.push('CTA PLACEMENTS');
+      exec.cta_placements.forEach(c => lines.push(`  ${c.position}: ${c.copy}${c.offer ? ' — ' + c.offer : ''}`));
+      lines.push('');
+    }
+    if (exec.email_capture) {
+      lines.push('EMAIL CAPTURE COPY');
+      push('Offer headline', exec.email_capture.headline);
+      push('Button', exec.email_capture.button);
+      lines.push('');
+    }
+
+  } else if (ct === 'ai_visibility_asset') {
+    if (exec.entity_definition) { lines.push('ENTITY DEFINITION'); lines.push('  ' + exec.entity_definition); lines.push(''); }
+    if (exec.key_facts?.length) { lines.push('KEY FACTS TO INCLUDE'); numbered(exec.key_facts); lines.push(''); }
+    if (exec.qa_pairs?.length) {
+      lines.push('Q&A PAIRS');
+      exec.qa_pairs.forEach(q => { lines.push(`  Q: ${q.q}`); lines.push(`  A: ${q.a}`); });
+      lines.push('');
+    }
+    if (exec.schema_type) { lines.push('SCHEMA MARKUP'); lines.push('  ' + exec.schema_type); lines.push(''); }
+    if (exec.citation_hooks?.length) { lines.push('CITATION-WORTHY DATA POINTS'); numbered(exec.citation_hooks); lines.push(''); }
+
+  } else if (ct === 'comparison_page') {
+    if (exec.table_columns?.length) { lines.push('COMPARISON TABLE COLUMNS'); lines.push('  ' + exec.table_columns.join(', ')); lines.push(''); }
+    if (exec.scoring_rubric) { lines.push('SCORING RUBRIC'); lines.push('  ' + exec.scoring_rubric); lines.push(''); }
+    if (exec.decision_guide?.length) {
+      lines.push('DECISION GUIDE');
+      exec.decision_guide.forEach(d => lines.push(`  ${d.profile}: ${d.verdict}`));
+      lines.push('');
+    }
+    if (exec.cta) {
+      lines.push('CONVERSION CTA');
+      push('Copy', exec.cta.copy);
+      push('Placement', exec.cta.placement);
+      lines.push('');
+    }
+
+  } else if (ct === 'lead_magnet') {
+    if (exec.titles?.length) { lines.push('TITLE OPTIONS'); numbered(exec.titles); lines.push(''); }
+    if (exec.opt_in) {
+      lines.push('OPT-IN COPY');
+      push('Headline', exec.opt_in.headline);
+      push('Subheadline', exec.opt_in.subheadline);
+      push('Button', exec.opt_in.button);
+      if (exec.opt_in.fields?.length) lines.push(`  Fields: ${exec.opt_in.fields.join(', ')}`);
+      lines.push('');
+    }
+    if (exec.content_sections?.length) { lines.push('CONTENT SECTIONS'); numbered(exec.content_sections); lines.push(''); }
+    if (exec.email_sequence?.length) {
+      lines.push('EMAIL SEQUENCE');
+      exec.email_sequence.forEach(e => lines.push(`  ${e.subject}: ${e.angle}`));
+      lines.push('');
+    }
+
+  } else if (ct === 'product_page') {
+    if (exec.hero_headline) { lines.push('HERO HEADLINE'); lines.push('  ' + exec.hero_headline); lines.push(''); }
+    if (exec.differentiators?.length) { lines.push('DIFFERENTIATORS'); numbered(exec.differentiators); lines.push(''); }
+    if (exec.objections?.length) {
+      lines.push('OBJECTION HANDLING');
+      exec.objections.forEach(o => lines.push(`  ${o.raise}: ${o.reframe}`));
+      lines.push('');
+    }
+    if (exec.social_proof) { lines.push('SOCIAL PROOF FORMAT'); lines.push('  ' + exec.social_proof); lines.push(''); }
+    if (exec.cta) {
+      lines.push('CTA BLOCK');
+      push('Copy', exec.cta.copy);
+      push('Trust line', exec.cta.trust_element);
+      lines.push('');
+    }
+
+  } else if (ct === 'category_page') {
+    if (exec.h1) { lines.push('CATEGORY HEADLINE'); lines.push('  ' + exec.h1); lines.push(''); }
+    if (exec.subcategories?.length) {
+      lines.push('SUBCATEGORY STRUCTURE');
+      exec.subcategories.forEach(s => lines.push(`  ${s.name}: ${s.description}`));
+      lines.push('');
+    }
+    if (exec.filters?.length) { lines.push('FILTER TAGS'); lines.push('  ' + exec.filters.join(', ')); lines.push(''); }
+    if (exec.featured_format) { lines.push('FEATURED ITEM FORMAT'); lines.push('  ' + exec.featured_format); lines.push(''); }
+    if (exec.internal_link_targets?.length) { lines.push('INTERNAL LINK TARGETS'); numbered(exec.internal_link_targets); lines.push(''); }
+  }
+
+  return lines;
+}
+
 // ─── UTILS ────────────────────────────────────────────────────────────────
 function showSection(name) {
   document.getElementById('emptyState').style.display = name === 'empty' ? 'flex' : 'none';
   document.getElementById('progressSection').classList.toggle('visible', name === 'progress');
   document.getElementById('resultSection').classList.toggle('visible', name === 'result');
+  // Hide result nav when not on the result screen
+  if (name !== 'result') {
+    const nav = document.getElementById('resultNav');
+    if (nav) { nav.classList.remove('nav-visible'); nav.innerHTML = ''; }
+    if (navScrollListener) { window.removeEventListener('scroll', navScrollListener); navScrollListener = null; }
+  }
 }
 
 function updateStatus(msg) {
