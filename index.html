@@ -186,7 +186,7 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   max-width: 860px;
 }
 
-/* Empty state */
+/* ── Empty state — redesigned hero ──────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -194,22 +194,113 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   justify-content: center;
   min-height: 60vh;
   text-align: center;
-}
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 20px;
-  opacity: 0.3;
+  padding: 40px 24px 60px;
+  max-width: 620px;
+  margin: 0 auto;
 }
 .empty-title {
   font-family: var(--serif);
-  font-size: 28px;
+  font-size: 54px;
   color: var(--ink);
-  margin-bottom: 8px;
+  line-height: 1.12;
+  font-style: italic;
+  margin-bottom: 18px;
+  letter-spacing: -0.025em;
 }
 .empty-sub {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 460px;
+  margin-bottom: 40px;
+}
+.empty-workflow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.workflow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 120px;
+}
+.workflow-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.workflow-label {
+  font-size: 11px;
+  color: var(--ink-mid);
+  font-family: var(--mono);
+  line-height: 1.45;
+  text-align: center;
+}
+.workflow-arrow {
+  color: var(--border-dark);
+  font-size: 16px;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.empty-section-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--ink-muted);
-  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.empty-formats { margin-bottom: 28px; width: 100%; }
+.empty-format-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.format-chip {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+  background: var(--surface);
+  font-family: var(--mono);
+}
+.empty-examples { width: 100%; }
+.empty-example-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.example-chip {
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px dashed var(--border-dark);
+  color: var(--ink-mid);
+  background: transparent;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.example-chip:hover {
+  background: var(--surface);
+  border-color: var(--ink);
+  border-style: solid;
+  color: var(--ink);
 }
 
 /* Progress */
@@ -1137,6 +1228,218 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 .vp-calc-input-row { display: flex; align-items: center; gap: 10px; }
 .vp-calc-label { font-family: var(--mono); font-size: 10px; color: var(--ink-muted); flex: 0 0 130px; }
 .vp-calc-field { flex: 1; height: 22px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; }
+
+/* ── Layer dividers ──────────────────────────────────────── */
+.layer-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 36px 0 20px;
+}
+.layer-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.layer-divider-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+/* ── Result eyebrow ─────────────────────────────────────── */
+.result-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+  font-family: var(--mono);
+}
+
+/* ── Dev options (Fast Test Mode) ────────────────────────── */
+details.dev-options { margin-top: 10px; }
+details.dev-options > summary {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  padding: 5px 0;
+  outline: none;
+}
+details.dev-options > summary::-webkit-details-marker { display: none; }
+details.dev-options > summary::after { content: ' ▾'; }
+details.dev-options[open] > summary::after { content: ' ▸'; }
+details.dev-options .fast-test-toggle { margin-top: 6px; }
+
+/* ════════════════════════════════════════════════════════════════
+   DARK COCKPIT — Sidebar dark theme (all rules scoped to .sidebar)
+   Main content keeps warm parchment; sidebar becomes command centre
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Sidebar shell ──────────────────────────────────────────── */
+.sidebar {
+  background: #15120e;
+  border-right: none;
+  box-shadow: 2px 0 28px rgba(0,0,0,0.22);
+}
+
+/* ── Logo ───────────────────────────────────────────────────── */
+.sidebar .logo {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #252118;
+  margin-bottom: 24px;
+}
+.sidebar .logo-text { color: #ede9e0; }
+.sidebar .logo-sub  { color: #504b46; }
+
+/* ── Labels & section headers ───────────────────────────────── */
+.sidebar .section-label { color: #504b46; }
+.sidebar label          { color: #8a8480; }
+
+/* ── Form inputs ────────────────────────────────────────────── */
+.sidebar input,
+.sidebar textarea,
+.sidebar select {
+  background: #1c1914;
+  border-color: #2e2a23;
+  color: #ede9e0;
+}
+.sidebar input:focus,
+.sidebar textarea:focus,
+.sidebar select:focus {
+  border-color: #7a7570;
+  box-shadow: 0 0 0 3px rgba(245,242,235,0.06);
+}
+.sidebar input::placeholder,
+.sidebar textarea::placeholder { color: #3e3c38; }
+
+/* Dropdown caret — light on dark */
+.sidebar select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8480' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+}
+
+/* ── Run button — cream on dark ─────────────────────────────── */
+.sidebar .run-btn {
+  background: #ede9e0;
+  color: #15120e;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+.sidebar .run-btn:hover:not(:disabled) {
+  background: #f8f4eb;
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.1);
+}
+.sidebar .run-btn:active:not(:disabled) { transform: translateY(0); }
+.sidebar .run-btn:disabled { background: #2e2b25; color: #504b46; box-shadow: none; }
+.sidebar .run-btn .spinner {
+  border-color: rgba(21,18,14,0.35);
+  border-top-color: transparent;
+}
+
+/* ── Divider + history ──────────────────────────────────────── */
+.sidebar .sidebar-divider  { border-color: #252118; }
+.sidebar .history-keyword  { color: #b4afa8; }
+.sidebar .history-meta     { color: #504b46; }
+.sidebar .history-empty    { color: #3e3c38; }
+.sidebar .history-item:hover {
+  background: rgba(245,242,235,0.05);
+  border-color: rgba(245,242,235,0.1);
+}
+.sidebar .history-item.active {
+  background: rgba(245,242,235,0.08);
+  border-color: rgba(245,242,235,0.15);
+}
+
+/* ── Error box on dark ──────────────────────────────────────── */
+.sidebar .error-box {
+  background: rgba(192,57,43,0.12);
+  border-color: rgba(192,57,43,0.25);
+  color: #df7870;
+}
+
+/* ── Dev options on dark ────────────────────────────────────── */
+.sidebar details.dev-options > summary { color: #3e3c38; }
+.sidebar .fast-test-toggle {
+  background: rgba(245,242,235,0.03);
+  border-color: #252118;
+}
+.sidebar .toggle-label { color: #6a6560; }
+.sidebar .toggle-sub   { color: #3e3c38; }
+
+/* ════════════════════════════════════════════════════════════════
+   MAIN CONTENT ELEVATION
+   Subtle depth to match the premium sidebar
+   ════════════════════════════════════════════════════════════════ */
+
+/* Depth shadow at the sidebar/main seam */
+.main {
+  box-shadow: inset 8px 0 32px rgba(0,0,0,0.04);
+}
+
+/* Elevated card surfaces */
+.research-card {
+  box-shadow: 0 1px 3px rgba(26,20,14,0.08), 0 2px 10px rgba(26,20,14,0.04);
+  border-color: var(--border);
+}
+.exec-summary {
+  box-shadow: 0 3px 18px rgba(26,20,14,0.16), 0 1px 5px rgba(26,20,14,0.1);
+}
+.brief-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+/* Format chips — white surface for contrast against parchment */
+.format-chip {
+  background: #ffffff;
+  border-color: #c8c3b5;
+  color: #5a5650;
+}
+
+/* Example keyword chips — lifted */
+.example-chip {
+  background: rgba(255,255,255,0.65);
+}
+.example-chip:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(26,20,14,0.1);
+}
+
+/* Workflow step — stronger circle */
+.workflow-num {
+  box-shadow: 0 2px 6px rgba(26,20,14,0.18);
+}
+
+/* Layer divider label — slightly stronger */
+.layer-divider-label {
+  background: var(--bg);
+  padding: 0 8px;
+  color: #9a9590;
+}
+
+/* Result eyebrow — stronger presence */
+.result-eyebrow {
+  letter-spacing: 0.18em;
+}
+
+/* Score card elevation */
+.score-card {
+  box-shadow: 0 1px 3px rgba(26,20,14,0.08), 0 2px 10px rgba(26,20,14,0.04);
+}
+
+/* Why-this-wins section — stronger left border */
+.why-wins {
+  border-left-width: 4px;
+}
 </style>
 </head>
 <body>
@@ -1146,10 +1449,10 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-text">Growth Asset Strategist</div>
-      <div class="logo-sub">AI marketing strategy engine</div>
+      <div class="logo-sub">Find the right format, then build it</div>
     </div>
 
-    <div class="section-label">New Analysis</div>
+    <div class="section-label">Your keyword</div>
 
     <div class="field">
       <label>Target Keyword</label>
@@ -1169,11 +1472,11 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
     <div class="field">
       <label>Business Goal</label>
       <select id="goal">
-        <option value="capture_demand">Capture existing search demand</option>
+        <option value="capture_demand">Drive organic search traffic</option>
         <option value="generate_leads">Generate qualified leads</option>
-        <option value="drive_conversions">Drive conversions</option>
-        <option value="build_authority">Build topical authority</option>
-        <option value="product_awareness">Drive product awareness</option>
+        <option value="drive_conversions">Drive sign-ups or conversions</option>
+        <option value="build_authority">Build SEO authority</option>
+        <option value="product_awareness">Increase product awareness</option>
       </select>
     </div>
 
@@ -1186,16 +1489,19 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
     <button class="run-btn" id="runBtn" onclick="runAgent()">
       <div class="spinner" id="spinner"></div>
-      <span id="btnText">Analyse &amp; Plan</span>
+      <span id="btnText">Find the Right Format</span>
     </button>
 
-    <div class="fast-test-toggle">
-      <label class="toggle-label">
-        <input type="checkbox" id="fastTestMode"/>
-        <span>Fast test mode</span>
-      </label>
-      <div class="toggle-sub">Classification &amp; decision only · skips SERP, brief &amp; quality</div>
-    </div>
+    <details class="dev-options">
+      <summary>Developer options</summary>
+      <div class="fast-test-toggle">
+        <label class="toggle-label">
+          <input type="checkbox" id="fastTestMode"/>
+          <span>Fast test mode</span>
+        </label>
+        <div class="toggle-sub">Classification &amp; decision only · skips SERP, brief &amp; quality</div>
+      </div>
+    </details>
 
     <hr class="sidebar-divider"/>
 
@@ -1206,11 +1512,50 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
   <!-- MAIN -->
   <main class="main" id="mainContent">
 
-    <!-- Empty state -->
+    <!-- Empty state / hero -->
     <div class="empty-state" id="emptyState">
-      <div class="empty-icon">◎</div>
-      <div class="empty-title">Ready to find the winning asset</div>
-      <div class="empty-sub">Enter a keyword and the agent will decide what marketing asset to build, why it can win, and how to execute it.</div>
+      <div class="empty-title">Know what to build<br>before you start writing</div>
+      <p class="empty-sub">Enter a keyword — the AI picks the right content format, explains why it wins, and writes you an execution-ready brief.</p>
+
+      <div class="empty-workflow">
+        <div class="workflow-step">
+          <div class="workflow-num">1</div>
+          <div class="workflow-label">Enter a keyword</div>
+        </div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-num">2</div>
+          <div class="workflow-label">AI picks the right format</div>
+        </div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-num">3</div>
+          <div class="workflow-label">Get an execution-ready brief</div>
+        </div>
+      </div>
+
+      <div class="empty-formats">
+        <div class="empty-section-label">Decides between</div>
+        <div class="empty-format-chips">
+          <span class="format-chip">Blog post</span>
+          <span class="format-chip">Landing page</span>
+          <span class="format-chip">Comparison page</span>
+          <span class="format-chip">Lead magnet</span>
+          <span class="format-chip">Tool or calculator</span>
+          <span class="format-chip">AI visibility asset</span>
+          <span class="format-chip">Product page</span>
+          <span class="format-chip">Category page</span>
+        </div>
+      </div>
+
+      <div class="empty-examples">
+        <div class="empty-section-label" style="margin-top:24px">Try an example</div>
+        <div class="empty-example-chips">
+          <button class="example-chip" onclick="tryExample('project management software comparison')">project management software comparison</button>
+          <button class="example-chip" onclick="tryExample('b2b saas lead generation checklist')">b2b saas lead generation checklist</button>
+          <button class="example-chip" onclick="tryExample('what is cost per acquisition')">what is cost per acquisition</button>
+        </div>
+      </div>
     </div>
 
     <!-- Progress -->
@@ -1233,16 +1578,27 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
 <script>
 const STEPS = [
-  { name: 'Market Signal Analysis', desc: 'Reading what the SERP reveals about demand, intent, and competition' },
-  { name: 'Competitive Intelligence', desc: 'Identifying gaps, angles, and opportunities no competitor owns' },
-  { name: 'Keyword Opportunity Map', desc: 'Mapping search demand by intent across the full funnel' },
-  { name: 'Asset Type Decision', desc: 'Determining the highest-ROI marketing asset for this keyword' },
-  { name: 'Opportunity Analysis', desc: 'Scoring the strategic attractiveness and business value of this keyword opportunity' },
-  { name: 'Asset Brief', desc: 'Writing a format-specific brief tailored to the chosen asset type' },
-  { name: 'Strategy Quality Score', desc: 'Scoring the strategy and flagging what would weaken it' },
+  { name: 'Reading the search landscape', desc: 'Analyzing what\'s currently ranking and why for this keyword' },
+  { name: 'Mapping competitor gaps', desc: 'Finding the content angles no one has claimed yet' },
+  { name: 'Identifying keyword intent', desc: 'Grouping search demand by buyer stage across the funnel' },
+  { name: 'Choosing the right content format', desc: 'Deciding whether to build a blog, landing page, comparison page, tool, or something else' },
+  { name: 'Scoring the opportunity', desc: 'Evaluating whether this keyword is strategically worth building for' },
+  { name: 'Writing your execution brief', desc: 'Creating a format-specific strategy you can act on today' },
+  { name: 'Quality review', desc: 'Checking the strategy is specific and actionable enough to be useful' },
 ];
 
 const MODEL = 'claude-sonnet-4-6';
+
+// Fills the keyword input with an example and highlights the run button
+function tryExample(kw) {
+  const input = document.getElementById('keyword');
+  const btn = document.getElementById('runBtn');
+  input.value = kw;
+  input.focus();
+  btn.style.transition = 'box-shadow 0.15s';
+  btn.style.boxShadow = '0 0 0 3px rgba(26,24,20,0.18)';
+  setTimeout(() => { btn.style.boxShadow = ''; }, 900);
+}
 
 // ─── SAFETY HELPERS ───────────────────────────────────────────────────────
 // Escapes HTML entities — prevents XSS when interpolating user/AI strings into innerHTML
@@ -2998,6 +3354,7 @@ function renderFastResult(r) {
   document.getElementById('resultSection').innerHTML = `
     <div class="result-header">
       <div>
+        <div class="result-eyebrow">Strategy Report · Fast Test</div>
         <div class="result-keyword">${esc(r.keyword)}</div>
         <div class="result-meta">${esc(r.date)} · fast test mode · classification &amp; decision only</div>
       </div>
@@ -3034,9 +3391,8 @@ function renderFastResult(r) {
     <!-- Why this wins -->
     ${renderWhyThisWins(ct, r.moat)}
 
-    <hr class="section-break">
-
     <!-- Keyword heuristic signal -->
+    <div class="layer-divider" data-layer="reasoning"><div class="layer-divider-line"></div><div class="layer-divider-label">② Analysis</div><div class="layer-divider-line"></div></div>
     ${r.heuristic ? `<div class="brief-section" data-layer="reasoning">
       <div class="bs-header">
         <span class="bs-title">Keyword signal</span>
@@ -3114,9 +3470,8 @@ function renderFastResult(r) {
       </div>`;
     })()}
 
-    <hr class="section-break">
-
     <!-- ⑤ EXECUTION PLAN (nav anchor: Execution) -->
+    <div class="layer-divider"><div class="layer-divider-line"></div><div class="layer-divider-label">③ Your Brief</div><div class="layer-divider-line"></div></div>
     <div data-section="execution" data-label="Execution">
       ${renderExecutionPlaceholder(r)}
       <div class="export-bar">
@@ -3614,6 +3969,7 @@ function renderResult(r) {
   document.getElementById('resultSection').innerHTML = `
     <div class="result-header">
       <div>
+        <div class="result-eyebrow">Strategy Report</div>
         <div class="result-keyword">${esc(r.keyword)}</div>
         <div class="result-meta">${esc(r.date)} · ${esc(r.serp?.search_intent || 'informational')} intent · ${esc(r.serp?.difficulty_signal || 'medium')} difficulty</div>
       </div>
@@ -3652,9 +4008,8 @@ function renderResult(r) {
     <!-- Why this wins -->
     ${renderWhyThisWins(r.contentType, r.moat)}
 
-    <hr class="section-break">
-
     <!-- ② REASONING ────────────────────────────────────────────── -->
+    <div class="layer-divider" data-layer="reasoning"><div class="layer-divider-line"></div><div class="layer-divider-label">② Analysis</div><div class="layer-divider-line"></div></div>
 
     <!-- Asset type decision (classification detail) -->
     ${r.contentType ? `<div class="brief-section" data-layer="reasoning">
@@ -3689,9 +4044,8 @@ function renderResult(r) {
     <!-- Competitive moat -->
     ${renderCompetitiveMoat(r.moat)}
 
-    <hr class="section-break">
-
     <!-- ③ EXECUTION + ⑤ BUILD PLAN (nav anchor: Execution) ─────── -->
+    <div class="layer-divider"><div class="layer-divider-line"></div><div class="layer-divider-label">③ Your Brief</div><div class="layer-divider-line"></div></div>
     <div data-section="execution" data-label="Execution">
 
     <!-- Recommended title -->
@@ -3798,9 +4152,8 @@ function renderResult(r) {
 
     </div><!-- /data-section="execution" -->
 
-    <hr class="section-break">
-
     <!-- ④ RESEARCH & QUALITY — collapsible (nav anchor: Research) ── -->
+    <div class="layer-divider" data-layer="research"><div class="layer-divider-line"></div><div class="layer-divider-label">④ Research &amp; Quality</div><div class="layer-divider-line"></div></div>
     <div class="sec-collapsible sec-closed" data-section="research" data-label="Research" data-layer="research">
       <div class="research-section-header" onclick="toggleSection(this.parentElement)">
         <span class="bs-title">Research &amp; Quality</span>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Council Report — Growth Asset Strategist</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f2eb;
+    color: #1a1a18;
+    line-height: 1.6;
+    padding: 40px 20px 80px;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .report-header {
+    border-bottom: 2px solid #1a1a18;
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+  }
+  .report-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .report-title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .report-question {
+    font-size: 15px;
+    color: #444;
+    max-width: 680px;
+    background: #fff;
+    border-left: 3px solid #1a1a18;
+    padding: 12px 16px;
+    margin-top: 16px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Verdict card */
+  .verdict-card {
+    background: #1a1a18;
+    color: #f5f2eb;
+    border-radius: 8px;
+    padding: 32px 36px;
+    margin-bottom: 40px;
+  }
+  .verdict-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    margin-bottom: 16px;
+  }
+  .verdict-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #b8b4a8;
+    margin: 24px 0 10px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+  }
+  .verdict-section-title:first-of-type {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+  }
+  .verdict-card p {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #e8e4dc;
+  }
+  .verdict-card p + p {
+    margin-top: 10px;
+  }
+
+  /* One thing CTA */
+  .one-thing {
+    background: #fff;
+    border: 2px solid #1a1a18;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+  }
+  .one-thing-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    color: #888;
+    margin-bottom: 10px;
+  }
+  .one-thing-text {
+    font-size: 15px;
+    line-height: 1.65;
+    font-weight: 500;
+  }
+
+  /* Agreement grid */
+  .agreement-section {
+    margin-bottom: 40px;
+  }
+  .section-heading {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    margin-bottom: 16px;
+  }
+  .advisor-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .advisor-cell {
+    background: #fff;
+    border: 1px solid #ddd8cc;
+    border-radius: 6px;
+    padding: 10px 10px 12px;
+    text-align: center;
+  }
+  .advisor-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a18;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .peer-pick {
+    font-size: 10px;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .peer-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .badge-strong { background: #d4edda; color: #1a6b30; }
+  .badge-blind  { background: #fde8d8; color: #8b3a10; }
+  .badge-neutral { background: #f0ede5; color: #888; }
+
+  /* Collapsible advisor sections */
+  .collapsibles { margin-bottom: 40px; }
+  details {
+    background: #fff;
+    border: 1px solid #ddd8cc;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  summary {
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '▾';
+    font-size: 12px;
+    color: #888;
+    transition: transform 0.2s;
+  }
+  details[open] summary::after { transform: rotate(180deg); }
+  .advisor-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    margin-left: 8px;
+  }
+  .tag-contrarian   { background: #fde8d8; color: #8b3a10; }
+  .tag-firstp       { background: #e8f0fe; color: #1a56b0; }
+  .tag-expansionist { background: #d4edda; color: #1a6b30; }
+  .tag-outsider     { background: #f3e8fd; color: #6b1ab0; }
+  .tag-executor     { background: #1a1a18; color: #f5f2eb; }
+  .advisor-body {
+    padding: 4px 18px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #333;
+    border-top: 1px solid #f0ede5;
+  }
+
+  /* Peer review collapsible */
+  .peer-review-section { margin-bottom: 40px; }
+  .peer-review-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .pr-card {
+    background: #fff;
+    border: 1px solid #ddd8cc;
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .pr-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .pr-item {
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  .pr-item strong { color: #1a1a18; }
+
+  /* Footer */
+  .report-footer {
+    border-top: 1px solid #ddd8cc;
+    padding-top: 20px;
+    font-size: 12px;
+    color: #aaa;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+
+  @media (max-width: 600px) {
+    .advisor-grid { grid-template-columns: 1fr 1fr; }
+    .verdict-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div class="report-label">LLM Council Report · 2026-05-12</div>
+    <div class="report-title">Growth Asset Strategist — Keep building?</div>
+    <div class="report-question">
+      Should the builder keep working on this live, deployed AI marketing strategy engine (single-file, no auth, localStorage only, Vercel)? The product is technically complete through Phase 17. The strategic question: is this worth continuing to invest in, and if so, what direction?
+    </div>
+  </div>
+
+  <!-- Chairman Verdict -->
+  <div class="verdict-card">
+    <div class="verdict-label">Chairman's Verdict</div>
+
+    <div class="verdict-section-title">Where the Council Agrees</div>
+    <p><strong>Validation before building.</strong> Every advisor implicitly agrees the product has not been validated against the market. Phase 17 of feature completeness is not Phase 1 of product-market fit. The Executor made this explicit; the others circled it. The next move is outward-facing, not inward.</p>
+    <p><strong>The format-decision insight is real.</strong> No advisor challenged the core intellectual value. The question is whether that insight is product-shaped, not whether it exists.</p>
+    <p><strong>The Executor's test is the minimum bar.</strong> All five peer reviewers ranked the Executor as the strongest response — unanimous. That convergence is a strong signal.</p>
+    <p><strong>The vocabulary is wrong for the actual buyer.</strong> "Format decision problem," "AI visibility asset," "asset type decision layer" — these are the builder's mental model, not the buyer's. A B2B content manager thinks in topics, deadlines, and channel requirements.</p>
+
+    <div class="verdict-section-title">Where the Council Clashes</div>
+    <p><strong>Retention: internalized framework vs. workflow lock-in.</strong> The Contrarian argues users internalize the decision logic and stop returning. Two reviewers counter that an agency running 20 keywords/month doesn't need to rediscover the insight — they need the tool to do the work every time. This is an empirical question, not a strategic one. It cannot be answered from inside the builder's head.</p>
+    <p><strong>The agency pivot: expansion surface or different product.</strong> The Expansionist calls multi-seat, collaborative brief rooms an expansion surface. Reviewer 3 correctly identifies it requires auth, team sharing, multi-seat billing, and a database — all prohibited by the current architecture. Both are right about their facts. Neither acknowledges the other's constraint.</p>
+
+    <div class="verdict-section-title">Blind Spots the Council Caught</div>
+    <p><strong>API cost is the invisible floor under every strategy.</strong> Missed by all five advisors, caught by two reviewers. A 7-step pipeline on claude-sonnet-4-6 costs real money per run. At any self-serve free or low-price-point model, the builder pays for every query. Before distribution work begins, cost-per-run must be modeled against price and volume. A tool with a brutal margin problem at scale is not a distribution problem — it is a business model problem.</p>
+    <p><strong>Existing usage data is being ignored.</strong> The product is live. Vercel analytics exist. localStorage contains prior sessions. Observed behavior from real sessions beats five advisory opinions. What keywords were run? Where did users drop off? Did anyone trigger execution assets? Look at what the tool has already shown you.</p>
+    <p><strong>The execution asset layer changes the product category.</strong> With per-block regen, inline editing, and execution previews, this is no longer decision-support — it is a brief-production tool that happens to make the format decision. Different buyer, different price point, different retention mechanic. Workflow lock-in through execution output is a more durable moat than decision insight alone.</p>
+    <p><strong>The AI visibility asset type has genuine timing leverage.</strong> Most content tools were built before LLM-answer search became primary. This single asset type, positioned as the tool's sharpest edge, could be the distribution wedge: "tells you what to build to stay visible when ChatGPT answers your keyword before Google does." A problem with a clock on it, a specific buyer, and no credible incumbent.</p>
+
+    <div class="verdict-section-title">The Recommendation</div>
+    <p>Keep going, but stop building and start selling. The product is technically credible. The execution asset layer makes it a workflow tool, not just a decision aid — that is a more durable product than the advisors debated. But none of that matters until someone pays for it or pulls it out of their own pocket unprompted.</p>
+    <p>The path is narrow and sequenced: First, model the API cost per run against realistic pricing — if the margin is unworkable, the business model must change before distribution begins (user-provided API keys, usage cap, or paid-only). Second, rewrite positioning in the buyer's language — especially the AI visibility angle. Third, run the Executor's test: 5 cold DMs, offer to run a live keyword, threshold is 1-in-3 genuine engagement. Below that, positioning needs to change, not the product.</p>
+  </div>
+
+  <!-- One Thing -->
+  <div class="one-thing">
+    <div class="one-thing-label">The One Thing to Do First</div>
+    <div class="one-thing-text">
+      Model the cost-per-run on claude-sonnet-4-6 for a full 7-step pipeline, then set a price floor that yields positive margin at 100 runs per month. Do this before writing a single cold outreach message. If the math doesn't work at any price a content manager would pay, the business model has to change first — and knowing that changes everything about the distribution strategy.
+    </div>
+  </div>
+
+  <!-- Agreement / Alignment Visual -->
+  <div class="agreement-section">
+    <div class="section-heading">Advisor Alignment — Peer Review Votes</div>
+    <div class="advisor-grid">
+      <div class="advisor-cell">
+        <div class="advisor-name">The Executor</div>
+        <div class="peer-pick">Strongest pick</div>
+        <span class="peer-badge badge-strong">5 / 5 votes</span>
+      </div>
+      <div class="advisor-cell">
+        <div class="advisor-name">The Expansionist</div>
+        <div class="peer-pick">Biggest blind spot</div>
+        <span class="peer-badge badge-blind">3 / 5 votes</span>
+      </div>
+      <div class="advisor-cell">
+        <div class="advisor-name">The Contrarian</div>
+        <div class="peer-pick">Blind spot (runner-up)</div>
+        <span class="peer-badge badge-blind">2 / 5 votes</span>
+      </div>
+      <div class="advisor-cell">
+        <div class="advisor-name">The Outsider</div>
+        <div class="peer-pick">No strong votes</div>
+        <span class="peer-badge badge-neutral">—</span>
+      </div>
+      <div class="advisor-cell">
+        <div class="advisor-name">First Principles</div>
+        <div class="peer-pick">No strong votes</div>
+        <span class="peer-badge badge-neutral">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advisor Responses (collapsible) -->
+  <div class="collapsibles">
+    <div class="section-heading">Advisor Responses (expand to read)</div>
+
+    <details>
+      <summary>
+        <span>The Contrarian <span class="advisor-tag tag-contrarian">Contrarian</span></span>
+      </summary>
+      <div class="advisor-body">
+        The fatal flaw isn't the product — it's the retention model. The format-decision insight this tool provides is genuinely useful the first time. Maybe the third time. But experienced marketers will internalize the decision framework after a few uses and stop reaching for the tool. The "aha" is teachable. There's no compounding value — no history that gets smarter, no team memory, no data that improves with use. Without auth and a database, every session is a blank slate. The tool has no way to become more valuable over time for returning users. Find 3 people who have used the tool more than twice and ask why they came back. If you can't find 3, that's the answer. The insight is real. The product form may be wrong.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>The First Principles Thinker <span class="advisor-tag tag-firstp">First Principles</span></span>
+      </summary>
+      <div class="advisor-body">
+        Strip everything back. Who is this for and what is their actual problem? The assumed user is someone who doesn't know which asset format to build for a keyword. Experienced marketers make this call in 30 seconds based on intuition. Beginners don't know what a "lead magnet" vs "landing page" decision even means. The tool seems best suited for the mid-market: someone doing content seriously but not yet operating on pure intuition — a growth operator at a 20–100 person B2B SaaS company. For that person, the real question is: does this tool's output beat their current 30-second gut call? Not just in quality, but in confidence, speed, and actionability? Run 20 real keywords through it with 5 target users watching. Do they nod along, or do they push back? That's the hypothesis to test before any more features are built.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>The Expansionist <span class="advisor-tag tag-expansionist">Expansionist</span></span>
+      </summary>
+      <div class="advisor-body">
+        Three real expansion surfaces worth pursuing. First, this isn't a solo-user tool — it's an agency or growth-team tool. A content strategist running 20 keywords a month would pay $300–500/seat for this. The brief quality plus the execution asset generation makes it a workflow replacement, not a utility. The pricing ceiling is much higher than typical indie SaaS suggests. Second, the AI visibility asset type is a sleeper — every company is about to discover their content strategy is broken for AI search. This tool is ahead of the curve. Third, the per-block regen plus execution preview is a content production workflow. With light additions — export to Google Doc, share link, team comments — this becomes a collaborative brief room. That's where retention lives. The builder isn't building a strategy tool. They're building the first screen in a content production workflow. That's a much larger market.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>The Outsider <span class="advisor-tag tag-outsider">Outsider</span></span>
+      </summary>
+      <div class="advisor-body">
+        Looking at this cold: the phrase "format decision problem" assumes the visitor already knows they have that problem and that "format" is the right frame for it. Most content marketers don't think in formats — they think in topics, deadlines, and channel requirements. The gap between how they think and how this product frames itself is significant. "AI visibility asset" is insider language that will confuse anyone outside a narrow SEO/growth Twitter bubble. The product might solve a real pain, but it's currently dressed in the language of the person who built it, not the person who needs it. Before the next build sprint, talk to 5 B2B content managers. Don't demo the tool. Ask them about the last 3 content decisions they made and what was hard about them. The product might be solving the right problem with the wrong vocabulary.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>The Executor <span class="advisor-tag tag-executor">Executor</span></span>
+      </summary>
+      <div class="advisor-body">
+        Stop building features. The app is live, it works, it produces real output. The only question that matters now is whether anyone will pay for it. Here's the test: write 5 cold DMs to marketing managers at B2B SaaS companies with 10–50 person teams. Message: "I built a tool that tells you which asset format to build for a keyword before you start writing. Want to try it on one you're working on right now?" Send them the link. Watch what happens. If 1 in 3 says yes and actually uses it — or better, asks what it costs — keep going. If you get silence or "cool tool" without follow-through, you have a positioning problem, not a product problem. The fastest way to waste the next 3 months is to keep improving a product before knowing if anyone will pay for it. Distribution is the only job right now. One week of outreach will tell you more than three more months of building.
+      </div>
+    </details>
+  </div>
+
+  <!-- Peer Review Highlights -->
+  <details style="margin-bottom: 40px; background: #fff; border: 1px solid #ddd8cc; border-radius: 6px; overflow: hidden;">
+    <summary style="padding: 14px 18px; cursor: pointer; font-size: 13.5px; font-weight: 600; list-style: none; display: flex; align-items: center; justify-content: space-between; user-select: none;">
+      Peer Review Highlights (expand)
+    </summary>
+    <div style="padding: 4px 18px 18px; border-top: 1px solid #f0ede5;">
+
+      <div class="peer-review-grid">
+        <div class="pr-card">
+          <h4>Reviewer 1</h4>
+          <div class="pr-item"><strong>Strongest:</strong> Executor — only actionable test with a falsifiable criterion.</div>
+          <div class="pr-item"><strong>Biggest blind spot:</strong> Expansionist — assumes agency readiness before any validation exists.</div>
+          <div class="pr-item"><strong>All missed:</strong> API cost per run. At 7-step pipeline on claude-sonnet-4-6, each query costs real money. A tool you give away free while paying per use has a ceiling no distribution work fixes.</div>
+        </div>
+
+        <div class="pr-card">
+          <h4>Reviewer 2</h4>
+          <div class="pr-item"><strong>Strongest:</strong> Executor — only response giving a concrete next action with success criterion.</div>
+          <div class="pr-item"><strong>Biggest blind spot:</strong> Contrarian — misreads the usage model. The repeat customer is an agency running 20 keywords/month, not a solo user who internalizes and stops.</div>
+          <div class="pr-item"><strong>All missed:</strong> The execution asset layer changes the product category entirely — from decision-support to brief-production workflow. Different buyer, different price point, different retention mechanic.</div>
+        </div>
+
+        <div class="pr-card">
+          <h4>Reviewer 3</h4>
+          <div class="pr-item"><strong>Strongest:</strong> Executor — concrete, time-bounded, falsifiable.</div>
+          <div class="pr-item"><strong>Biggest blind spot:</strong> Expansionist — the agency pivot requires auth, team sharing, multi-seat billing; the single-file no-DB architecture becomes a liability. It's a different product, not an expansion.</div>
+          <div class="pr-item"><strong>All missed:</strong> Current usage data already exists. Vercel analytics. localStorage sessions. Observed behavior beats five advisory opinions. Look before you research.</div>
+        </div>
+
+        <div class="pr-card">
+          <h4>Reviewer 4</h4>
+          <div class="pr-item"><strong>Strongest:</strong> Executor — names exact message, exact target, exact threshold.</div>
+          <div class="pr-item"><strong>Biggest blind spot:</strong> Contrarian — conflates session memory with retention value. A growth operator running 15 keywords/quarter doesn't need a data flywheel.</div>
+          <div class="pr-item"><strong>All missed:</strong> The AI visibility asset type has a genuine timing edge over every competing content tool. That single type, positioned correctly, could be the entire distribution wedge.</div>
+        </div>
+
+        <div class="pr-card">
+          <h4>Reviewer 5</h4>
+          <div class="pr-item"><strong>Strongest:</strong> Executor — forces confrontation with market validation before more building.</div>
+          <div class="pr-item"><strong>Biggest blind spot:</strong> Expansionist — leaps to $300-500/seat without evidence a single user returned twice. Mistakes Phase 17 completeness for product-market fit.</div>
+          <div class="pr-item"><strong>All missed:</strong> API cost is the invisible precondition. Who pays for the Claude calls at scale determines whether every strategy discussed is viable or not.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- Footer -->
+  <div class="report-footer">
+    Counciled: 2026-05-12 · Question: Should I keep working on Growth Asset Strategist? · 5 advisors · 5 peer reviewers · 1 chairman synthesis
+  </div>
+
+</div>
+</body>
+</html>
