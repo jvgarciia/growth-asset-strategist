@@ -17,12 +17,14 @@
   --ink-muted: #9a9590;
   --accent: #1a1814;
   --accent-bg: #1a1814;
-  --green: #2d6a4f;
-  --green-bg: #e8f5ee;
-  --red: #c0392b;
+  --green: #1e6043;
+  --green-bg: #e0f2e9;
+  --red: #b52d20;
   --red-bg: #fdf0ee;
-  --gold: #b8860b;
-  --gold-bg: #fdf8e8;
+  --gold: #a67700;
+  --gold-bg: #fef4d0;
+  --amber: #c47a1e;
+  --amber-bg: #fdf3e3;
   --serif: 'Instrument Serif', Georgia, serif;
   --mono: 'DM Mono', monospace;
 }
@@ -1429,6 +1431,156 @@ details.dev-options .fast-test-toggle { margin-top: 6px; }
 /* Result eyebrow — stronger presence */
 .result-eyebrow {
   letter-spacing: 0.18em;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   INK & SIGNAL — Option A premium polish
+   White card surfaces, sharper type, amber accent, structural dividers
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Main area: subtle warm gradient fade at top ────────────── */
+.main {
+  background: linear-gradient(180deg, #e8e4da 0%, var(--bg) 200px);
+  box-shadow: inset 8px 0 40px rgba(0,0,0,0.055);
+}
+
+/* ── Hero title — larger, tighter, more confident ───────────── */
+.empty-title {
+  font-size: 68px;
+  letter-spacing: -0.03em;
+}
+
+/* ── Empty state: faint amber halo behind hero title ────────── */
+.empty-state {
+  background: radial-gradient(ellipse 600px 420px at center 35%, rgba(196,122,30,0.06) 0%, transparent 70%);
+}
+
+/* ── White card surfaces — lift against parchment ───────────── */
+.research-card,
+.score-card {
+  background: #ffffff;
+  border-color: #d8d2c6;
+  box-shadow: 0 2px 14px rgba(26,20,14,0.09), 0 1px 3px rgba(26,20,14,0.05);
+}
+.brief-section {
+  background: #ffffff;
+  border: 1px solid #d8d2c6;
+  border-bottom: 1px solid #d8d2c6;
+  border-radius: 10px;
+  padding: 20px 22px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 8px rgba(26,20,14,0.07);
+}
+.exec-block {
+  background: #ffffff;
+  border-color: #d8d2c6;
+  box-shadow: 0 1px 6px rgba(26,20,14,0.06);
+}
+
+/* ── Layer dividers — structural labels in amber ────────────── */
+.layer-divider-line {
+  background: var(--border-dark);
+}
+.layer-divider-label {
+  color: var(--amber);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+}
+
+/* ── Result header — stronger ground line ───────────────────── */
+.result-header {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-dark);
+  margin-bottom: 36px;
+}
+
+/* ── Result keyword — slight presence boost ─────────────────── */
+.result-keyword {
+  font-size: 44px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 0 rgba(26,20,14,0.06);
+}
+
+/* ── Progress keyword — consistent scale ────────────────────── */
+.progress-keyword {
+  font-size: 42px;
+  letter-spacing: -0.02em;
+}
+
+/* ── Section titles — slightly larger ──────────────────────── */
+.bs-title {
+  font-size: 20px;
+}
+
+/* ── Outline — h2 items more prominent ─────────────────────── */
+.outline-h2 {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ── Pipeline steps done state — richer green ──────────────── */
+.step-item.done .step-number {
+  background: var(--green);
+  color: #ffffff;
+  border-color: var(--green);
+}
+
+/* ── Exec summary — deepest shadow in the page ─────────────── */
+.exec-summary {
+  box-shadow: 0 6px 32px rgba(26,20,14,0.2), 0 1px 6px rgba(26,20,14,0.1);
+}
+
+/* ── Why this wins — accent border ─────────────────────────── */
+.why-wins {
+  border-left-color: var(--green);
+  border-left-width: 4px;
+}
+
+/* ── Format chips — white, crisp ───────────────────────────── */
+.format-chip {
+  background: #ffffff;
+  border-color: #c8c3b5;
+  color: #5a5650;
+  font-size: 11px;
+  box-shadow: 0 1px 3px rgba(26,20,14,0.06);
+}
+
+/* ── Example chips — white on hover with lift ──────────────── */
+.example-chip:hover {
+  background: #ffffff;
+  border-color: var(--ink);
+  border-style: solid;
+  box-shadow: 0 3px 14px rgba(26,20,14,0.13);
+}
+
+/* ── Sidebar: amber signal bar at the very top ──────────────── */
+.sidebar {
+  background-image: linear-gradient(180deg, var(--amber) 0px, var(--amber) 3px, transparent 3px);
+}
+
+/* ── Sidebar run button: amber glow on hover ────────────────── */
+.sidebar .run-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.32), 0 0 0 1px rgba(0,0,0,0.12), 0 0 24px rgba(196,122,30,0.14);
+}
+
+/* ── Sidebar history: amber tint on active border ───────────── */
+.sidebar .history-item.active {
+  border-color: rgba(196,122,30,0.25);
+}
+
+/* ── KW tag: primary more solid ────────────────────────────── */
+.kw-tag.primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  box-shadow: 0 1px 4px rgba(26,20,14,0.15);
+}
+
+/* ── Score number: slightly larger ─────────────────────────── */
+.score-number {
+  font-size: 56px;
 }
 
 /* Score card elevation */
