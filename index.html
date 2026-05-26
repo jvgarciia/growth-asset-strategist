@@ -3147,16 +3147,27 @@ async function callClaude({ system, user, useWebSearch = false, maxTokens = 1500
 // ─── HELPERS ──────────────────────────────────────────────────────────────
 // Handles plain JSON, ```json fences, and JSON embedded in prose
 function extractJSON(raw) {
-  // 1. Direct parse — succeeds if response is clean JSON
+  // Strip trailing commas before } or ] — a common Claude formatting quirk
+  // that causes valid-looking JSON to fail parsing (e.g. {"k":"v",})
+  const stripCommas = s => s.replace(/,(\s*[}\]])/g, '$1');
+
+  // 1. Direct parse — succeeds when response is clean JSON
   try { return JSON.parse(raw); } catch {}
-  // 2. Markdown fence — case-insensitive to handle ```JSON, ```json, ``` etc.
+  // 2. Direct parse after trailing comma cleanup
+  try { return JSON.parse(stripCommas(raw)); } catch {}
+  // 3. Markdown fence — handles ```json, ```JSON, plain ``` etc.
   const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  if (fenced) { try { return JSON.parse(fenced[1]); } catch {} }
-  // 3. Brace-counting extraction — finds the first balanced JSON object.
-  //    More reliable than a greedy regex, which overshoots when Claude adds
-  //    postamble text containing {field_name} or {keyword} notation.
+  if (fenced) {
+    try { return JSON.parse(fenced[1]); } catch {}
+    try { return JSON.parse(stripCommas(fenced[1])); } catch {}
+  }
+  // 4. Brace-counting extraction — finds the first balanced JSON object.
+  //    More reliable than greedy regex when Claude appends prose after the JSON.
   const candidate = extractFirstJSONObject(raw);
-  if (candidate) { try { return JSON.parse(candidate); } catch {} }
+  if (candidate) {
+    try { return JSON.parse(candidate); } catch {}
+    try { return JSON.parse(stripCommas(candidate)); } catch {}
+  }
   throw new SyntaxError('No valid JSON found in response');
 }
 
@@ -3883,7 +3894,10 @@ ${schema}
 Output rules:
 - Write copy fields as exact text that appears verbatim on the asset — not descriptions of what to write
 - Use real numbers, named comparisons, and concrete mechanisms — no vague benefit statements
-- Never use bracket placeholders like [Your CTA] or [insert here]`,
+- Never use bracket placeholders like [Your CTA] or [insert here]
+- Array fields: 2–4 items unless the schema explicitly shows more
+- String fields: one concise sentence unless the schema calls for a paragraph
+- Stay within the schema exactly — do not add extra keys`,
 
     user: `Keyword: "${r.keyword}"
 Asset type: ${ct.replace(/_/g, ' ')}
@@ -3897,20 +3911,50 @@ CTA: ${r.brief?.cta || ''}
 Market gap: ${r.competitor?.market_gap || ''}
 Competitor weakness: ${r.competitor?.competitor_weakness || ''}`,
 
-    maxTokens: 900,
+    maxTokens: 1500,
   };
 }
 
-// Make the API call and return parsed execution JSON
+// Make the API call and return parsed execution JSON.
+// Returns null on parse failure (instead of throwing) so the caller can show
+// a retry UI without an unhandled exception.
 async function generateExecutionAssets(r) {
   const callArgs = buildExecutionCall(r);
-  const raw = await callClaude(callArgs);
-  console.log('[execution] raw response (' + raw.length + ' chars):', raw.substring(0, 200));
+  // Use a direct fetch so we can capture stop_reason for diagnostic logging —
+  // callClaude discards it. This does not affect any other pipeline step.
+  let raw = '';
+  let stopReason = 'unknown';
+  try {
+    const res = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: callArgs.maxTokens,
+        system: callArgs.system,
+        messages: [{ role: 'user', content: callArgs.user }],
+      }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    stopReason = data.stop_reason || 'unknown';
+    raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  } catch (fetchErr) {
+    console.error('[execution] API call failed:', fetchErr.message);
+    throw fetchErr; // network/auth errors propagate — these aren't parse failures
+  }
+
+  if (stopReason === 'max_tokens') {
+    console.warn('[execution] response TRUNCATED at max_tokens — JSON will be incomplete. Partial response (' + raw.length + ' chars):\n', raw.substring(0, 500));
+  } else {
+    console.log('[execution] raw response (' + raw.length + ' chars, stop_reason=' + stopReason + '):', raw.substring(0, 300));
+  }
+
   try {
     return extractJSON(raw);
   } catch (err) {
-    console.warn('[execution] parse failed. Full raw response:\n', raw);
-    throw err;
+    console.warn('[execution] JSON parse failed after all extraction strategies.\nstop_reason:', stopReason, '\nFull raw response:\n', raw);
+    return null; // caller (triggerExecutionGeneration) handles null with retry UI
   }
 }
 
@@ -4544,12 +4588,12 @@ async function triggerExecutionGeneration() {
     // Abort if the user navigated to a different result while we were waiting
     if (currentResult !== targetResult) return;
 
-    // Parse failure: generateExecutionAssets returns null — show retry, don't hide trigger wrap
+    // Parse failure: generateExecutionAssets returns null (JSON could not be extracted)
     if (!exec) {
       btn.disabled = false;
       btn.textContent = 'Build it →';
       container.innerHTML = `<div style="padding:12px 0;display:flex;align-items:center;gap:12px">
-        <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Generation failed — response could not be parsed. Try again.</span>
+        <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Execution plan couldn't be parsed — this is usually temporary. Check the console for details.</span>
         <button onclick="triggerExecutionGeneration()" style="font-size:11px;font-family:var(--mono);background:none;border:1px solid var(--border-dark);border-radius:3px;padding:3px 10px;cursor:pointer;color:var(--ink)">Retry</button>
       </div>`;
       return;
@@ -4565,8 +4609,9 @@ async function triggerExecutionGeneration() {
       initResultNav();
     }
   } catch (err) {
+    // Network / auth errors — not a parse failure
     btn.disabled = false;
-    btn.textContent = '⚡ Generate';
+    btn.textContent = 'Build it →';
     container.innerHTML = `<div style="padding:12px 0;display:flex;align-items:center;gap:12px">
       <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Generation failed — ${err.message}</span>
       <button onclick="triggerExecutionGeneration()" style="font-size:11px;font-family:var(--mono);background:none;border:1px solid var(--border-dark);border-radius:3px;padding:3px 10px;cursor:pointer;color:var(--ink)">Retry</button>
