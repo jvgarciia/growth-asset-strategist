@@ -27,9 +27,18 @@
   --amber-bg: #fdf3e3;
   --serif: 'Instrument Serif', Georgia, serif;
   --mono: 'DM Mono', monospace;
+  /* Motion tokens */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-mid: 240ms;
+  --dur-slow: 380ms;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
@@ -37,6 +46,8 @@ body {
   font-family: var(--mono);
   min-height: 100vh;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Layout */
@@ -975,50 +986,68 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 .exec-block.just-updated .exec-block-content { animation: exec-block-flash 0.4s ease-out; }
 
 /* ══ PHASE 1 — Result navigation ══════════════════════════════════════════ */
+/* ── Premium side-rail result navigation ─────────────────────
+   Replaces floating dots. A clean vertical strip fixed at right.
+   Shows section labels always; active state = amber left bar.
+──────────────────────────────────────────────────────────────── */
 .result-nav {
   position: fixed;
-  right: 26px;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   display: none;
   flex-direction: column;
-  gap: 2px;
   z-index: 200;
-  padding: 8px 0;
+  padding: 10px 0;
+  background: transparent;
+  /* reveal on hover of rail or when nav-visible + result visible */
 }
 .result-nav.nav-visible { display: flex; }
+
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 0;
   cursor: pointer;
-  padding: 5px 0;
-  opacity: 0.3;
-  transition: opacity 0.18s;
+  padding: 0;
   text-decoration: none;
+  position: relative;
+  transition: all var(--dur-fast) var(--ease-out);
 }
-.nav-item:hover { opacity: 0.75; }
-.nav-item.nav-active { opacity: 1; }
-.nav-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ink);
-  flex-shrink: 0;
-  transition: transform 0.18s;
-}
-.nav-item.nav-active .nav-dot { transform: scale(1.7); }
+
+/* The visible label strip */
 .nav-label {
   font-size: 9px;
   font-family: var(--mono);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--ink-muted);
   white-space: nowrap;
+  padding: 5px 14px 5px 10px;
+  border-left: 2px solid transparent;
+  transition: all var(--dur-fast) var(--ease-out);
   pointer-events: none;
+  opacity: 0;
 }
-/* Only show labels when result-nav is hovered */
-.result-nav:not(:hover) .nav-label { display: none; }
+
+/* Show labels on hover of entire nav */
+.result-nav:hover .nav-label { opacity: 1; }
+
+.nav-item:hover .nav-label {
+  color: var(--ink-mid);
+  border-left-color: var(--border-dark);
+}
+
+.nav-item.nav-active .nav-label {
+  color: var(--ink);
+  border-left-color: var(--amber);
+  opacity: 1;
+  font-weight: 500;
+}
+
+/* Dot replaced by nothing — label border IS the indicator */
+.nav-dot { display: none; }
+
 @media (max-width: 1100px) { .result-nav { display: none !important; } }
 
 /* ══ PHASE 2 — Collapsible sections ═══════════════════════════════════════ */
@@ -1592,6 +1621,932 @@ details.dev-options .fast-test-toggle { margin-top: 6px; }
 .why-wins {
   border-left-width: 4px;
 }
+
+/* ════════════════════════════════════════════════════════════
+   SPRINT — Sidebar Polish, Workflow Pipeline, Surface Depth
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Sidebar: input readability ──────────────────────────── */
+.sidebar input,
+.sidebar textarea,
+.sidebar select {
+  background: #1e1b16;
+  border-color: #322e27;
+  color: #dcd8cf;
+}
+.sidebar input::placeholder,
+.sidebar textarea::placeholder { color: #524e48; }
+.sidebar input:focus,
+.sidebar textarea:focus,
+.sidebar select:focus {
+  background: #231f1a;
+  border-color: #786e64;
+  box-shadow: 0 0 0 2px rgba(245,242,235,0.06);
+}
+
+/* ── Sidebar: select caret fix ───────────────────────────── */
+.sidebar select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpolygon fill='%23706c66' points='0,0 10,0 5,6'/%3E%3C/svg%3E");
+  background-position: right 12px center;
+  background-size: 10px 6px;
+}
+
+/* ── Sidebar: label contrast ─────────────────────────────── */
+.sidebar label { color: #908c86; }
+.sidebar .section-label {
+  color: #5e5a54;
+  letter-spacing: 0.18em;
+  font-size: 9px;
+  margin-bottom: 14px;
+}
+
+/* ── Sidebar: field rhythm ───────────────────────────────── */
+.sidebar .field { margin-bottom: 14px; }
+
+/* ── Sidebar: dev options ────────────────────────────────── */
+.sidebar details.dev-options > summary {
+  color: #4a4642;
+  font-size: 9px;
+  padding: 7px 0;
+}
+.sidebar details.dev-options > summary:hover { color: #6e6a64; }
+
+/* ── Sidebar: run button presence ────────────────────────── */
+.sidebar .run-btn {
+  margin-top: 14px;
+  padding: 13px 16px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(196,122,30,0.14);
+}
+
+/* ══════════════════════════════════════════════════════════
+   WORKFLOW — AI Pipeline Stages Card
+   ══════════════════════════════════════════════════════════ */
+
+.empty-workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+  gap: 0;
+  max-width: 100%;
+  width: 100%;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid #d0cbbf;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(26,20,14,0.08), 0 1px 4px rgba(26,20,14,0.04);
+}
+
+.workflow-arrow { display: none !important; }
+
+.workflow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 20px 16px 18px;
+  max-width: none;
+  border-right: 1px solid #ece7df;
+  text-align: left;
+}
+.workflow-step:last-child { border-right: none; }
+
+.workflow-step-tag {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-family: var(--mono);
+  margin-bottom: 10px;
+}
+
+.workflow-num {
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(26,20,14,0.18);
+}
+
+.workflow-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  line-height: 1.35;
+  margin-bottom: 5px;
+  font-family: var(--mono);
+}
+
+.workflow-desc {
+  font-size: 10px;
+  color: #9a9590;
+  line-height: 1.45;
+  font-family: var(--mono);
+  text-align: left;
+}
+
+/* ══════════════════════════════════════════════════════════
+   EMPTY STATE — Surface Hierarchy
+   ══════════════════════════════════════════════════════════ */
+
+.empty-section-label {
+  color: var(--amber);
+  letter-spacing: 0.18em;
+  font-size: 9px;
+  margin-bottom: 12px;
+}
+
+.empty-formats {
+  background: #ffffff;
+  border: 1px solid #d0cbbf;
+  border-radius: 10px;
+  padding: 18px 20px 20px;
+  margin-bottom: 16px;
+  width: 100%;
+  box-shadow: 0 1px 8px rgba(26,20,14,0.05);
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESULT — Card depth & hover transitions
+   ══════════════════════════════════════════════════════════ */
+
+.brief-section {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.brief-section:hover {
+  box-shadow: 0 4px 22px rgba(26,20,14,0.12), 0 1px 6px rgba(26,20,14,0.06);
+  border-color: #c8c3b5;
+}
+
+.exec-summary {
+  border-radius: 10px;
+  padding: 24px 26px 22px;
+}
+.exec-verdict {
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.exec-trigger-wrap {
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(26,20,14,0.06);
+}
+
+.score-card {
+  border-radius: 10px;
+  padding: 22px 26px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — workflow grid at narrow viewports
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .empty-workflow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .workflow-step:nth-child(2) { border-right: none; }
+  .workflow-step:nth-child(1),
+  .workflow-step:nth-child(2) { border-bottom: 1px solid #ece7df; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   PREMIUM SAAS SYSTEM — Design upgrade
+   Slate hierarchy · White cards · Left-anchored hero · Amber ops
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  --s900: #0f172a;
+  --s700: #334155;
+  --s600: #475569;
+  --s400: #94a3b8;
+  --s200: #e2e8f0;
+  --s100: #f1f5f9;
+  --s50:  #f8fafc;
+  --card: #ffffff;
+  --card-br: #e2e8f0;
+  --card-sh: 0 1px 3px rgba(15,23,42,0.07), 0 4px 16px rgba(15,23,42,0.04);
+  --card-sh-hi: 0 4px 24px rgba(15,23,42,0.11), 0 1px 5px rgba(15,23,42,0.06);
+  --teal: #059669;
+  --teal-bg: #f0fdf9;
+}
+
+/* ── Main area ────────────────────────────────────────────── */
+.main {
+  background: var(--bg);
+  box-shadow: inset 8px 0 32px rgba(0,0,0,0.035);
+}
+
+/* ── HERO — left-anchored, top-bound ─────────────────────── */
+.empty-state {
+  display: block;
+  min-height: unset;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 60px 0 80px;
+  max-width: 740px;
+  background: none;
+}
+
+/* Eyebrow badge */
+.empty-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-family: var(--mono);
+  margin-bottom: 24px;
+  padding: 5px 12px 5px 10px;
+  background: rgba(196,122,30,0.08);
+  border: 1px solid rgba(196,122,30,0.22);
+  border-radius: 100px;
+}
+.empty-eyebrow-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--amber);
+  flex-shrink: 0;
+}
+
+/* Hero title — confident, non-italic */
+.empty-title {
+  font-size: 58px;
+  color: var(--s900);
+  font-style: normal;
+  letter-spacing: -0.038em;
+  line-height: 1.06;
+  margin-bottom: 20px;
+  text-shadow: none;
+}
+
+/* Hero subtitle */
+.empty-sub {
+  font-size: 14px;
+  color: var(--s600);
+  line-height: 1.65;
+  max-width: 500px;
+  margin-bottom: 48px;
+}
+
+/* ── PIPELINE CARD ────────────────────────────────────────── */
+.empty-workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 14px;
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--card-sh);
+}
+.workflow-arrow { display: none !important; }
+.workflow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px 18px 20px;
+  max-width: none;
+  border-right: 1px solid var(--s100);
+  text-align: left;
+  transition: background 0.15s;
+}
+.workflow-step:last-child { border-right: none; }
+.workflow-step:hover { background: var(--s50); }
+.workflow-step-tag {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-family: var(--mono);
+  margin-bottom: 12px;
+}
+.workflow-num {
+  width: 24px; height: 24px;
+  font-size: 10px;
+  margin-bottom: 12px;
+  background: var(--s900);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(15,23,42,0.22);
+}
+.workflow-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--s900);
+  line-height: 1.35;
+  margin-bottom: 4px;
+  font-family: var(--mono);
+  text-align: left;
+}
+.workflow-desc {
+  font-size: 10px;
+  color: var(--s400);
+  line-height: 1.5;
+  font-family: var(--mono);
+  text-align: left;
+}
+
+/* ── FORMAT CHIPS SECTION ─────────────────────────────────── */
+.empty-formats {
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-radius: 12px;
+  padding: 16px 20px 18px;
+  margin-bottom: 14px;
+  width: 100%;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.05);
+}
+.empty-section-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--s400);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+.empty-format-chips { justify-content: flex-start; }
+.empty-example-chips { justify-content: flex-start; }
+.format-chip {
+  background: var(--s50);
+  border: 1px solid var(--s200);
+  color: var(--s600);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.example-chip {
+  background: rgba(255,255,255,0.6);
+  border: 1px dashed #c8d4e0;
+  color: var(--s600);
+  border-radius: 6px;
+}
+.example-chip:hover {
+  background: var(--card);
+  border: 1px solid var(--s900);
+  color: var(--s900);
+  box-shadow: 0 2px 8px rgba(15,23,42,0.1);
+}
+.empty-examples { width: 100%; }
+
+/* ── SIDEBAR — amber-accented operator panel ─────────────── */
+.sidebar {
+  background: #111009;
+  background-image: linear-gradient(180deg, var(--amber) 0px, var(--amber) 3px, transparent 3px);
+  box-shadow: 2px 0 24px rgba(0,0,0,0.18);
+  border-right: none;
+}
+.sidebar .logo { padding-bottom: 22px; border-bottom: 1px solid #1e1c18; margin-bottom: 22px; }
+.sidebar .logo-text { color: #ede9e0; }
+.sidebar .logo-sub  { color: #3e3c38; }
+.sidebar .section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a4640;
+  letter-spacing: 0.2em;
+  font-size: 9px;
+  margin-bottom: 14px;
+}
+.sidebar .section-label::before {
+  content: '';
+  width: 10px; height: 1px;
+  background: var(--amber);
+  flex-shrink: 0;
+}
+.sidebar label { color: #7a7670; font-size: 10px; letter-spacing: 0.1em; margin-bottom: 6px; }
+.sidebar .field { margin-bottom: 14px; }
+.sidebar input,
+.sidebar textarea {
+  background: #1a1714;
+  border: 1px solid #2a2721;
+  border-radius: 7px;
+  color: #e0dbd4;
+  font-size: 13px;
+  padding: 9px 12px;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.sidebar select {
+  background-color: #1a1714;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpolygon fill='%23706c66' points='0,0 10,0 5,6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px 6px;
+  border: 1px solid #2a2721;
+  border-radius: 7px;
+  color: #e0dbd4;
+  font-size: 13px;
+  padding: 9px 12px;
+  padding-right: 32px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.sidebar input:focus,
+.sidebar textarea:focus,
+.sidebar select:focus {
+  background-color: #1e1b17;
+  border-color: var(--amber);
+  box-shadow: 0 0 0 2px rgba(196,122,30,0.15);
+  outline: none;
+}
+.sidebar input::placeholder,
+.sidebar textarea::placeholder { color: #484440; }
+.sidebar .run-btn {
+  background: #e8e3db;
+  color: #111009;
+  border: none;
+  border-radius: 8px;
+  margin-top: 14px;
+  padding: 13px 16px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.06);
+}
+.sidebar .run-btn:hover:not(:disabled) {
+  background: #f0ece3;
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 24px rgba(196,122,30,0.16);
+}
+.sidebar .run-btn:active:not(:disabled) { transform: translateY(0); }
+.sidebar .run-btn:disabled { background: #252219; color: #4a4640; box-shadow: none; }
+.sidebar .run-btn .spinner { border-color: rgba(17,16,9,0.28); border-top-color: transparent; }
+.sidebar .sidebar-divider { border-color: #1c1a16; }
+.sidebar .history-keyword { color: #c0bbb4; }
+.sidebar .history-meta { color: #4a4640; }
+.sidebar .history-empty { color: #3a3834; font-style: italic; }
+.sidebar .history-item:hover { background: rgba(245,242,235,0.04); border-color: rgba(245,242,235,0.08); }
+.sidebar .history-item.active { background: rgba(245,242,235,0.07); border-color: rgba(196,122,30,0.22); }
+.sidebar .error-box { background: rgba(192,57,43,0.1); border-color: rgba(192,57,43,0.22); color: #df7870; }
+.sidebar details.dev-options > summary { color: #3e3a36; font-size: 9px; padding: 7px 0; }
+.sidebar details.dev-options > summary:hover { color: #5c5852; }
+.sidebar .fast-test-toggle { background: rgba(245,242,235,0.02); border-color: #1e1c18; }
+.sidebar .toggle-label { color: #6a6560; }
+.sidebar .toggle-sub { color: #3a3834; }
+
+/* ── RESULT SYSTEM — white cards with slate depth ─────────── */
+.result-keyword { color: var(--s900); letter-spacing: -0.02em; }
+.result-meta { color: var(--s600); }
+.result-eyebrow { color: var(--s400); letter-spacing: 0.18em; }
+.result-header { border-bottom-color: var(--s200); padding-bottom: 24px; margin-bottom: 36px; }
+.progress-keyword { color: var(--s900); letter-spacing: -0.02em; }
+.progress-status { color: var(--s600); }
+.progress-header { margin-bottom: 28px; }
+
+/* Brief sections */
+.brief-section {
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-bottom: 1px solid var(--card-br);
+  border-radius: 12px;
+  padding: 22px 24px;
+  padding-bottom: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--card-sh);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.brief-section:hover { box-shadow: var(--card-sh-hi); border-color: #cbd5e1; }
+
+/* Section headers inside brief-section */
+.bs-header { border-bottom-color: var(--s100); padding-bottom: 12px; }
+.bs-title { color: var(--s900); font-size: 19px; }
+.bs-tag { background: var(--s50); border-color: var(--s200); color: var(--s400); }
+.bs-body { color: var(--s700); }
+
+/* Research cards */
+.research-card,
+.score-card {
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-radius: 10px;
+  box-shadow: var(--card-sh);
+}
+.score-card { padding: 22px 26px; border-radius: 12px; }
+.rc-label { color: var(--s400); }
+.rc-value { color: var(--s700); }
+
+/* Score numbers */
+.score-number { font-size: 56px; color: var(--s900); }
+.score-number.high { color: var(--teal); }
+.score-number.mid  { color: #d97706; }
+.score-number.low  { color: #dc2626; }
+.score-bar-fill { background: var(--s900); }
+.score-bar-fill.high { background: var(--teal); }
+.score-bar-fill.mid  { background: #d97706; }
+.score-bar-fill.low  { background: #dc2626; }
+.score-notes { color: var(--s600); }
+
+/* Exec summary — crisp near-black */
+.exec-summary {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 24px 28px 22px;
+  box-shadow: 0 8px 36px rgba(15,23,42,0.22), 0 1px 6px rgba(15,23,42,0.1);
+  margin-bottom: 28px;
+}
+.exec-verdict { font-size: 18px; letter-spacing: -0.01em; }
+
+/* Exec blocks */
+.exec-block {
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.05);
+}
+.exec-block--copy { border-left: 3px solid var(--s900); }
+.exec-block-label { color: var(--s400); }
+.exec-text { color: var(--s700); }
+.exec-row-key { color: var(--s400); }
+.exec-row-val { color: var(--s900); }
+.exec-chip { background: var(--s50); border-color: var(--s200); color: var(--s600); }
+.exec-copy-btn { color: var(--s400); border-color: var(--s200); }
+.exec-copy-btn:hover { color: var(--s900); border-color: #cbd5e1; }
+.exec-regen-btn { color: var(--s400); border-color: var(--s200); }
+.exec-regen-btn:hover { color: var(--s900); border-color: #cbd5e1; }
+
+/* Exec trigger card */
+.exec-trigger-wrap {
+  background: var(--card);
+  border: 1px solid var(--card-br);
+  border-radius: 12px;
+  box-shadow: var(--card-sh);
+}
+.exec-trigger-label { color: var(--s600); }
+.exec-trigger-label strong { color: var(--s900); }
+
+/* Exec section header */
+.exec-section-title { color: var(--s900); }
+
+/* Why wins — teal accent */
+.why-wins {
+  background: var(--teal-bg);
+  border-left-color: var(--teal);
+  border-left-width: 3px;
+  border-radius: 0 8px 8px 0;
+  padding: 20px 22px;
+  margin-bottom: 28px;
+}
+.why-wins-header { color: var(--teal); }
+.why-bullet { color: var(--s900); font-size: 13px; }
+.why-bullet:last-child { border-bottom: none; padding-bottom: 0; }
+.why-icon { color: var(--teal); }
+
+/* Pipeline progress steps */
+.steps-list { margin-bottom: 36px; }
+.step-item { border-bottom-color: var(--s100); padding: 16px 0; gap: 18px; }
+.step-item:last-child { border-bottom: none; }
+.step-number {
+  background: var(--s50);
+  border: 1px solid var(--s200);
+  color: var(--s400);
+  width: 28px; height: 28px; font-size: 11px;
+}
+.step-item.active .step-number { background: var(--s900); color: #fff; border-color: var(--s900); }
+.step-item.done .step-number { background: var(--teal); color: #fff; border-color: var(--teal); }
+.step-name { color: var(--s900); font-size: 13px; font-weight: 500; }
+.step-item.pending .step-name { color: var(--s400); font-weight: 400; }
+.step-desc { color: var(--s400); font-size: 11px; line-height: 1.45; }
+
+/* KW tags */
+.kw-tag { background: var(--s50); border-color: var(--s200); color: var(--s600); }
+.kw-tag.primary { background: var(--s900); color: #fff; border-color: var(--s900); box-shadow: 0 1px 4px rgba(15,23,42,0.15); }
+.kw-tag.secondary { background: var(--s100); color: var(--s700); }
+.kw-tag.lsi { background: var(--card); color: var(--s400); }
+
+/* Competitor rows */
+.comp-pos { background: var(--s50); border-color: var(--s200); color: var(--s400); }
+.comp-meta { color: var(--s400); }
+.comp-type { background: var(--s50); border-color: var(--s200); color: var(--s400); }
+
+/* Section separators */
+.section-break { border-color: var(--s200); margin: 40px 0; }
+.layer-divider-line { background: var(--s200); }
+.layer-divider-label {
+  background: var(--bg);
+  padding: 0 10px;
+  color: var(--amber);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+}
+
+/* Outline items */
+.outline-item { border-bottom-color: var(--s100); color: var(--s700); }
+.outline-h2 { color: var(--s900); font-weight: 500; font-size: 14px; }
+.outline-h3 { color: var(--s400); font-size: 12px; }
+
+/* Export bar */
+.export-bar { border-top-color: var(--s200); }
+.export-btn { background: var(--s50); border-color: var(--s200); color: var(--s600); border-radius: 7px; }
+.export-btn:hover { background: var(--card); border-color: #cbd5e1; color: var(--s900); }
+.export-btn.primary { background: var(--s900); color: #fff; border-color: var(--s900); }
+.export-btn.primary:hover { opacity: 0.88; }
+
+/* Mode toggle */
+.mode-toggle-btn { background: var(--card); border-color: var(--card-br); color: var(--s400); border-radius: 6px; }
+.mode-toggle-btn:hover { color: var(--s900); border-color: #cbd5e1; }
+.mode-toggle-btn.mode-active { background: var(--s900); color: #fff; border-color: var(--s900); }
+
+/* Exec plan overview chips */
+.exec-plan-chip { background: var(--s50); border-color: var(--s200); color: var(--s400); }
+.exec-plan-chip--copy { color: var(--s900); border-color: #cbd5e1; }
+
+/* Error box in main */
+.error-box { background: #fff5f5; border-color: rgba(220,38,38,0.2); color: #dc2626; }
+
+/* Collapsible chevrons */
+.sec-chevron { color: var(--s400); }
+
+/* Visual preview zones */
+.vp-outer { border-color: var(--card-br); }
+.vp-header { background: var(--s50); border-bottom-color: var(--card-br); }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .empty-workflow { grid-template-columns: repeat(2, 1fr); }
+  .workflow-step:nth-child(2) { border-right: none; }
+  .workflow-step:nth-child(1),
+  .workflow-step:nth-child(2) { border-bottom: 1px solid var(--s100); }
+  .empty-state { padding-top: 40px; }
+  .empty-title { font-size: 38px; }
+  .main { padding: 32px 24px; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCTIZATION PHASE — PASS 3: RESULT INTERACTIONS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Section reveal animation */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal-item {
+  animation: reveal-up var(--dur-mid) var(--ease-spring) both;
+}
+.reveal-item:nth-child(1)  { animation-delay: 0ms; }
+.reveal-item:nth-child(2)  { animation-delay: 55ms; }
+.reveal-item:nth-child(3)  { animation-delay: 110ms; }
+.reveal-item:nth-child(4)  { animation-delay: 165ms; }
+.reveal-item:nth-child(5)  { animation-delay: 220ms; }
+.reveal-item:nth-child(6)  { animation-delay: 275ms; }
+.reveal-item:nth-child(7)  { animation-delay: 330ms; }
+.reveal-item:nth-child(8)  { animation-delay: 385ms; }
+.reveal-item:nth-child(9)  { animation-delay: 440ms; }
+.reveal-item:nth-child(10) { animation-delay: 495ms; }
+
+/* Card lift on hover */
+.brief-section {
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+.brief-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(26,20,14,0.11), 0 1px 6px rgba(26,20,14,0.06);
+}
+
+.research-card {
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+.research-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(26,20,14,0.10);
+}
+
+.exec-block {
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+.exec-block:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26,20,14,0.10);
+  border-color: var(--border-dark);
+}
+
+/* Collapsible section toggle hover */
+.sec-toggle {
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.sec-toggle:hover {
+  background: rgba(196,122,30,0.045);
+}
+.sec-toggle:hover .sec-chevron {
+  color: var(--amber);
+}
+
+/* Chevron rotation animation */
+.sec-chevron {
+  transition: transform var(--dur-mid) var(--ease-spring),
+              color var(--dur-fast) var(--ease-out);
+  display: inline-block;
+}
+.sec-collapsible:not(.sec-closed) .sec-chevron {
+  transform: rotate(180deg);
+}
+
+/* Executive summary card polish */
+.exec-summary-card {
+  transition: box-shadow var(--dur-fast) var(--ease-out);
+}
+.exec-summary-card:hover {
+  box-shadow: 0 4px 22px rgba(26,20,14,0.13);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCTIZATION PHASE — PASS 4: AI REASONING LOADING STATES
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Thinking dots — appended to active step label */
+@keyframes thinking-dot {
+  0%, 80%, 100% { opacity: 0.2; transform: scaleY(0.6); }
+  40%           { opacity: 1;   transform: scaleY(1); }
+}
+.thinking-dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin-left: 6px;
+  height: 10px;
+}
+.thinking-dots span {
+  width: 3px;
+  height: 10px;
+  background: var(--amber);
+  border-radius: 2px;
+  display: inline-block;
+  animation: thinking-dot 1.2s ease-in-out infinite;
+}
+.thinking-dots span:nth-child(2) { animation-delay: 0.18s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.36s; }
+
+/* Active step — gentle pulse ring on the number bubble */
+@keyframes step-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(196,122,30,0.45); }
+  70%  { box-shadow: 0 0 0 6px rgba(196,122,30,0); }
+  100% { box-shadow: 0 0 0 0 rgba(196,122,30,0); }
+}
+.step-item.active .step-number {
+  animation: step-pulse 1.6s ease-out infinite;
+  background: var(--amber);
+  color: #ffffff;
+  border-color: var(--amber);
+}
+
+/* Step done — checkmark pop-in */
+@keyframes check-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.step-item.done .step-number {
+  animation: check-pop 0.32s var(--ease-spring) forwards;
+}
+
+/* Step label for active state */
+.step-item.active .step-label {
+  color: var(--amber);
+  font-weight: 500;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCTIZATION PHASE — PASS 5: SIDEBAR + TYPOGRAPHY
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Input focus amber glow */
+.sidebar input:focus,
+.sidebar textarea:focus,
+.sidebar select:focus {
+  outline: none;
+  border-color: var(--amber) !important;
+  box-shadow: 0 0 0 3px rgba(196,122,30,0.15) !important;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+
+/* Input hover — subtle border warm-up before focus */
+.sidebar input:not(:focus):hover,
+.sidebar textarea:not(:focus):hover,
+.sidebar select:not(:focus):hover {
+  border-color: rgba(196,122,30,0.4) !important;
+}
+
+/* Body text: improved readability */
+.bs-body, .sec-body-inner p, .rc-value {
+  line-height: 1.65;
+}
+.bs-body { font-size: 13.5px; }
+
+/* Section label uppercase rhythm */
+.bs-header .bs-title,
+.rc-label,
+.layer-divider-label {
+  letter-spacing: 0.08em;
+}
+
+/* Keyword tags — subtle hover */
+.kw-tag {
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
+}
+.kw-tag:hover {
+  background: var(--amber-bg);
+  border-color: rgba(196,122,30,0.3);
+}
+
+/* Outline items — hover highlight */
+.outline-item {
+  transition: background var(--dur-fast) var(--ease-out),
+              padding-left var(--dur-fast) var(--ease-out);
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-left: -6px;
+}
+.outline-item:hover {
+  background: rgba(196,122,30,0.05);
+  padding-left: 10px;
+}
+
+/* Regen button micro-animation */
+.exec-regen-btn {
+  transition: background var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-spring);
+}
+.exec-regen-btn:hover {
+  transform: scale(1.04);
+}
+.exec-regen-btn:active {
+  transform: scale(0.96);
+}
+
+/* Run button loading pulse */
+@keyframes btn-loading {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.72; }
+}
+#runBtn[disabled] {
+  animation: btn-loading 1.4s ease-in-out infinite;
+}
+
+/* Score number — pop in on result render */
+@keyframes score-pop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  70%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.score-number {
+  animation: score-pop 0.45s var(--ease-spring) both;
+  animation-delay: 0.3s;
+}
+
+/* Nav item active transition */
+.nav-item {
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.nav-item:hover .nav-label {
+  transform: translateX(-2px);
+}
+.nav-item.nav-active .nav-label {
+  transform: translateX(-3px);
+}
+
+/* Reduced motion — respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1666,23 +2621,34 @@ details.dev-options .fast-test-toggle { margin-top: 6px; }
 
     <!-- Empty state / hero -->
     <div class="empty-state" id="emptyState">
+      <div class="empty-eyebrow"><span class="empty-eyebrow-dot"></span>AI Strategy Engine</div>
       <div class="empty-title">Know what to build<br>before you start writing</div>
-      <p class="empty-sub">Enter a keyword — the AI picks the right content format, explains why it wins, and writes you an execution-ready brief.</p>
+      <p class="empty-sub">Enter a keyword — the AI reads the competitive landscape, picks the highest-ROI content format, and delivers an execution-ready brief in under 60 seconds.</p>
 
       <div class="empty-workflow">
         <div class="workflow-step">
+          <span class="workflow-step-tag">Input</span>
           <div class="workflow-num">1</div>
-          <div class="workflow-label">Enter a keyword</div>
+          <div class="workflow-label">Enter your keyword</div>
+          <div class="workflow-desc">Keyword, audience, and business goal</div>
         </div>
-        <div class="workflow-arrow">→</div>
         <div class="workflow-step">
+          <span class="workflow-step-tag">SERP + Competitive</span>
           <div class="workflow-num">2</div>
-          <div class="workflow-label">AI picks the right format</div>
+          <div class="workflow-label">AI reads the landscape</div>
+          <div class="workflow-desc">Maps intent signals and competitive gaps</div>
         </div>
-        <div class="workflow-arrow">→</div>
         <div class="workflow-step">
+          <span class="workflow-step-tag">Format Decision</span>
           <div class="workflow-num">3</div>
-          <div class="workflow-label">Get an execution-ready brief</div>
+          <div class="workflow-label">Right format selected</div>
+          <div class="workflow-desc">Picks the highest-ROI content type</div>
+        </div>
+        <div class="workflow-step">
+          <span class="workflow-step-tag">Execution</span>
+          <div class="workflow-num">4</div>
+          <div class="workflow-label">Brief ready to build</div>
+          <div class="workflow-desc">Outline, hook, and CTA — ready to act on</div>
         </div>
       </div>
 
@@ -3632,6 +4598,10 @@ function renderFastResult(r) {
       </div>
     </div>
   `;
+  document.querySelectorAll('#resultSection > div').forEach((el, i) => {
+    el.classList.add('reveal-item');
+    el.style.animationDelay = `${i * 50}ms`;
+  });
   initResultNav();
 }
 
@@ -4065,16 +5035,18 @@ Evaluate this brief.`,
 // ─── RENDER ───────────────────────────────────────────────────────────────
 function renderSteps(activeIndex) {
   const list = document.getElementById('stepsList');
+  const dots = `<span class="thinking-dots"><span></span><span></span><span></span></span>`;
   list.innerHTML = STEPS.map((s, i) => {
     let cls = 'pending';
     if (i < activeIndex) cls = 'done';
     else if (i === activeIndex) cls = 'active';
     const num = i < activeIndex ? '✓' : (i + 1);
+    const isActive = i === activeIndex;
     return `<div class="step-item ${cls}" id="stepItem${i}">
       <div class="step-number">${num}</div>
       <div class="step-info">
-        <div class="step-name">${s.name}</div>
-        <div class="step-desc">${s.desc}</div>
+        <div class="step-name step-label">${s.name}</div>
+        <div class="step-desc">${s.desc}${isActive ? dots : ''}</div>
       </div>
     </div>`;
   }).join('');
@@ -4422,6 +5394,11 @@ function renderResult(r) {
       </div></div><!-- /sec-body-inner /sec-body -->
     </div><!-- /data-section="research" -->
   `;
+  // Apply stagger reveal to result sections
+  document.querySelectorAll('#resultSection > div').forEach((el, i) => {
+    el.classList.add('reveal-item');
+    el.style.animationDelay = `${i * 50}ms`;
+  });
   // Trigger score bar animation on next frame (CSS transition needs an initial paint at width:0)
   requestAnimationFrame(() => {
     const bar = document.getElementById('scoreBar');
