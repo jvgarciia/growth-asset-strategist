@@ -2539,6 +2539,84 @@ details.dev-options .fast-test-toggle { margin-top: 6px; }
   transform: translateX(-3px);
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FULL-PASS IMPROVEMENTS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── Dimension bars — 7px (replaces 3px inline styles) ─────── */
+.dim-bar-track {
+  height: 7px;
+  background: var(--surface2);
+  border-radius: 4px;
+  margin: 6px 0 9px;
+  overflow: hidden;
+}
+.dim-bar-fill {
+  height: 7px;
+  border-radius: 4px;
+  transition: width 0.55s var(--ease-out);
+}
+
+/* ── Layer dividers — amber + spacing ──────────────────────── */
+.layer-divider { margin: 48px 0 26px; }
+.layer-divider-line { background: var(--border-dark); opacity: 0.6; }
+.layer-divider-label {
+  color: var(--amber);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+
+/* ── Title brief section — primary output accent ────────────── */
+.brief-primary {
+  border-left: 3px solid var(--amber) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* ── Remove legacy section break HR ────────────────────────── */
+.section-break { display: none; }
+
+/* ── Cockpit metrics — mobile 2-col grid ───────────────────── */
+@media (max-width: 560px) {
+  .cockpit-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 0;
+    padding: 12px 0;
+  }
+  .cockpit-metric {
+    padding: 0 12px 0 0;
+    margin-right: 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding-bottom: 8px;
+  }
+  .cockpit-metric:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
+}
+
+/* ── Brief sections: collapsible keywords + must/avoid ─────── */
+/* When brief-section is used as a sec-collapsible, the header becomes a toggle */
+.brief-section.sec-collapsible .bs-header {
+  cursor: pointer;
+  margin-bottom: 0;
+  user-select: none;
+}
+.brief-section.sec-collapsible .sec-body-inner {
+  padding-top: 14px;
+}
+
+/* ── Result header — remove border-bottom weight ────────────── */
+.result-header {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 24px !important;
+}
+
+/* ── Research score card — stronger number ──────────────────── */
+.score-number { font-size: 60px; }
+
 /* Reduced motion — respect system preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -3452,13 +3530,11 @@ function renderOpportunityAnalysis(opp) {
   };
   const dimCards = Object.entries(opp.dimensions || {}).map(([key, dim]) => `
     <div class="research-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
         <div class="rc-label">${dimLabels[key] || key}</div>
         <span style="font-size:13px;font-weight:600;font-family:var(--mono);color:${scoreColor(dim.score)}">${dim.score}</span>
       </div>
-      <div style="height:3px;background:#e8e4db;border-radius:2px;margin-bottom:8px">
-        <div style="height:3px;width:${dim.score}%;background:${scoreColor(dim.score)};border-radius:2px"></div>
-      </div>
+      <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${dim.score}%;background:${scoreColor(dim.score)}"></div></div>
       <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
     </div>`).join('');
   return `<div class="brief-section sec-collapsible sec-closed" data-section="opportunity" data-label="Opportunity" data-layer="reasoning">
@@ -3653,13 +3729,11 @@ function renderCompetitiveMoat(moat) {
   };
   const dimCards = Object.entries(moat.dimensions || {}).map(([key, dim]) => `
     <div class="research-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
         <div class="rc-label">${dimLabels[key] || key}</div>
         <span style="font-size:13px;font-weight:600;font-family:var(--mono);color:${dimColor(key, dim.score)}">${dim.score}</span>
       </div>
-      <div style="height:3px;background:#e8e4db;border-radius:2px;margin-bottom:8px">
-        <div style="height:3px;width:${dim.score}%;background:${dimColor(key, dim.score)};border-radius:2px"></div>
-      </div>
+      <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${dim.score}%;background:${dimColor(key, dim.score)}"></div></div>
       <div style="font-size:12px;color:var(--ink-muted);line-height:1.5">${dim.reasoning || ''}</div>
     </div>`).join('');
   return `<div class="brief-section sec-collapsible sec-closed" data-section="moat" data-label="Moat" data-layer="reasoning">
@@ -5400,7 +5474,7 @@ function renderResult(r) {
     <div data-section="execution" data-label="Execution">
 
     <!-- Recommended title -->
-    <div class="brief-section">
+    <div class="brief-section brief-primary">
       <div class="bs-header">
         <span class="bs-title">Title</span>
         <span class="bs-tag">Recommended</span>
@@ -5439,12 +5513,14 @@ function renderResult(r) {
       <div class="bs-body">${r.brief.unique_angle}</div>
     </div>` : ''}
 
-    <!-- Keywords -->
-    <div class="brief-section">
-      <div class="bs-header">
+    <!-- Keywords — collapsible -->
+    <div class="brief-section sec-collapsible sec-closed">
+      <div class="bs-header sec-toggle" onclick="toggleSection(this.parentElement)">
         <span class="bs-title">Keywords</span>
         <span class="bs-tag">Volume: ${r.keywords.search_volume_estimate || '—'} · Difficulty: ${r.keywords.keyword_difficulty || '—'}</span>
+        <span class="sec-chevron">▾</span>
       </div>
+      <div class="sec-body"><div class="sec-body-inner">
       <div style="margin-bottom:10px">
         <div class="rc-label" style="margin-bottom:6px">Primary</div>
         <div class="kw-list"><span class="kw-tag primary">${primaryKw}</span></div>
@@ -5465,6 +5541,7 @@ function renderResult(r) {
         <div class="rc-label" style="margin-bottom:6px">Question keywords</div>
         <div class="kw-list">${questionKws}</div>
       </div>` : ''}
+      </div></div>
     </div>
 
     <!-- Outline -->
@@ -5473,15 +5550,22 @@ function renderResult(r) {
       ${outlineHtml || '<div class="bs-body">No outline generated.</div>'}
     </div>
 
-    <!-- Must include / avoid -->
-    ${mustInclude ? `<div class="brief-section">
-      <div class="bs-header"><span class="bs-title">Must include</span></div>
-      ${mustInclude}
-    </div>` : ''}
-
-    ${avoid ? `<div class="brief-section">
-      <div class="bs-header"><span class="bs-title">Avoid</span></div>
-      ${avoid}
+    <!-- Must include / avoid — collapsible -->
+    ${(mustInclude || avoid) ? `<div class="brief-section sec-collapsible sec-closed">
+      <div class="bs-header sec-toggle" onclick="toggleSection(this.parentElement)">
+        <span class="bs-title">Must include &amp; avoid</span>
+        <span class="sec-chevron">▾</span>
+      </div>
+      <div class="sec-body"><div class="sec-body-inner">
+        ${mustInclude ? `<div style="margin-bottom:${avoid ? '16px' : '0'}">
+          <div class="rc-label" style="margin-bottom:8px">Must include</div>
+          ${mustInclude}
+        </div>` : ''}
+        ${avoid ? `<div>
+          <div class="rc-label" style="margin-bottom:8px">Avoid</div>
+          ${avoid}
+        </div>` : ''}
+      </div></div>
     </div>` : ''}
 
     <!-- CTA -->
