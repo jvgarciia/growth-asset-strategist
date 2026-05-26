@@ -4430,11 +4430,15 @@ function renderExecSteps(steps) {
   const arr = Array.isArray(steps) ? steps.filter(Boolean) : [];
   if (!arr.length) return '';
   return `<div class="exec-steps-grid">
-    ${arr.map((s, i) => `
+    ${arr.map((s, i) => {
+      // Strip redundant "Step N:" / "Step N." prefix the AI sometimes includes
+      const text = String(s).replace(/^Step\s*\d+[.:]\s*/i, '').trim();
+      return `
       <div class="exec-step-card">
         <span class="exec-step-num">Step ${String(i + 1).padStart(2, '0')}</span>
-        <div class="exec-step-text">${s}</div>
-      </div>`).join('')}
+        <div class="exec-step-text">${text}</div>
+      </div>`;
+    }).join('')}
   </div>`;
 }
 
@@ -4792,14 +4796,6 @@ function renderFastResult(r) {
       <div class="outline-item outline-h2" style="padding:12px 0">
         <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
         ${ct.strategic_recommendation.what_to_build || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
-        ${ct.strategic_recommendation.why_it_fits || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
-        ${ct.strategic_recommendation.business_impact || '—'}
       </div>
       <div class="outline-item" style="padding:12px 0;border-bottom:none">
         <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:8px">Execution plan</span>
@@ -5415,14 +5411,6 @@ function renderResult(r) {
       <div class="outline-item outline-h2" style="padding:12px 0">
         <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">What to build</span>
         ${r.contentType.strategic_recommendation.what_to_build || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Why it fits</span>
-        ${r.contentType.strategic_recommendation.why_it_fits || '—'}
-      </div>
-      <div class="outline-item" style="padding:12px 0">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Business impact</span>
-        ${r.contentType.strategic_recommendation.business_impact || '—'}
       </div>
       <div class="outline-item" style="padding:12px 0;border-bottom:none">
         <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:8px">Execution plan</span>
