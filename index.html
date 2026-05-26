@@ -2547,6 +2547,220 @@ details.dev-options .fast-test-toggle { margin-top: 6px; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESULTS EXPERIENCE — COCKPIT REDESIGN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── Decision Cockpit interior ─────────────────────────────── */
+.cockpit-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.cockpit-funnel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,242,235,0.45);
+  font-family: var(--mono);
+}
+.cockpit-what {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: #f5f2eb;
+  line-height: 1.35;
+  margin-bottom: 18px;
+  letter-spacing: -0.01em;
+}
+.cockpit-metrics {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255,255,255,0.09);
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  margin-bottom: 14px;
+}
+.cockpit-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 18px 0 0;
+  margin-right: 18px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.cockpit-metric:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+.cockpit-metric-val {
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--mono);
+  line-height: 1.15;
+  margin-bottom: 3px;
+  white-space: nowrap;
+}
+.cockpit-metric-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,242,235,0.42);
+  font-family: var(--mono);
+}
+.cockpit-verdict {
+  font-size: 12.5px;
+  color: rgba(245,242,235,0.6);
+  line-height: 1.65;
+  font-style: italic;
+  font-family: var(--serif);
+}
+
+/* ── Why This Wins — 3 insight cards ──────────────────────── */
+.why-wins-section { margin-bottom: 28px; }
+.why-wins-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  margin-bottom: 10px;
+}
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.insight-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 16px 18px;
+  box-shadow: 0 1px 6px rgba(26,20,14,0.05);
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 18px rgba(26,20,14,0.10);
+}
+.insight-card-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.insight-card-icon {
+  font-size: 12px;
+  color: var(--amber);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.insight-card-label {
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  color: var(--ink-muted);
+}
+.insight-card-body {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+@media (max-width: 900px) { .insight-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 580px) { .insight-grid { grid-template-columns: 1fr; } }
+
+/* ── Execution steps — numbered action cards ───────────────── */
+.exec-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+.exec-step-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 13px 14px;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
+}
+.exec-step-card:hover {
+  border-color: var(--border-dark);
+  background: #ffffff;
+}
+.exec-step-num {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  color: var(--amber);
+  display: block;
+  margin-bottom: 7px;
+}
+.exec-step-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* ── Premium Generate CTA card ─────────────────────────────── */
+.exec-cta-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 2px 12px rgba(26,20,14,0.07);
+  transition: box-shadow var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
+}
+.exec-cta-card:hover {
+  box-shadow: 0 4px 22px rgba(26,20,14,0.11);
+  border-color: var(--border-dark);
+}
+.exec-cta-content { flex: 1; min-width: 0; }
+.exec-cta-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 5px;
+  font-family: var(--mono);
+  letter-spacing: 0.01em;
+}
+.exec-cta-desc {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  max-width: 440px;
+}
+.exec-cta-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  padding: 11px 22px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-spring);
+}
+.exec-cta-btn:hover { background: #2d2820; transform: translateY(-1px); }
+.exec-cta-btn:active { transform: scale(0.97); }
+.exec-cta-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+@media (max-width: 600px) {
+  .exec-cta-card { flex-direction: column; align-items: flex-start; }
+  .exec-cta-btn { width: 100%; text-align: center; padding: 12px; }
+}
 </style>
 </head>
 <body>
@@ -4137,16 +4351,29 @@ function renderVisualPreview(exec, ct) {
 }
 
 // Renders the trigger button + empty container (injected by renderResult/renderFastResult)
+// ─── EXEC STEP CARDS ──────────────────────────────────────────────────────
+function renderExecSteps(steps) {
+  const arr = Array.isArray(steps) ? steps.filter(Boolean) : [];
+  if (!arr.length) return '';
+  return `<div class="exec-steps-grid">
+    ${arr.map((s, i) => `
+      <div class="exec-step-card">
+        <span class="exec-step-num">Step ${String(i + 1).padStart(2, '0')}</span>
+        <div class="exec-step-text">${s}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
 function renderExecutionPlaceholder(r) {
   const ct = (r.contentType?.content_type || 'blog_article').replace(/_/g, ' ');
   return `
-  <div class="exec-trigger-wrap" id="execTriggerWrap">
-    <div class="exec-trigger-label">
-      <strong>Generate execution plan</strong>
-      Build-ready copy, structure, and conversion specs for this ${ct} — drawn from the full analysis above.
+  <div class="exec-cta-card" id="execTriggerWrap">
+    <div class="exec-cta-content">
+      <div class="exec-cta-label">Generate build-ready execution plan</div>
+      <div class="exec-cta-desc">Structured copy, conversion specs, and actionable output for this ${ct} — built directly from the strategic analysis above.</div>
     </div>
-    <button class="exec-trigger-btn" id="execTriggerBtn" onclick="triggerExecutionGeneration()">
-      ⚡ Generate
+    <button class="exec-cta-btn" id="execTriggerBtn" onclick="triggerExecutionGeneration()">
+      Generate →
     </button>
   </div>
   <div id="execContainer"></div>
@@ -4177,7 +4404,7 @@ async function triggerExecutionGeneration() {
     // Parse failure: generateExecutionAssets returns null — show retry, don't hide trigger wrap
     if (!exec) {
       btn.disabled = false;
-      btn.textContent = '⚡ Generate';
+      btn.textContent = 'Generate →';
       container.innerHTML = `<div style="padding:12px 0;display:flex;align-items:center;gap:12px">
         <span style="font-size:12px;color:var(--red);font-family:var(--mono)">Generation failed — response could not be parsed. Try again.</span>
         <button onclick="triggerExecutionGeneration()" style="font-size:11px;font-family:var(--mono);background:none;border:1px solid var(--border-dark);border-radius:3px;padding:3px 10px;cursor:pointer;color:var(--ink)">Retry</button>
@@ -4376,56 +4603,51 @@ What is missing from SERPs: ${JSON.stringify(mockSerp.patterns.what_is_missing)}
 
 // ─── EXECUTIVE SUMMARY ────────────────────────────────────────────────────
 function renderExecutiveSummary(r) {
-  const ct     = r.contentType;
-  const opp    = r.opportunity;
-  const moat   = r.moat;
+  const ct   = r.contentType;
+  const opp  = r.opportunity;
+  const moat = r.moat;
   if (!ct) return '';
 
-  const assetLabel = (ct.content_type || 'blog_article').replace(/_/g, ' ');
+  const assetLabel   = (ct.content_type || 'blog_article').replace(/_/g, ' ');
+  const rec          = ct.strategic_recommendation || {};
+  const whatToBuild  = rec.what_to_build || assetLabel + ' strategy';
+  const funnelStage  = ct.funnel_stage || '';
 
-  // Opportunity score colour
-  const oppScore = opp?.overall_score;
-  const oppColor = oppScore >= 75 ? '#6fcf97' : oppScore >= 55 ? '#f2c94c' : '#eb5757';
-
-  // Moat level colour (weak = good for us = green, very hard = red)
+  // Scores and colours
+  const oppScore  = opp?.overall_score;
+  const oppColor  = oppScore >= 75 ? '#6fcf97' : oppScore >= 55 ? '#f2c94c' : '#eb5757';
   const moatLevel = moat?.moat_level || '';
-  const moatColor = moatLevel === 'weak moat' ? '#6fcf97'
-    : moatLevel === 'moderate moat' ? '#f2c94c'
-    : moatLevel === 'strong moat'   ? '#f6a35a'
-    : moatLevel === 'very hard to beat' ? '#eb5757' : 'rgba(245,242,235,0.7)';
+  const moatColor = moatLevel === 'weak moat'         ? '#6fcf97'
+    : moatLevel === 'moderate moat'   ? '#f2c94c'
+    : moatLevel === 'strong moat'     ? '#f6a35a'
+    : moatLevel === 'very hard to beat' ? '#eb5757'   : 'rgba(245,242,235,0.65)';
 
-  // Verdict — prefer opportunity verdict_reasoning, fall back to strategic why_it_fits
-  const verdict = opp?.verdict_reasoning
-    || ct.strategic_recommendation?.why_it_fits
-    || ct.reasoning
-    || '';
+  // Verdict reasoning — one short paragraph below the metrics
+  const verdict = opp?.verdict_reasoning || rec.why_it_fits || ct.reasoning || '';
 
-  const oppPill = oppScore != null ? `
-    <span class="exec-pill">
-      <span class="exec-pill-val" style="color:${oppColor}">${oppScore}</span>
-      <span class="exec-pill-label">opportunity score</span>
-    </span>` : '';
+  // Metrics row — score | moat | verdict label | funnel
+  const metrics = [
+    oppScore != null ? { val: `${oppScore}<span style="font-size:11px;opacity:0.45">/100</span>`, color: oppColor, label: 'Opp. score' } : null,
+    moatLevel        ? { val: moatLevel,        color: moatColor, label: 'Moat',    sm: true } : null,
+    opp?.verdict     ? { val: opp.verdict,      color: 'rgba(245,242,235,0.82)', label: 'Verdict', sm: true } : null,
+    funnelStage      ? { val: funnelStage,      color: 'rgba(245,242,235,0.82)', label: 'Funnel',  sm: true } : null,
+  ].filter(Boolean);
 
-  const moatPill = moatLevel ? `
-    <span class="exec-pill">
-      <span class="exec-pill-val" style="color:${moatColor};font-size:11px;font-weight:500">${moatLevel}</span>
-      <span class="exec-pill-label">moat</span>
-    </span>` : '';
-
-  const verdictPill = opp?.verdict ? `
-    <span class="exec-pill">
-      <span class="exec-pill-val" style="font-size:10px;font-weight:400;letter-spacing:0.05em;text-transform:uppercase;color:rgba(245,242,235,0.8)">${opp.verdict}</span>
-    </span>` : '';
+  const metricsHtml = metrics.map(m => `
+    <div class="cockpit-metric">
+      <span class="cockpit-metric-val" style="color:${m.color}${m.sm ? ';font-size:13px;font-weight:500;text-transform:capitalize' : ''}">${m.val}</span>
+      <span class="cockpit-metric-label">${m.label}</span>
+    </div>`).join('');
 
   return `
   <div class="exec-summary" data-section="summary" data-label="Summary">
-    <div class="exec-verdict">${verdict}</div>
-    <div class="exec-pills">
+    <div class="cockpit-top">
       <span class="exec-asset">${assetLabel}</span>
-      ${oppPill}
-      ${moatPill}
-      ${verdictPill}
+      ${funnelStage ? `<span class="cockpit-funnel">${funnelStage} funnel</span>` : ''}
     </div>
+    <div class="cockpit-what">${whatToBuild}</div>
+    ${metrics.length ? `<div class="cockpit-metrics">${metricsHtml}</div>` : ''}
+    ${verdict ? `<div class="cockpit-verdict">${verdict}</div>` : ''}
   </div>`;
 }
 
@@ -4434,34 +4656,39 @@ function renderWhyThisWins(ct, moat) {
   if (!ct) return '';
   const rec = ct.strategic_recommendation || {};
 
-  // Build the 3 bullets from the best available data
-  const bullets = [
+  const cards = [
     {
-      label: 'Beats competitor formats',
-      text: moat?.attack_angle || rec.why_it_fits || '',
+      icon: '↗',
+      label: 'Competitive advantage',
+      body: moat?.attack_angle || rec.why_it_fits || '',
     },
     {
-      label: 'Right format for this intent',
-      text: rec.why_it_fits || '',
+      icon: '⊙',
+      label: 'Intent fit',
+      body: rec.why_it_fits || ct.reasoning || '',
     },
     {
+      icon: '◈',
       label: 'Business case',
-      text: rec.business_impact || '',
+      body: rec.business_impact || '',
     },
-  ].filter(b => b.text);
+  ].filter(c => c.body);
 
-  if (!bullets.length) return '';
+  if (!cards.length) return '';
 
-  const bulletHtml = bullets.map(b => `
-    <div class="why-bullet">
-      <span class="why-icon">✦</span>
-      <div><strong>${b.label}</strong> — ${b.text}</div>
+  const cardsHtml = cards.map(c => `
+    <div class="insight-card">
+      <div class="insight-card-eyebrow">
+        <span class="insight-card-icon">${c.icon}</span>
+        <span class="insight-card-label">${c.label}</span>
+      </div>
+      <div class="insight-card-body">${c.body}</div>
     </div>`).join('');
 
   return `
-  <div class="why-wins">
-    <div class="why-wins-header">Why this wins</div>
-    ${bulletHtml}
+  <div class="why-wins-section">
+    <div class="why-wins-eyebrow">Why this wins</div>
+    <div class="insight-grid">${cardsHtml}</div>
   </div>`;
 }
 
@@ -4501,8 +4728,8 @@ function renderFastResult(r) {
         ${ct.strategic_recommendation.business_impact || '—'}
       </div>
       <div class="outline-item" style="padding:12px 0;border-bottom:none">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
-        ${(ct.strategic_recommendation.execution_steps || []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:8px">Execution plan</span>
+        ${renderExecSteps(ct.strategic_recommendation.execution_steps)}
       </div>
     </div>` : ''}
 
@@ -5124,8 +5351,8 @@ function renderResult(r) {
         ${r.contentType.strategic_recommendation.business_impact || '—'}
       </div>
       <div class="outline-item" style="padding:12px 0;border-bottom:none">
-        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:5px">Execution plan</span>
-        ${(Array.isArray(r.contentType.strategic_recommendation.execution_steps) ? r.contentType.strategic_recommendation.execution_steps : []).map((s, i) => `<div style="padding:4px 0;font-size:13px;color:var(--ink)"><strong style="color:var(--accent)">${i+1}.</strong> ${s}</div>`).join('')}
+        <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:8px">Execution plan</span>
+        ${renderExecSteps(r.contentType.strategic_recommendation.execution_steps)}
       </div>
     </div>` : ''}
 
