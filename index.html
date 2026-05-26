@@ -1053,6 +1053,48 @@ select { cursor: pointer; appearance: none; background-image: url("data:image/sv
 
 @media (max-width: 1100px) { .result-nav { display: none !important; } }
 
+/* Mobile section jump nav — sticky pill strip at top of results on narrow screens */
+.mobile-result-nav { display: none; }
+@media (max-width: 768px) {
+  .mobile-result-nav.nav-visible {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    margin: 0 -20px 20px;
+  }
+  .mobile-result-nav.nav-visible::-webkit-scrollbar { display: none; }
+}
+.mobile-nav-pill {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  background: transparent;
+  flex-shrink: 0;
+}
+.mobile-nav-pill:hover { color: var(--ink); border-color: var(--border-dark); }
+.mobile-nav-pill.nav-active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
 /* ══ PHASE 2 — Collapsible sections ═══════════════════════════════════════ */
 /* grid-template-rows transition — smooth open/close without JS height measurement */
 .sec-collapsible > .sec-body {
@@ -3957,13 +3999,16 @@ function initResultNav() {
   const sectionEls = Array.from(resultSection.querySelectorAll('[data-section]'))
     .filter(el => el.offsetParent !== null);
 
+  const mobileNav = document.getElementById('mobileResultNav');
+
   if (sectionEls.length < 2) {
     nav.classList.remove('nav-visible');
     nav.innerHTML = '';
+    if (mobileNav) { mobileNav.classList.remove('nav-visible'); mobileNav.innerHTML = ''; }
     return;
   }
 
-  // Build nav items
+  // Build desktop nav items
   nav.innerHTML = sectionEls.map(el => {
     const key = el.dataset.section;
     const label = el.dataset.label || key;
@@ -3972,8 +4017,17 @@ function initResultNav() {
       <span class="nav-label">${label}</span>
     </div>`;
   }).join('');
-
   nav.classList.add('nav-visible');
+
+  // Build mobile pill nav
+  if (mobileNav) {
+    mobileNav.innerHTML = sectionEls.map(el => {
+      const key = el.dataset.section;
+      const label = el.dataset.label || key;
+      return `<div class="mobile-nav-pill" data-target="${key}" onclick="navScrollTo('${key}')">${label}</div>`;
+    }).join('');
+    mobileNav.classList.add('nav-visible');
+  }
 
   // Mark the active section based on scroll position
   function updateNavActive() {
@@ -3985,6 +4039,14 @@ function initResultNav() {
     nav.querySelectorAll('.nav-item').forEach(item => {
       item.classList.toggle('nav-active', item.dataset.target === activeKey);
     });
+    // Sync mobile pills — scroll active pill into view
+    if (mobileNav) {
+      mobileNav.querySelectorAll('.mobile-nav-pill').forEach(item => {
+        const active = item.dataset.target === activeKey;
+        item.classList.toggle('nav-active', active);
+        if (active) item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      });
+    }
   }
 
   navScrollListener = updateNavActive;
@@ -4778,6 +4840,7 @@ function renderFastResult(r) {
   const srcColor = r.decision_source === 'heuristic-driven' ? 'var(--green)' : r.decision_source === 'ai-overridden' ? 'var(--gold)' : 'var(--ink)';
   document.getElementById('resultSection').className = `result-section visible${resultMode === 'build' ? ' mode-build' : ''}`;
   document.getElementById('resultSection').innerHTML = `
+    <div id="mobileResultNav" class="mobile-result-nav"></div>
     <div class="result-header">
       <div>
         <div class="result-eyebrow">Strategy Report · Fast Test</div>
@@ -4894,9 +4957,12 @@ function renderFastResult(r) {
       </div>
     </div>
   `;
-  document.querySelectorAll('#resultSection > div').forEach((el, i) => {
+  let _ri = 0;
+  document.querySelectorAll('#resultSection > div').forEach(el => {
+    if (el.id === 'mobileResultNav') return; // skip — populated by initResultNav, no entrance delay needed
     el.classList.add('reveal-item');
-    el.style.animationDelay = `${Math.min(i, 5) * 50}ms`;
+    el.style.animationDelay = `${Math.min(_ri, 5) * 50}ms`;
+    _ri++;
   });
   initResultNav();
 }
@@ -5387,6 +5453,7 @@ function renderResult(r) {
 
   document.getElementById('resultSection').className = `result-section visible${resultMode === 'build' ? ' mode-build' : ''}`;
   document.getElementById('resultSection').innerHTML = `
+    <div id="mobileResultNav" class="mobile-result-nav"></div>
     <div class="result-header">
       <div>
         <div class="result-eyebrow">Strategy Report</div>
@@ -5689,9 +5756,12 @@ function renderResult(r) {
     </div><!-- /data-section="research" -->
   `;
   // Apply stagger reveal to result sections
-  document.querySelectorAll('#resultSection > div').forEach((el, i) => {
+  let _ri = 0;
+  document.querySelectorAll('#resultSection > div').forEach(el => {
+    if (el.id === 'mobileResultNav') return; // skip — populated by initResultNav, no entrance delay needed
     el.classList.add('reveal-item');
-    el.style.animationDelay = `${Math.min(i, 5) * 50}ms`;
+    el.style.animationDelay = `${Math.min(_ri, 5) * 50}ms`;
+    _ri++;
   });
   // Trigger score bar animation on next frame (CSS transition needs an initial paint at width:0)
   requestAnimationFrame(() => {
